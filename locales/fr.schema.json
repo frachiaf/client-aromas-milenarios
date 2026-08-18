@@ -200,6 +200,11 @@
     "layered_slideshow": "Diaporama superposé"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Texte au survol pour l’achat rapide",
+    "button_label": "Libellé du bouton",
+    "button_link": "Lien du bouton",
+    "hover_image": "Image au survol",
     "autoplay": "Lecture automatique",
     "background": "Arrière-plan",
     "border_radius": "Rayon de la bordure",
@@ -590,6 +595,9 @@
     "actions_display_style": "Style de menu"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Pomme",
     "arrow": "Flèche",
     "banana": "Banane",
@@ -865,6 +873,7 @@
     "icons": "Icônes"
   },
   "content": {
+    "interaction": "Interaction",
     "background_video": "Vidéo de fond",
     "describe_the_video_for": "Décrivez la vidéo pour les clients utilisant des lecteurs d’écran. [En savoir plus](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "width_is_automatically_optimized": "La largeur est automatiquement optimisée pour les appareils mobiles.",

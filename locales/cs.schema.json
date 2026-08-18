@@ -200,6 +200,11 @@
     "layered_slideshow": "Vrstvená prezentace"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Text při najetí pro rychlý nákup",
+    "button_label": "Popisek tlačítka",
+    "button_link": "Odkaz tlačítka",
+    "hover_image": "Obrázek při najetí",
     "alignment": "Zarovnání",
     "autoplay": "Automatické přehrávání",
     "background": "Pozadí",
@@ -590,6 +595,9 @@
     "actions_display_style": "Styl nabídky"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "Šipka",
     "auto": "Automaticky",
@@ -865,6 +873,7 @@
     "icons": "Ikony"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "Pokročilé",
     "background_image": "Obrázek na pozadí",
     "background_video": "Video na pozadí",

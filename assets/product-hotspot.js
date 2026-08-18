@@ -2,6 +2,96 @@ import { Component } from '@theme/component';
 import { QuickAddComponent } from '@theme/quick-add';
 import { isClickedOutside, isMobileBreakpoint, isTouchDevice, mediaQueryLarge } from '@theme/utilities';
 
+const mediaQueryFinePointer = matchMedia('(hover: hover) and (pointer: fine)');
+
+/**
+ * @typedef {object} HotspotHoverImageDetail
+ * @property {ProductHotspotComponent} source
+ * @property {string} url
+ */
+
+/**
+ * @typedef {object} HotspotResetImageDetail
+ * @property {ProductHotspotComponent} source
+ */
+
+class ProductHotspots extends HTMLElement {
+  /** @type {HTMLImageElement | null} */
+  #hoverImage = null;
+  /** @type {ProductHotspotComponent | null} */
+  #activeSource = null;
+  /** @type {number | null} */
+  #hoverImageAnimationFrame = null;
+
+  connectedCallback() {
+    const hoverImage = this.querySelector('[data-hotspot-hover-image]');
+    this.#hoverImage = hoverImage instanceof HTMLImageElement ? hoverImage : null;
+    this.addEventListener('product-hotspot-hover-image', this.#handleHoverImage);
+    this.addEventListener('product-hotspot-reset-image', this.#handleResetImage);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('product-hotspot-hover-image', this.#handleHoverImage);
+    this.removeEventListener('product-hotspot-reset-image', this.#handleResetImage);
+    this.#cancelHoverImageAnimation();
+    this.#activeSource = null;
+    this.#hoverImage?.classList.remove('is-active');
+    this.#hoverImage = null;
+  }
+
+  /** @param {Event} event */
+  #handleHoverImage = (event) => {
+    if (!(event instanceof CustomEvent)) return;
+
+    const { source, url } = /** @type {HotspotHoverImageDetail} */ (event.detail);
+    const hoverImage = this.#hoverImage;
+    if (!(source instanceof ProductHotspotComponent) || !hoverImage || typeof url !== 'string' || !url) return;
+
+    this.#activeSource = source;
+    this.#cancelHoverImageAnimation();
+
+    if (hoverImage.dataset.src === url) {
+      hoverImage.classList.add('is-active');
+      return;
+    }
+
+    hoverImage.classList.remove('is-active');
+    hoverImage.src = url;
+    hoverImage.dataset.src = url;
+    this.#hoverImageAnimationFrame = requestAnimationFrame(() => {
+      this.#hoverImageAnimationFrame = null;
+      if (this.#activeSource !== source || this.#hoverImage !== hoverImage) return;
+      hoverImage.classList.add('is-active');
+    });
+  };
+
+  /** @param {Event} event */
+  #handleResetImage = (event) => {
+    if (!(event instanceof CustomEvent)) return;
+
+    const { source } = /** @type {HotspotResetImageDetail} */ (event.detail);
+    if (!(source instanceof ProductHotspotComponent)) return;
+
+    this.resetHoverImage(source);
+  };
+
+  /** @param {ProductHotspotComponent} source */
+  resetHoverImage(source) {
+    if (source !== this.#activeSource) return;
+
+    this.#cancelHoverImageAnimation();
+    this.#activeSource = null;
+    this.#hoverImage?.classList.remove('is-active');
+  }
+
+  #cancelHoverImageAnimation() {
+    if (this.#hoverImageAnimationFrame === null) return;
+
+    cancelAnimationFrame(this.#hoverImageAnimationFrame);
+    this.#hoverImageAnimationFrame = null;
+  }
+}
+
 /**
  * A custom element that manages a dialog.
  *
@@ -17,35 +107,84 @@ export class ProductHotspotComponent extends Component {
   requiredRefs = ['trigger', 'dialog'];
   /** @type {(() => void) | null} */
   #pointerenterHandler = null;
-  timer = /** @type {number | null} */ (null);
+  /** @type {(() => void) | null} */
+  #hoverImageEnterHandler = null;
+  /** @type {(() => void) | null} */
+  #hoverImageLeaveHandler = null;
+  #quickAddRequestId = 0;
+  /** @type {ResizeObserver | null} */
+  #quickBuyLabelResizeObserver = null;
+  /** @type {ProductHotspots | null} */
+  #hotspotsRoot = null;
 
   connectedCallback() {
     super.connectedCallback();
+
+    const hotspotsRoot = this.closest('product-hotspots');
+    this.#hotspotsRoot = hotspotsRoot instanceof ProductHotspots ? hotspotsRoot : null;
+
+    this.#measureQuickBuyLabel();
+    requestAnimationFrame(this.#measureQuickBuyLabel);
+    document.fonts?.ready?.then(this.#measureQuickBuyLabel);
+    this.#observeQuickBuyLabel();
 
     // Set up initial event listeners based on current breakpoint
     this.#handleBreakpointChange();
 
     // Listen for breakpoint changes
     mediaQueryLarge.addEventListener('change', this.#handleBreakpointChange);
+    mediaQueryFinePointer.addEventListener('change', this.#handleBreakpointChange);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
+    this.#quickAddRequestId += 1;
+    this.#hotspotsRoot?.resetHoverImage(this);
+    this.#hotspotsRoot = null;
+
     // Clean up listeners
     this.#removeDesktopListeners();
     mediaQueryLarge.removeEventListener('change', this.#handleBreakpointChange);
+    mediaQueryFinePointer.removeEventListener('change', this.#handleBreakpointChange);
+    this.#quickBuyLabelResizeObserver?.disconnect();
+    this.#quickBuyLabelResizeObserver = null;
+  }
+
+  #measureQuickBuyLabel = () => {
+    const label = this.querySelector('.hotspot-trigger__quick-buy-label');
+
+    if (!(label instanceof HTMLElement)) return;
+
+    label.style.removeProperty('width');
+    const labelWidth = Math.ceil(label.scrollWidth);
+    if (labelWidth > 0) {
+      this.style.setProperty('--quick-buy-label-width', `${labelWidth}px`);
+    }
+  };
+
+  #observeQuickBuyLabel() {
+    const content = this.querySelector('.hotspot-trigger__quick-buy-label > span');
+    if (!(content instanceof HTMLElement) || !('ResizeObserver' in window)) return;
+
+    this.#quickBuyLabelResizeObserver = new ResizeObserver(this.#measureQuickBuyLabel);
+    this.#quickBuyLabelResizeObserver.observe(content);
   }
 
   /**
-   * Open the quick-add modal
-   * @returns {void}
+   * Opens Quick Add and reports whether the modal was shown.
+   * @returns {Promise<'opened' | 'unavailable' | 'failed' | 'aborted'>}
    */
-  #openQuickAddModal() {
+  async #openQuickAddModal() {
+    const productUrl = this.dataset.productUrl;
     const quickAddComponent = /** @type {QuickAddComponent | null} */ (this.querySelector('quick-add-component'));
 
-    if (!quickAddComponent) return;
-    quickAddComponent.handleClick(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    if (!productUrl || !quickAddComponent) return 'unavailable';
+    return quickAddComponent.open(productUrl);
+  }
+
+  get desktopInteractionMode() {
+    return this.dataset.desktopInteractionMode || 'hover-preview-click-quick-buy';
   }
 
   /**
@@ -55,19 +194,34 @@ export class ProductHotspotComponent extends Component {
   #setupDesktopListeners() {
     const { trigger, dialog } = this.refs;
 
-    /** @type {() => void} */
-    const pointerenterHandler = () => {
-      if (dialog.open) return;
-
-      this.timer = setTimeout(() => {
+    if (this.desktopInteractionMode === 'hover-preview-click-quick-buy') {
+      const pointerenterHandler = () => {
+        if (dialog.open) return;
         this.showDialog();
-      }, 120);
-      // Add pointerleave listener when entering trigger
-      trigger.addEventListener('pointerleave', this.#handlePointerLeave);
-    };
+        trigger.addEventListener('pointerleave', this.#handlePointerLeave);
+      };
 
-    this.#pointerenterHandler = pointerenterHandler;
-    trigger.addEventListener('pointerenter', pointerenterHandler);
+      this.#pointerenterHandler = pointerenterHandler;
+      trigger.addEventListener('pointerenter', pointerenterHandler);
+    }
+
+    if (this.dataset.hoverImageUrl) {
+      this.#hoverImageEnterHandler = () => {
+        this.dispatchEvent(
+          new CustomEvent('product-hotspot-hover-image', {
+            bubbles: true,
+            detail: { source: this, url: this.dataset.hoverImageUrl },
+          })
+        );
+      };
+      this.#hoverImageLeaveHandler = () => {
+        this.dispatchEvent(
+          new CustomEvent('product-hotspot-reset-image', { bubbles: true, detail: { source: this } })
+        );
+      };
+      this.addEventListener('pointerenter', this.#hoverImageEnterHandler);
+      this.addEventListener('pointerleave', this.#hoverImageLeaveHandler);
+    }
   }
 
   /**
@@ -83,10 +237,13 @@ export class ProductHotspotComponent extends Component {
       this.#pointerenterHandler = null;
     }
 
-    // Clear any pending timer
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
+    if (this.#hoverImageEnterHandler) {
+      this.removeEventListener('pointerenter', this.#hoverImageEnterHandler);
+      this.#hoverImageEnterHandler = null;
+    }
+    if (this.#hoverImageLeaveHandler) {
+      this.removeEventListener('pointerleave', this.#hoverImageLeaveHandler);
+      this.#hoverImageLeaveHandler = null;
     }
   }
 
@@ -99,14 +256,14 @@ export class ProductHotspotComponent extends Component {
     this.#removeDesktopListeners();
 
     // Set up desktop hover listeners only (mobile uses on:click in template)
-    if (!isMobileBreakpoint()) {
+    if (!isMobileBreakpoint() && mediaQueryFinePointer.matches && !isTouchDevice()) {
       this.#setupDesktopListeners();
     }
   };
 
   /**
    * Calculate the placement of the dialog.
-   * @returns {Promise<void> | undefined}
+   * @returns {void}
    */
   #calculateDialogPlacement() {
     const { trigger, dialog } = this.refs;
@@ -214,8 +371,6 @@ export class ProductHotspotComponent extends Component {
       dialog.style.removeProperty('--dialog-vertical-offset');
     }
 
-    // Return a promise that resolves after a few ticks to ensure styles are applied
-    return new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   /**
@@ -225,12 +380,6 @@ export class ProductHotspotComponent extends Component {
    */
   #handlePointerLeave = (e) => {
     const { dialog, trigger } = this.refs;
-
-    // Clear open timer if leaving trigger before dialog opens
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
 
     if (!dialog.open) return;
 
@@ -255,24 +404,36 @@ export class ProductHotspotComponent extends Component {
   }
 
   /**
-   * Handle hotspot click - on mobile/touch devices opens quick-add, on desktop opens dialog
+   * Handles hotspot click by opening Quick Add when available, otherwise showing the dialog.
    * @param {MouseEvent} e - The click event
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  handleHotspotClick = (e) => {
-    // Check if it's a touch device (tablets) or mobile breakpoint
-    if (isMobileBreakpoint() || isTouchDevice()) {
-      e.preventDefault();
-      e.stopPropagation();
-      this.#openQuickAddModal();
-    } else {
+  handleHotspotClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!this.dataset.productUrl) return;
+
+    if (!isMobileBreakpoint() && !isTouchDevice() && this.desktopInteractionMode === 'click-preview') {
       this.showDialog();
+      return;
     }
+
+    if (this.refs.dialog.open) this.closeDialog();
+
+    const requestId = ++this.#quickAddRequestId;
+    const result = await this.#openQuickAddModal();
+    if (requestId !== this.#quickAddRequestId || result === 'aborted') return;
+
+    if (result === 'opened') return;
+
+    this.showDialog();
   };
 
-  showDialog = async () => {
+  showDialog = () => {
     const { dialog } = this.refs;
-    await this.#calculateDialogPlacement();
+    if (dialog.open) return;
+    this.#calculateDialogPlacement();
     dialog.dataset.showing = 'true';
     dialog.show();
     document.body.addEventListener('click', this.lightDismissMouse);
@@ -288,6 +449,8 @@ export class ProductHotspotComponent extends Component {
    */
   closeDialog = async () => {
     const { dialog, trigger } = this.refs;
+    if (!dialog.open) return;
+
     dialog.dataset.closing = 'true';
     dialog.close();
     document.body.removeEventListener('click', this.lightDismissMouse);
@@ -335,4 +498,10 @@ export class ProductHotspotComponent extends Component {
 }
 
 // Register custom element
-customElements.define('product-hotspot-component', ProductHotspotComponent);
+if (!customElements.get('product-hotspots')) {
+  customElements.define('product-hotspots', ProductHotspots);
+}
+
+if (!customElements.get('product-hotspot-component')) {
+  customElements.define('product-hotspot-component', ProductHotspotComponent);
+}

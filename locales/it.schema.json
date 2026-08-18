@@ -200,6 +200,11 @@
     "layered_slideshow": "Presentazione a livelli"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Testo al passaggio per l'acquisto rapido",
+    "button_label": "Etichetta del pulsante",
+    "button_link": "Link del pulsante",
+    "hover_image": "Immagine al passaggio",
     "alignment": "Allineamento",
     "autoplay": "Riproduzione automatica",
     "background": "Sfondo",
@@ -590,6 +595,9 @@
     "actions_display_style": "Stile menu"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Mela",
     "arrow": "Freccia",
     "auto": "Automatico",
@@ -865,6 +873,7 @@
     "icons": "Icone"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "Avanzate",
     "background_image": "Immagine di sfondo",
     "background_video": "Video di sfondo",

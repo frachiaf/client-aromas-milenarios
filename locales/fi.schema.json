@@ -200,6 +200,11 @@
     "layered_slideshow": "Kerroksittainen diaesitys"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Pikaoston hover-teksti",
+    "button_label": "Painikkeen nimi",
+    "button_link": "Painikelinkki",
+    "hover_image": "Hover-kuva",
     "alignment": "Tasaus",
     "autoplay": "Automaattinen toisto",
     "background": "Tausta",
@@ -590,6 +595,9 @@
     "actions_display_style": "Valikkotyyli"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Omena",
     "arrow": "Nuoli",
     "auto": "Automaattinen",
@@ -865,6 +873,7 @@
     "icons": "Kuvakkeet"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "Lisäasetukset",
     "background_image": "Taustakuva",
     "background_video": "Taustavideo",

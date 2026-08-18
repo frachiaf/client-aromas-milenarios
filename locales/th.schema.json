@@ -200,6 +200,11 @@
     "layered_slideshow": "สไลด์โชว์แบบซ้อน"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "ข้อความเมื่อวางเมาส์สำหรับการซื้อด่วน",
+    "button_label": "ป้ายกำกับปุ่ม",
+    "button_link": "ลิงก์ปุ่ม",
+    "hover_image": "รูปภาพเมื่อวางเมาส์",
     "alignment": "การจัดตำแหน่ง",
     "autoplay": "เล่นอัตโนมัติ",
     "background": "พื้นหลัง",
@@ -590,6 +595,9 @@
     "actions_display_style": "รูปแบบเมนู"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "ลูกศร",
     "auto": "อัตโนมัติ",
@@ -865,6 +873,7 @@
     "icons": "ไอคอน"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "ขั้นสูง",
     "background_image": "รูปภาพพื้นหลัง",
     "background_video": "วิดีโอพื้นหลัง",

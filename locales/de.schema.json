@@ -200,6 +200,11 @@
     "layered_slideshow": "Überlagerte Slideshow"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Hover-Text für Schnellkauf",
+    "button_label": "Buttonbeschriftung",
+    "button_link": "Button-Link",
+    "hover_image": "Hover-Bild",
     "autoplay": "Autoplay",
     "background": "Hintergrund",
     "border_radius": "Eckenradius",
@@ -590,6 +595,9 @@
     "actions_display_style": "Menüstil"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apfel",
     "arrow": "Pfeil",
     "banana": "Banane",
@@ -865,6 +873,7 @@
     "icons": "Symbole"
   },
   "content": {
+    "interaction": "Interaction",
     "background_video": "Hintergrundvideo",
     "describe_the_video_for": "Beschreibe das Video für Kunden, die Bildschirmlesegeräte benutzen. [Mehr Informationen](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "width_is_automatically_optimized": "Die Breite wird für Mobilgeräte automatisch optimiert.",

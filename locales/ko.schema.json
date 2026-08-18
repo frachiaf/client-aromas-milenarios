@@ -200,6 +200,11 @@
     "layered_slideshow": "레이어드 슬라이드 쇼"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "빠른 구매 호버 텍스트",
+    "button_label": "버튼 레이블",
+    "button_link": "버튼 링크",
+    "hover_image": "호버 이미지",
     "autoplay": "자동 재생",
     "background": "배경",
     "border_radius": "모서리 반경",
@@ -590,6 +595,9 @@
     "actions_display_style": "메뉴 스타일"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "화살표",
     "banana": "바나나",
@@ -865,6 +873,7 @@
     "icons": "아이콘"
   },
   "content": {
+    "interaction": "Interaction",
     "background_video": "배경 비디오",
     "describe_the_video_for": "스크린리더를 사용하는 고객에게 슬라이드 쇼를 설명합니다. [자세히 알아보기](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "width_is_automatically_optimized": "너비는 모바일에 맞게 자동으로 최적화됩니다.",

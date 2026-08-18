@@ -200,6 +200,11 @@
     "layered_slideshow": "Warstwowy pokaz slajdów"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Tekst po najechaniu dla szybkiego zakupu",
+    "button_label": "Etykieta przycisku",
+    "button_link": "Link przycisku",
+    "hover_image": "Obraz po najechaniu",
     "autoplay": "Autoodtwarzanie",
     "background": "Tło",
     "border_radius": "Promień narożnika",
@@ -590,6 +595,9 @@
     "actions_display_style": "Styl menu"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "Strzałka",
     "banana": "Banan",
@@ -865,6 +873,7 @@
     "icons": "Ikony"
   },
   "content": {
+    "interaction": "Interaction",
     "background_video": "Wideo w tle",
     "describe_the_video_for": "Opisz film dla klientów korzystających z czytników ekranu. [Dowiedz się więcej](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "width_is_automatically_optimized": "Szerokość jest automatycznie optymalizowana pod kątem urządzeń mobilnych.",

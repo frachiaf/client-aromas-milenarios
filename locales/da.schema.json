@@ -200,6 +200,11 @@
     "layered_slideshow": "Diasshow i lag"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Hovertekst til hurtigkøb",
+    "button_label": "Knaptekst",
+    "button_link": "Knaplink",
+    "hover_image": "Hoverbillede",
     "alignment": "Justering",
     "autoplay": "Automatisk afspilning",
     "background": "Baggrund",
@@ -590,6 +595,9 @@
     "actions_display_style": "Menustil"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "Pil",
     "auto": "Auto",
@@ -865,6 +873,7 @@
     "icons": "Ikoner"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "Avanceret",
     "background_image": "Baggrundsbillede",
     "background_video": "Baggrundsvideo",

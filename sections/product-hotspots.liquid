@@ -43,21 +43,52 @@
       {% content_for 'block', type: 'text', id: 'heading' %}
     </div>
 
-    <div class="section-product-hotspots__content">
+    <product-hotspots class="section-product-hotspots__content">
       {% if section.settings.toggle_overlay %}
-        {% render 'overlay', settings: section.settings, layer: 'var(--layer-flat)' %}
+        {% render 'overlay', settings: section.settings, layer: '1' %}
       {% endif %}
 
       {% if section.settings.image != blank %}
-        {% render 'image', image: section.settings.image, class: 'hotspots__background-image' %}
+        {% render 'image', image: section.settings.image, class: 'hotspots__background-image hotspots__background-image--base' %}
       {% else %}
-        {{ 'hero-apparel-1' | placeholder_svg_tag: 'hotspots__background-image' }}
+        {{ 'hero-apparel-1' | placeholder_svg_tag: 'hotspots__background-image hotspots__background-image--base' }}
+      {% endif %}
+
+      <img class="hotspots__background-image hotspots__background-image--hover" alt="" aria-hidden="true" width="2000" height="2000" data-hotspot-hover-image>
+
+      {% if section.settings.overlay_heading != blank
+        or section.settings.overlay_text != blank
+        or section.settings.overlay_button_label != blank
+      %}
+        <div class="hotspots-editorial hotspots-editorial--{{ section.settings.overlay_content_position }}">
+          <div class="hotspots-editorial__content">
+            {% if section.settings.overlay_heading != blank %}
+              <h2 class="hotspots-editorial__heading">{{ section.settings.overlay_heading }}</h2>
+            {% endif %}
+            {% if section.settings.overlay_text != blank %}
+              <div class="hotspots-editorial__text rte">{{ section.settings.overlay_text }}</div>
+            {% endif %}
+            {% if section.settings.overlay_button_label != blank %}
+              <a
+                class="button"
+                {% if section.settings.overlay_button_link != blank %}
+                  href="{{ section.settings.overlay_button_link }}"
+                {% else %}
+                  role="link"
+                  aria-disabled="true"
+                {% endif %}
+              >
+                {{ section.settings.overlay_button_label }}
+              </a>
+            {% endif %}
+          </div>
+        </div>
       {% endif %}
 
       <div class="hotspots-container">
         {% content_for 'blocks' %}
       </div>
-    </div>
+    </product-hotspots>
   </div>
 </div>
 
@@ -77,16 +108,11 @@
 
   /* Image container */
   .section-product-hotspots__content {
+    display: block;
     position: relative;
     aspect-ratio: var(--ratio, 21 / 9);
     overflow: hidden;
-  }
-
-  /* Hide hotspots without products on touch devices (tablets included) */
-  @media (hover: none) {
-    .hotspot.hotspot--hidden-touch {
-      display: none;
-    }
+    isolation: isolate;
   }
 
   /* Responsive adjustments */
@@ -120,6 +146,17 @@
     z-index: var(--layer-raised);
   }
 
+  .hotspot--editor-placeholder {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .hotspot--editor-placeholder .hotspot-trigger {
+    display: block;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
   .hotspot .hotspot-trigger {
     padding: 0;
     border: none;
@@ -132,17 +169,71 @@
     padding: var(--padding-xs);
     padding-inline-start: 0;
     overflow: hidden;
+    min-inline-size: 0;
   }
 
   /* Visual target circle */
   .hotspot-trigger {
     width: var(--hotspot-size);
     height: var(--hotspot-size);
+    box-sizing: border-box;
     background: var(--hotspot-bg, rgb(0 0 0 / 0.5));
-    border-radius: 50%;
+    border-radius: 999px;
     cursor: pointer;
     position: relative;
     transition: width 0.1s ease-out, height 0.1s ease-out;
+  }
+
+  .hotspot[data-desktop-interaction-mode='click-quick-buy'] .hotspot-trigger {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    inline-size: var(--hotspot-size);
+    min-inline-size: var(--hotspot-size);
+    overflow: hidden;
+    transition: inline-size var(--animation-speed) var(--ease-out-cubic), height 0.1s ease-out;
+  }
+
+  .hotspot-trigger__quick-buy-label {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    display: grid;
+    place-items: center;
+    inline-size: max-content;
+    max-inline-size: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+    filter: blur(2px);
+    pointer-events: none;
+    transition: opacity var(--animation-speed) var(--ease-out-quad), transform var(--animation-speed) var(--ease-out-quad), filter var(--animation-speed) var(--ease-out-quad);
+  }
+
+  .hotspot-trigger__quick-buy-label > span {
+    display: inline-block;
+    padding-inline: var(--padding-sm);
+    color: var(--hotspot-bullseye, #fff);
+    font-size: var(--font-body--size);
+    font-weight: var(--font-body--weight);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hotspot[data-desktop-interaction-mode='click-quick-buy'] .hotspot-trigger:is(:hover, :focus-visible) {
+      inline-size: max(var(--hotspot-size), var(--quick-buy-label-width, var(--hotspot-size)));
+    }
+
+    .hotspot[data-desktop-interaction-mode='click-quick-buy'] .hotspot-trigger:is(:hover, :focus-visible) .hotspot-trigger__quick-buy-label {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      filter: blur(0);
+    }
+
+    .hotspot[data-desktop-interaction-mode='click-quick-buy'] .hotspot-trigger:is(:hover, :focus-visible)::after {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.5);
+    }
   }
 
   /* On mobile, ensure trigger is tappable */
@@ -150,6 +241,18 @@
     .hotspot-trigger {
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .hotspot[data-desktop-interaction-mode='click-quick-buy'] .hotspot-trigger {
+      inline-size: var(--hotspot-size);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hotspot-trigger__quick-buy-label,
+    .hotspot[data-desktop-interaction-mode='click-quick-buy'] .hotspot-trigger,
+    .hotspot[data-desktop-interaction-mode='click-quick-buy'] .hotspot-trigger::after {
+      transition-duration: 0s;
     }
   }
 
@@ -164,13 +267,14 @@
     background: var(--hotspot-bullseye, #fff);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: width 0.1s ease-out, height 0.1s ease-out, background 0.1s ease-out;
+    opacity: 1;
+    transition: width 0.1s ease-out, height 0.1s ease-out, background 0.1s ease-out, opacity var(--animation-speed) var(--ease-out-quad), transform var(--animation-speed) var(--ease-out-quad);
   }
 
   /* Bullseye grows on hover or when dialog is open (desktop only) */
   @media screen and (min-width: 750px) {
-    .hotspot:hover .hotspot-trigger::after,
-    .hotspot:has(.hotspot-dialog[open]) .hotspot-trigger::after {
+    .hotspot:not([data-desktop-interaction-mode='click-quick-buy']):not(.hotspot--editor-placeholder):hover .hotspot-trigger::after,
+    .hotspot:not([data-desktop-interaction-mode='click-quick-buy']):has(.hotspot-dialog[open]) .hotspot-trigger::after {
       width: calc(var(--hotspot-size) * 0.55);
       height: calc(var(--hotspot-size) * 0.55);
       transition: width 0.2s ease-out, height 0.2s ease-out, background 0.2s ease-out;
@@ -181,7 +285,7 @@
   .hotspots-container {
     position: absolute;
     inset: 0;
-    z-index: var(--layer-flat);
+    z-index: 3;
     overflow: clip;
   }
 
@@ -192,17 +296,57 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    z-index: 0;
   }
+
+  .hotspots__background-image--hover {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .hotspots__background-image--hover.is-active {
+    opacity: 1;
+  }
+
+  .hotspots-editorial {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    padding: clamp(var(--padding-md), 5vw, var(--padding-3xl));
+    pointer-events: none;
+  }
+
+  .hotspots-editorial--top-left { align-items: flex-start; justify-content: flex-start; text-align: left; }
+  .hotspots-editorial--top-center { align-items: flex-start; justify-content: center; text-align: center; }
+  .hotspots-editorial--top-right { align-items: flex-start; justify-content: flex-end; text-align: right; }
+  .hotspots-editorial--center-left { align-items: center; justify-content: flex-start; text-align: left; }
+  .hotspots-editorial--center { align-items: center; justify-content: center; text-align: center; }
+  .hotspots-editorial--center-right { align-items: center; justify-content: flex-end; text-align: right; }
+  .hotspots-editorial--bottom-left { align-items: flex-end; justify-content: flex-start; text-align: left; }
+  .hotspots-editorial--bottom-center { align-items: flex-end; justify-content: center; text-align: center; }
+  .hotspots-editorial--bottom-right { align-items: flex-end; justify-content: flex-end; text-align: right; }
+
+  .hotspots-editorial__content {
+    max-width: min(34rem, 100%);
+    color: var(--color-foreground);
+    text-shadow: 0 1px 18px rgb(0 0 0 / 0.3);
+  }
+
+  .hotspots-editorial__content > * { margin: 0; }
+  .hotspots-editorial__content > * + * { margin-block-start: var(--gap-md); }
+  .hotspots-editorial__content .button { pointer-events: auto; text-shadow: none; }
 
   /* Dialog positioning */
   .hotspot .hotspot-dialog {
     position: absolute;
     padding: 0;
+    box-sizing: border-box;
     border-radius: var(--style-border-radius-popover);
     border: var(--style-border-popover);
-    width: max-content;
-    min-width: var(--minimum-width-dialog);
-    max-width: var(--maximum-width-dialog);
+    inline-size: min(var(--maximum-width-dialog), 90vw);
+    min-inline-size: min(var(--minimum-width-dialog), 90vw);
+    max-inline-size: min(var(--maximum-width-dialog), 90vw);
     box-shadow: var(--shadow-popover);
 
     &[data-placement*='bottom'] {
@@ -261,7 +405,8 @@
 
   .hotspot-dialog__product {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: minmax(0, var(--width-product-image-dialog)) minmax(0, 1fr);
+    min-inline-size: 0;
   }
 
   .hotspot-dialog__product-image,
@@ -284,6 +429,7 @@
     margin-block-end: var(--product-title-gap);
     padding-inline-end: var(--padding-sm);
     min-width: 0;
+    overflow-wrap: break-word;
   }
 
   .hotspot .hotspot-dialog .hotspot-dialog__sold-out-badge {
@@ -479,6 +625,47 @@
       "label": "t:settings.image"
     },
     {
+      "type": "header",
+      "content": "t:settings.text_on_images"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "overlay_heading",
+      "label": "t:settings.heading"
+    },
+    {
+      "type": "richtext",
+      "id": "overlay_text",
+      "label": "t:settings.text"
+    },
+    {
+      "type": "text",
+      "id": "overlay_button_label",
+      "label": "t:settings.button_label"
+    },
+    {
+      "type": "url",
+      "id": "overlay_button_link",
+      "label": "t:settings.button_link"
+    },
+    {
+      "type": "select",
+      "id": "overlay_content_position",
+      "label": "t:settings.content_position",
+      "options": [
+        { "value": "top-left", "label": "t:options.top_left" },
+        { "value": "top-center", "label": "t:options.top" },
+        { "value": "top-right", "label": "t:options.top_right" },
+        { "value": "center-left", "label": "t:options.left" },
+        { "value": "center", "label": "t:options.center" },
+        { "value": "center-right", "label": "t:options.right" },
+        { "value": "bottom-left", "label": "t:options.bottom_left" },
+        { "value": "bottom-center", "label": "t:options.bottom" },
+        { "value": "bottom-right", "label": "t:options.bottom_right" }
+      ],
+      "default": "center"
+    },
+    {
       "type": "checkbox",
       "id": "toggle_overlay",
       "label": "t:settings.media_overlay"
@@ -568,6 +755,37 @@
         }
       ],
       "default": "auto"
+    },
+    {
+      "type": "header",
+      "content": "t:content.interaction"
+    },
+    {
+      "type": "select",
+      "id": "desktop_interaction_mode",
+      "label": "t:settings.desktop_interaction_mode",
+      "options": [
+        {
+          "value": "hover-preview-click-quick-buy",
+          "label": "t:options.hover_preview_click_quick_buy"
+        },
+        {
+          "value": "click-preview",
+          "label": "t:options.click_preview"
+        },
+        {
+          "value": "click-quick-buy",
+          "label": "t:options.click_quick_buy"
+        }
+      ],
+      "default": "hover-preview-click-quick-buy"
+    },
+    {
+      "type": "text",
+      "id": "quick_buy_hover_label",
+      "label": "t:settings.quick_buy_hover_label",
+      "default": "VER MÁS",
+      "visible_if": "{{ section.settings.desktop_interaction_mode == 'click-quick-buy' }}"
     },
     {
       "type": "header",

@@ -200,6 +200,11 @@
     "layered_slideshow": "Gelaagde diavoorstelling"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Zweeftekst voor snel kopen",
+    "button_label": "Knoplabel",
+    "button_link": "Knoplink",
+    "hover_image": "Zweefafbeelding",
     "autoplay": "Automatisch afspelen",
     "background": "Achtergrond",
     "border_radius": "Hoekradius",
@@ -590,6 +595,9 @@
     "actions_display_style": "Menustijl"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "Pijl",
     "banana": "Banaan",
@@ -865,6 +873,7 @@
     "icons": "Pictogrammen"
   },
   "content": {
+    "interaction": "Interaction",
     "background_video": "Achtergrondvideo",
     "describe_the_video_for": "Geef een beschrijving van de video voor klanten die schermlezers gebruiken. [Meer informatie](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "width_is_automatically_optimized": "Breedte wordt automatisch geoptimaliseerd voor mobiel.",

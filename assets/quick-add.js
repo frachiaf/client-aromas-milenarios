@@ -6,8 +6,10 @@ import { mediaQueryLarge, isMobileBreakpoint, getIOSVersion } from '@theme/utili
 import VariantPicker from '@theme/variant-picker';
 
 export class QuickAddComponent extends Component {
+  static #activeOpenRequestId = 0;
   /** @type {AbortController | null} */
   #abortController = null;
+  #openRequestId = 0;
   /** @type {Map<string, Element>} */
   #cachedContent = new Map();
   /** @type {AbortController} */
@@ -58,6 +60,7 @@ export class QuickAddComponent extends Component {
   disconnectedCallback() {
     super.disconnectedCallback();
 
+    this.#openRequestId += 1;
     mediaQueryLarge.removeEventListener('change', this.#closeQuickAddModal);
     this.#abortController?.abort();
     this.#cartUpdateAbortController.abort();
@@ -90,33 +93,61 @@ export class QuickAddComponent extends Component {
   handleClick = async (event) => {
     event.preventDefault();
 
-    const currentUrl = this.productPageUrl;
+    await this.open();
+  };
 
-    // Check if we have cached content for this URL
+  /**
+   * Loads the product content and opens the global quick-add modal.
+   *
+   * @param {string} [productPageUrl] - Optional explicit product URL
+   * @returns {Promise<'opened' | 'unavailable' | 'failed' | 'aborted'>}
+   */
+  async open(productPageUrl) {
+    const requestId = ++this.#openRequestId;
+    const activeRequestId = ++QuickAddComponent.#activeOpenRequestId;
+
+    const currentUrl = productPageUrl || this.productPageUrl;
+    if (!currentUrl || !this.#getQuickAddDialog() || !document.getElementById('quick-add-modal-content')) {
+      return 'unavailable';
+    }
+
     let productGrid = this.#cachedContent.get(currentUrl);
 
     if (!productGrid) {
-      // Fetch and cache the content
-      const html = await this.fetchProductPage(currentUrl);
-      if (html) {
-        const gridElement = html.querySelector('[data-product-grid-content]');
+      try {
+        const html = await this.fetchProductPage(currentUrl);
+        if (requestId !== this.#openRequestId || activeRequestId !== QuickAddComponent.#activeOpenRequestId) {
+          return 'aborted';
+        }
+
+        const gridElement = html?.querySelector('[data-product-grid-content]');
         if (gridElement) {
-          // Cache the cloned element to avoid modifying the original
           productGrid = /** @type {Element} */ (gridElement.cloneNode(true));
           this.#cachedContent.set(currentUrl, productGrid);
         }
+      } catch (_error) {
+        return 'failed';
       }
     }
 
-    if (productGrid) {
-      // Use a fresh clone from the cache
-      const freshContent = /** @type {Element} */ (productGrid.cloneNode(true));
-      await this.updateQuickAddModal(freshContent);
-      this.#updateVariantPicker(productGrid);
+    if (requestId !== this.#openRequestId || activeRequestId !== QuickAddComponent.#activeOpenRequestId) {
+      return 'aborted';
     }
+    if (!productGrid) return 'failed';
 
-    this.#openQuickAddModal();
-  };
+    const freshContent = /** @type {Element} */ (productGrid.cloneNode(true));
+    try {
+      await this.updateQuickAddModal(freshContent, currentUrl);
+      if (requestId !== this.#openRequestId || activeRequestId !== QuickAddComponent.#activeOpenRequestId) {
+        return 'aborted';
+      }
+
+      this.#updateVariantPicker(productGrid);
+      return this.#openQuickAddModal() ? 'opened' : 'unavailable';
+    } catch (_error) {
+      return 'failed';
+    }
+  }
 
   #resetScroll() {
     const dialogComponent = document.getElementById('quick-add-dialog');
@@ -137,9 +168,14 @@ export class QuickAddComponent extends Component {
     });
   }
 
-  #openQuickAddModal = () => {
+  #getQuickAddDialog() {
     const dialogComponent = document.getElementById('quick-add-dialog');
-    if (!(dialogComponent instanceof QuickAddDialog)) return;
+    return dialogComponent instanceof QuickAddDialog ? dialogComponent : null;
+  }
+
+  #openQuickAddModal = () => {
+    const dialogComponent = this.#getQuickAddDialog();
+    if (!dialogComponent) return false;
 
     this.#stayVisibleUntilDialogCloses(dialogComponent);
 
@@ -148,8 +184,11 @@ export class QuickAddComponent extends Component {
     // is nondeterministic when the open attribute is set on the dialog element after .showDialog() is called.
     // Waiting until the open animation starts seemed to be the most reliable metric here.
     const dialog = dialogComponent.refs?.dialog;
-    if (!dialog) return;
-    dialog.addEventListener('animationstart', this.#resetScroll.bind(this), { once: true });
+    if (dialog) {
+      dialog.addEventListener('animationstart', this.#resetScroll.bind(this), { once: true });
+    }
+
+    return true;
   };
 
   #closeQuickAddModal = () => {
@@ -198,8 +237,9 @@ export class QuickAddComponent extends Component {
   /**
    * Re-renders the variant picker.
    * @param {Element} productGrid - The product grid element
+   * @param {string} productPageUrl - The product page URL
    */
-  async updateQuickAddModal(productGrid) {
+  async updateQuickAddModal(productGrid, productPageUrl = this.productPageUrl) {
     const modalContent = document.getElementById('quick-add-modal-content');
 
     if (!productGrid || !modalContent) return;
@@ -213,7 +253,7 @@ export class QuickAddComponent extends Component {
       productTitle.textContent = this.dataset.productTitle || '';
 
       // Make product title as a link to the product page
-      productTitle.href = this.productPageUrl;
+      productTitle.href = productPageUrl;
 
       const productHeader = document.createElement('div');
       productHeader.classList.add('product-header');

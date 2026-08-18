@@ -200,6 +200,11 @@
     "layered_slideshow": "分層輪播"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "快速購買懸停文字",
+    "button_label": "按鈕標籤",
+    "button_link": "按鈕連結",
+    "hover_image": "懸停圖片",
     "alignment": "對齊",
     "autoplay": "自動播放",
     "background": "背景",
@@ -590,6 +595,9 @@
     "actions_display_style": "選單樣式"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "箭頭",
     "auto": "自動",
@@ -865,6 +873,7 @@
     "icons": "圖示"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "進階",
     "background_image": "背景圖片",
     "background_video": "背景影片",

@@ -200,6 +200,11 @@
     "layered_slideshow": "レイヤースライドショー"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "クイック購入のホバーテキスト",
+    "button_label": "ボタンのラベル",
+    "button_link": "ボタンのリンク",
+    "hover_image": "ホバー画像",
     "alignment": "配置",
     "autoplay": "自動再生",
     "background": "背景",
@@ -590,6 +595,9 @@
     "actions_display_style": "メニュースタイル"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "矢印",
     "auto": "自動",
@@ -865,6 +873,7 @@
     "icons": "アイコン"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "高度な設定",
     "background_image": "背景画像",
     "background_video": "背景動画",

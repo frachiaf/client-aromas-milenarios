@@ -200,6 +200,11 @@
     "layered_slideshow": "分层幻灯片"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "快速购买悬停文本",
+    "button_label": "按钮标签",
+    "button_link": "按钮链接",
+    "hover_image": "悬停图片",
     "alignment": "对齐方式",
     "autoplay": "自动播放",
     "background": "背景",
@@ -590,6 +595,9 @@
     "actions_display_style": "菜单样式"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Apple",
     "arrow": "箭头",
     "auto": "自动",
@@ -865,6 +873,7 @@
     "icons": "图标"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "高级",
     "background_image": "背景图片",
     "background_video": "背景视频",

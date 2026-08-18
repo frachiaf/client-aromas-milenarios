@@ -200,6 +200,11 @@
     "layered_slideshow": "Lagdelt lysbildefremvisning"
   },
   "settings": {
+    "desktop_interaction_mode": "Desktop interaction",
+    "quick_buy_hover_label": "Holdetekst for hurtigkjøp",
+    "button_label": "Knappetekst",
+    "button_link": "Knappelenke",
+    "hover_image": "Hoverbilde",
     "alignment": "Justering",
     "autoplay": "Autospill",
     "background": "Bakgrunn",
@@ -590,6 +595,9 @@
     "actions_display_style": "Menystil"
   },
   "options": {
+    "click_preview": "Preview on click",
+    "click_quick_buy": "Quick Buy on click",
+    "hover_preview_click_quick_buy": "Preview on hover, Quick Buy on click",
     "apple": "Eple",
     "arrow": "Pil",
     "auto": "Auto",
@@ -865,6 +873,7 @@
     "icons": "Ikoner"
   },
   "content": {
+    "interaction": "Interaction",
     "advanced": "Avansert",
     "background_image": "Bakgrunnsbilde",
     "background_video": "Bakgrunnsvideo",

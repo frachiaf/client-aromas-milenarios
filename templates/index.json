@@ -552,9 +552,9 @@
       "name": "t:names.product_hotspots",
       "settings": {
         "image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM.jpg",
-        "overlay_heading": "Velas",
-        "overlay_text": "<p>Texto</p>",
-        "overlay_button_label": "Boton",
+        "overlay_heading": "Experiencias Milenarias",
+        "overlay_text": "",
+        "overlay_button_label": "Elegí como sentirte",
         "overlay_button_link": "",
         "overlay_content_position": "bottom-center",
         "toggle_overlay": false,

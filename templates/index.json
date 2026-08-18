@@ -454,6 +454,7 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-oceano",
+            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_1.jpg",
             "x-position": 12,
             "y-position": 48
           },
@@ -463,6 +464,7 @@
           "type": "_hotspot-product",
           "settings": {
             "product": "vela-magdalena",
+            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_2.jpg",
             "x-position": 27,
             "y-position": 48
           },
@@ -482,6 +484,7 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-selene",
+            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.19_PM.jpg",
             "x-position": 58,
             "y-position": 48
           },
@@ -492,6 +495,7 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-oriente",
+            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.19_PM_1.jpg",
             "x-position": 73,
             "y-position": 48
           },
@@ -502,6 +506,7 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-jardin-del-alma",
+            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_4.jpg",
             "x-position": 88,
             "y-position": 48
           },
@@ -546,14 +551,21 @@
       ],
       "name": "t:names.product_hotspots",
       "settings": {
-        "image": "shopify://shop_images/ChatGPT_Image_1_ago_2026_12_53_24_a.m..png",
+        "image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM.jpg",
+        "overlay_heading": "",
+        "overlay_text": "",
+        "overlay_button_label": "",
+        "overlay_button_link": "",
+        "overlay_content_position": "center",
         "toggle_overlay": false,
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
         "section_width": "page-width",
         "section_height": "auto",
-        "hotspot_color": "#FFFFFF57",
+        "desktop_interaction_mode": "click-quick-buy",
+        "quick_buy_hover_label": "VER MÁS",
+        "hotspot_color": "#ffffff57",
         "bullseye_color": "#ffffff",
         "color_scheme": "scheme-1",
         "product_title_gap": 8,

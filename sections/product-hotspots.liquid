@@ -60,8 +60,9 @@
         or section.settings.overlay_text != blank
         or section.settings.overlay_button_label != blank
       %}
+        {% assign overlay_content_alignment = section.settings.overlay_content_alignment | default: 'auto' %}
         <div class="hotspots-editorial hotspots-editorial--{{ section.settings.overlay_content_position }}">
-          <div class="hotspots-editorial__content">
+          <div class="hotspots-editorial__content hotspots-editorial__content--{{ overlay_content_alignment }}">
             {% if section.settings.overlay_heading != blank %}
               <h2 class="hotspots-editorial__heading">{{ section.settings.overlay_heading }}</h2>
             {% endif %}
@@ -333,9 +334,31 @@
     text-shadow: 0 1px 18px rgb(0 0 0 / 0.3);
   }
 
+  .hotspots-editorial__content--start { text-align: start; }
+  .hotspots-editorial__content--center { text-align: center; }
+  .hotspots-editorial__content--end { text-align: end; }
+
   .hotspots-editorial__content > * { margin: 0; }
   .hotspots-editorial__content > * + * { margin-block-start: var(--gap-md); }
   .hotspots-editorial__content .button { pointer-events: auto; text-shadow: none; }
+
+  .hotspots-editorial:is(.hotspots-editorial--top-left, .hotspots-editorial--center-left, .hotspots-editorial--bottom-left)
+    .hotspots-editorial__content--auto .button,
+  .hotspots-editorial__content--start .button {
+    margin-inline: 0 auto;
+  }
+
+  .hotspots-editorial:is(.hotspots-editorial--top-center, .hotspots-editorial--center, .hotspots-editorial--bottom-center)
+    .hotspots-editorial__content--auto .button,
+  .hotspots-editorial__content--center .button {
+    margin-inline: auto;
+  }
+
+  .hotspots-editorial:is(.hotspots-editorial--top-right, .hotspots-editorial--center-right, .hotspots-editorial--bottom-right)
+    .hotspots-editorial__content--auto .button,
+  .hotspots-editorial__content--end .button {
+    margin-inline: auto 0;
+  }
 
   /* Dialog positioning */
   .hotspot .hotspot-dialog {
@@ -664,6 +687,18 @@
         { "value": "bottom-right", "label": "t:options.bottom_right" }
       ],
       "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "overlay_content_alignment",
+      "label": "t:settings.content_alignment",
+      "options": [
+        { "value": "auto", "label": "t:options.auto" },
+        { "value": "start", "label": "t:options.start" },
+        { "value": "center", "label": "t:options.center" },
+        { "value": "end", "label": "t:options.end" }
+      ],
+      "default": "auto"
     },
     {
       "type": "checkbox",

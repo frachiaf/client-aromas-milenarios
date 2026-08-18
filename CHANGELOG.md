@@ -18,6 +18,7 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 - Se añadió la etiqueta traducible del texto hover de Quick Buy a los schemas regionales, evitando referencias de traducción incompletas en Theme Check.
 - `product-hotspot.js` declara los tipos JSDoc de sus campos privados y eventos, cancela animaciones y observers al desmontarse, y limita hover/imagen alternativa a desktop con puntero fino y sin entrada táctil.
 - El posicionamiento de la card se calcula de forma sincrónica: se eliminó la espera artificial restante de 100 ms y `showDialog()` evita aperturas duplicadas.
+- El contenido editorial de Product Hotspots permite elegir alineación automática, inicio, centro o final. La opción automática conserva la alineación derivada de sus nueve posiciones y las opciones lógicas inicio/final son compatibles con RTL.
 
 - El modal global de Quick Add ahora se renderiza siempre una vez desde `layout/theme.liquid`, aunque la preferencia global oculte los botones en tarjetas de producto.
 - `QuickAddComponent.open()` carga y monta el producto antes de abrir el modal y devuelve `opened`, `unavailable`, `failed` o `aborted`; Product Hotspots espera ese resultado para usar su card solo como fallback.
@@ -44,6 +45,8 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 - El QA final del preview confirmó que Shopify sirve el asset minificado corregido sin el delay de 100 ms, con guards de puntero fino/touch y limpieza de ciclo de vida. Los cinco hotspots actuales resuelven URL y producto reales, contienen `quick-add-component`, usan `click-quick-buy` y comparten un único modal global; `vela-oceano` respondió 200 con `[data-product-grid-content]` y formulario de producto.
 - La automatización de interacción no obtuvo un canal CDP utilizable, por lo que no pudo ejecutar el click real ni la emulación touch desde este entorno.
 - La regla de entrega documenta el formato, alcance global y tipos permitidos del commit sugerido; contempla `git status --short`, `git diff`, `git diff --cached` y archivos nuevos, y diferencia expresamente la sugerencia de la autorización para ejecutar `git commit`.
+- El schema de Product Hotspots acepta `overlay_content_alignment` con los valores `auto`, `start`, `center` y `end`; reutiliza traducciones existentes y no requiere cambios en templates JSON ni JavaScript.
+- Shopify Theme Check aprobó el markup, los estilos lógicos y el schema del nuevo control de alineación editorial.
 
 ### Reversión
 

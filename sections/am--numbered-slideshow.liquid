@@ -7,7 +7,6 @@
   assign background_color = section.settings.background_color | default: 'transparent'
   assign text_color = section.settings.text_color | default: 'inherit'
   assign heading_color = text_color
-  assign link_color = text_color
 
   if section.settings.enable_color_scheme
     assign progress_color = 'var(--color-primary)'
@@ -15,7 +14,6 @@
     assign background_color = 'var(--color-background)'
     assign text_color = 'var(--color-foreground)'
     assign heading_color = 'var(--color-foreground-heading)'
-    assign link_color = 'var(--color-primary)'
   endif
 
   assign slider_items = section.blocks | where: 'type', 'slide'
@@ -23,7 +21,7 @@
 
 <am-numbered-slideshow
   class="am--numbered-slideshow{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}"
-  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }}; --am-heading-color: {{ heading_color }}; --am-link-color: {{ link_color }}; --am-padding-y: {{ section.settings.vertical_padding }}px; --am-progress-color: {{ progress_color }}; --am-progress-muted: {{ progress_muted }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }}; --am-heading-color: {{ heading_color }}; --am-padding-y: {{ section.settings.vertical_padding }}px; --am-progress-color: {{ progress_color }}; --am-progress-muted: {{ progress_muted }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}"
   data-am-autoplay="{{ section.settings.autoplay }}"
   data-am-loop="{{ section.settings.loop }}"
   data-am-interval="{{ section.settings.autoplay_slide_duration | times: 1000 }}"
@@ -96,7 +94,7 @@
                 <h3 class="am--numbered-slideshow__caption-title">{{ block.settings.title | escape }}</h3>
               {%- endif -%}
               {%- if block.settings.link_title != blank and block.settings.url != blank -%}
-                <a class="am--numbered-slideshow__caption-link" href="{{ block.settings.url }}">{{ block.settings.link_title | escape }}</a>
+                <a class="am--numbered-slideshow__caption-link button" href="{{ block.settings.url }}">{{ block.settings.link_title | escape }}</a>
               {%- endif -%}
             </div>
           {%- endfor -%}
@@ -125,102 +123,102 @@
 
 {% schema %}
 {
-  "name": "AM Numbered Slideshow",
+  "name": "AM Presentación numerada",
   "tag": "section",
   "class": "am--shopify-section-numbered-slideshow",
   "settings": [
-    { "type": "header", "content": "Heading" },
-    { "type": "text", "id": "heading", "label": "Section title" },
-    { "type": "header", "content": "Section settings" },
-    { "type": "checkbox", "id": "show_desktop", "label": "Show desktop", "default": true },
-    { "type": "checkbox", "id": "show_tablet", "label": "Show tablet", "default": true },
-    { "type": "checkbox", "id": "show_mobile", "label": "Show mobile", "default": true },
-    { "type": "range", "id": "vertical_padding", "label": "Vertical padding", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 60 },
-    { "type": "checkbox", "id": "enable_color_scheme", "label": "Use theme color scheme", "default": false },
+    { "type": "header", "content": "Encabezado" },
+    { "type": "text", "id": "heading", "label": "Título de la sección" },
+    { "type": "header", "content": "Configuración de la sección" },
+    { "type": "checkbox", "id": "show_desktop", "label": "Mostrar en escritorio", "default": true },
+    { "type": "checkbox", "id": "show_tablet", "label": "Mostrar en tablet", "default": true },
+    { "type": "checkbox", "id": "show_mobile", "label": "Mostrar en móvil", "default": true },
+    { "type": "range", "id": "vertical_padding", "label": "Relleno vertical", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 60 },
+    { "type": "checkbox", "id": "enable_color_scheme", "label": "Usar esquema de colores del tema", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.enable_color_scheme }}" },
-    { "type": "color", "id": "background_color", "label": "Background color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "color", "id": "text_color", "label": "Text color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "header", "content": "Slideshow settings" },
-    { "type": "checkbox", "id": "autoplay", "label": "Autoplay", "default": true },
-    { "type": "checkbox", "id": "loop", "label": "Loop", "default": true },
-    { "type": "range", "id": "autoplay_slide_duration", "label": "Autoplay slide duration", "min": 3, "max": 8, "step": 1, "default": 8, "unit": "s" },
-    { "type": "color", "id": "progress_color", "label": "Progress color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "header", "content": "Image settings" },
-    { "type": "image_picker", "id": "background_image", "label": "Background image (desktop)" },
-    { "type": "image_picker", "id": "background_image_mobile", "label": "Background image (mobile)", "info": "Uses the desktop image when empty." },
+    { "type": "color", "id": "background_color", "label": "Color de fondo", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "text_color", "label": "Color del texto", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "header", "content": "Configuración de la presentación" },
+    { "type": "checkbox", "id": "autoplay", "label": "Reproducción automática", "default": true },
+    { "type": "checkbox", "id": "loop", "label": "Repetir", "default": true },
+    { "type": "range", "id": "autoplay_slide_duration", "label": "Duración de cada diapositiva", "min": 3, "max": 8, "step": 1, "default": 8, "unit": "s" },
+    { "type": "color", "id": "progress_color", "label": "Color del progreso", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "header", "content": "Configuración de imágenes" },
+    { "type": "image_picker", "id": "background_image", "label": "Imagen de fondo (escritorio)" },
+    { "type": "image_picker", "id": "background_image_mobile", "label": "Imagen de fondo (móvil)", "info": "Si está vacía, usa la imagen de escritorio." },
     {
       "type": "select",
       "id": "image_aspect_ratio_mobile",
-      "label": "Image aspect ratio (mobile)",
+      "label": "Relación de aspecto de la imagen (móvil)",
       "options": [
         { "value": "am--numbered-slideshow__image--4x3", "label": "4:3" },
         { "value": "am--numbered-slideshow__image--3x4", "label": "3:4" },
         { "value": "am--numbered-slideshow__image--1x1", "label": "1:1" },
-        { "value": "am--numbered-slideshow__image--auto", "label": "Auto" }
+        { "value": "am--numbered-slideshow__image--auto", "label": "Automática" }
       ],
       "default": "am--numbered-slideshow__image--auto"
     }
   ],
   "blocks": [
     {
-      "name": "Slider item",
+      "name": "Diapositiva",
       "type": "slide",
       "limit": 12,
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "title", "label": "Title" },
-        { "type": "text", "id": "link_title", "label": "Link text" },
-        { "type": "url", "id": "url", "label": "Link" }
+        { "type": "image_picker", "id": "image", "label": "Imagen" },
+        { "type": "text", "id": "title", "label": "Título" },
+        { "type": "text", "id": "link_title", "label": "Texto del enlace" },
+        { "type": "url", "id": "url", "label": "Enlace" }
       ]
     },
     {
-      "name": "Illustration",
+      "name": "Ilustración",
       "type": "illustration",
       "limit": 4,
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image (desktop)" },
-        { "type": "image_picker", "id": "image_mobile", "label": "Image (mobile)" },
+        { "type": "image_picker", "id": "image", "label": "Imagen (escritorio)" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Imagen (móvil)" },
         {
-          "type": "select", "id": "horizontal_pos", "label": "Horizontal position (desktop)",
+          "type": "select", "id": "horizontal_pos", "label": "Posición horizontal (escritorio)",
           "options": [
-            { "value": "am--position-right", "label": "Right" },
-            { "value": "am--position-center", "label": "Center" },
-            { "value": "am--position-left", "label": "Left" }
+            { "value": "am--position-right", "label": "Derecha" },
+            { "value": "am--position-center", "label": "Centro" },
+            { "value": "am--position-left", "label": "Izquierda" }
           ], "default": "am--position-right"
         },
         {
-          "type": "select", "id": "horizontal_pos_mobile", "label": "Horizontal position (mobile)",
+          "type": "select", "id": "horizontal_pos_mobile", "label": "Posición horizontal (móvil)",
           "options": [
-            { "value": "am--position-right-mobile", "label": "Right" },
-            { "value": "am--position-center-mobile", "label": "Center" },
-            { "value": "am--position-left-mobile", "label": "Left" }
+            { "value": "am--position-right-mobile", "label": "Derecha" },
+            { "value": "am--position-center-mobile", "label": "Centro" },
+            { "value": "am--position-left-mobile", "label": "Izquierda" }
           ], "default": "am--position-right-mobile"
         },
         {
-          "type": "select", "id": "vertical_pos", "label": "Vertical position (desktop)",
+          "type": "select", "id": "vertical_pos", "label": "Posición vertical (escritorio)",
           "options": [
-            { "value": "am--position-top", "label": "Top" },
-            { "value": "am--position-middle", "label": "Middle" },
-            { "value": "am--position-bottom", "label": "Bottom" }
+            { "value": "am--position-top", "label": "Arriba" },
+            { "value": "am--position-middle", "label": "Centro" },
+            { "value": "am--position-bottom", "label": "Abajo" }
           ], "default": "am--position-top"
         },
         {
-          "type": "select", "id": "vertical_pos_mobile", "label": "Vertical position (mobile)",
+          "type": "select", "id": "vertical_pos_mobile", "label": "Posición vertical (móvil)",
           "options": [
-            { "value": "am--position-top-mobile", "label": "Top" },
-            { "value": "am--position-middle-mobile", "label": "Middle" },
-            { "value": "am--position-bottom-mobile", "label": "Bottom" }
+            { "value": "am--position-top-mobile", "label": "Arriba" },
+            { "value": "am--position-middle-mobile", "label": "Centro" },
+            { "value": "am--position-bottom-mobile", "label": "Abajo" }
           ], "default": "am--position-top-mobile"
         },
-        { "type": "range", "id": "horizontal_reposition", "label": "Horizontal reposition (desktop)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
-        { "type": "range", "id": "horizontal_reposition_mobile", "label": "Horizontal reposition (mobile)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
-        { "type": "checkbox", "id": "zindex", "label": "In front of content", "default": false }
+        { "type": "range", "id": "horizontal_reposition", "label": "Desplazamiento horizontal (escritorio)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
+        { "type": "range", "id": "horizontal_reposition_mobile", "label": "Desplazamiento horizontal (móvil)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
+        { "type": "checkbox", "id": "zindex", "label": "Delante del contenido", "default": false }
       ]
     }
   ],
   "presets": [
     {
-      "name": "AM Numbered Slideshow",
+      "name": "AM Presentación numerada",
       "blocks": [
         { "type": "slide", "settings": { "title": "Bistro Style", "link_title": "Shop the Collection", "url": "#" } },
         { "type": "slide", "settings": { "title": "The world's most beautiful grill", "link_title": "Shop the Collection", "url": "#" } },

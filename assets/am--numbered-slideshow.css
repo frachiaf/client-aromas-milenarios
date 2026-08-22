@@ -166,13 +166,6 @@
   line-height: 1.2;
 }
 
-.am--numbered-slideshow__caption-link {
-  color: var(--am-link-color, inherit);
-  line-height: 1.5;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-
 .am--numbered-slideshow__illustration {
   --am-translate-x: 0%;
   --am-translate-y: 0%;

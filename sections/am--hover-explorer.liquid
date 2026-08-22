@@ -8,7 +8,6 @@
   assign content_text_color = '#262a2b'
   assign section_heading_color = section_text_color
   assign content_heading_color = content_text_color
-  assign link_color = content_text_color
 
   if section.settings.enable_color_scheme
     assign section_bg = 'var(--color-background)'
@@ -17,7 +16,6 @@
     assign content_text_color = 'var(--color-foreground)'
     assign section_heading_color = 'var(--color-foreground-heading)'
     assign content_heading_color = 'var(--color-foreground-heading)'
-    assign link_color = 'var(--color-primary)'
   else
     assign section_brightness = section_bg | color_brightness
     assign content_brightness = content_bg | color_brightness
@@ -28,14 +26,13 @@
     if content_brightness < 128
       assign content_text_color = '#ffffff'
       assign content_heading_color = '#ffffff'
-      assign link_color = '#ffffff'
     endif
   endif
 -%}
 
 <am-hover-explorer
   class="am--hover-explorer{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}"
-  style="--am-background-color: {{ section_bg }}; --am-text-color: {{ section_text_color }}; --am-heading-color: {{ section_heading_color }}; --am-content-background-color: {{ content_bg }}; --am-content-text-color: {{ content_text_color }}; --am-content-heading-color: {{ content_heading_color }}; --am-link-color: {{ link_color }}; --am-padding-desktop-y: {{ section.settings.vertical_padding }}px; --am-padding-mobile-y: {{ section.settings.vertical_padding_mobile }}px; --am-padding-desktop-x: {{ section.settings.horizontal_padding }}px; --am-padding-mobile-x: {{ section.settings.horizontal_padding_mobile }}px; --am-title-spacing-desktop: {{ section.settings.title_spacing }}px; --am-title-spacing-mobile: {{ section.settings.title_spacing_mobile }}px;"
+  style="--am-background-color: {{ section_bg }}; --am-text-color: {{ section_text_color }}; --am-heading-color: {{ section_heading_color }}; --am-content-background-color: {{ content_bg }}; --am-content-text-color: {{ content_text_color }}; --am-content-heading-color: {{ content_heading_color }}; --am-padding-desktop-y: {{ section.settings.vertical_padding }}px; --am-padding-mobile-y: {{ section.settings.vertical_padding_mobile }}px; --am-padding-desktop-x: {{ section.settings.horizontal_padding }}px; --am-padding-mobile-x: {{ section.settings.horizontal_padding_mobile }}px; --am-title-spacing-desktop: {{ section.settings.title_spacing }}px; --am-title-spacing-mobile: {{ section.settings.title_spacing_mobile }}px;"
 >
   <div class="am--hover-explorer__inner">
     {%- if section.settings.title != blank and section.settings.title_position == 'top_center' -%}
@@ -104,7 +101,7 @@
                 {%- endif -%}
                 {%- if block.settings.button_text != blank and block.settings.button_link != blank -%}
                   <a
-                    class="am--hover-explorer__link"
+                    class="am--hover-explorer__link button"
                     href="{{ block.settings.button_link }}"
                     {% if section.settings.open_links_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
                   >{{ block.settings.button_text | escape }}</a>
@@ -182,7 +179,7 @@
               {%- endif -%}
               {%- if block.settings.button_text != blank and block.settings.button_link != blank -%}
                 <a
-                  class="am--hover-explorer__link"
+                  class="am--hover-explorer__link button"
                   href="{{ block.settings.button_link }}"
                   {% if section.settings.open_links_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
                 >{{ block.settings.button_text | escape }}</a>
@@ -197,59 +194,59 @@
 
 {% schema %}
 {
-  "name": "AM Hover Explorer",
+  "name": "AM Explorador interactivo",
   "tag": "section",
   "class": "am--shopify-section-hover-explorer",
   "settings": [
-    { "type": "header", "content": "Device visibility" },
-    { "type": "checkbox", "id": "show_desktop", "label": "Show desktop", "default": true },
-    { "type": "checkbox", "id": "show_tablet", "label": "Show tablet", "default": true },
-    { "type": "checkbox", "id": "show_mobile", "label": "Show mobile", "default": true },
-    { "type": "text", "id": "title", "label": "Section title", "default": "Know Your Glassware" },
+    { "type": "header", "content": "Visibilidad por dispositivo" },
+    { "type": "checkbox", "id": "show_desktop", "label": "Mostrar en escritorio", "default": true },
+    { "type": "checkbox", "id": "show_tablet", "label": "Mostrar en tablet", "default": true },
+    { "type": "checkbox", "id": "show_mobile", "label": "Mostrar en móvil", "default": true },
+    { "type": "text", "id": "title", "label": "Título de la sección", "default": "Know Your Glassware" },
     {
       "type": "select",
       "id": "title_position",
-      "label": "Title position (desktop)",
+      "label": "Posición del título (escritorio)",
       "options": [
-        { "value": "top_center", "label": "Top center" },
-        { "value": "top_left", "label": "Top of left column" },
-        { "value": "top_right", "label": "Top of right column" }
+        { "value": "top_center", "label": "Parte superior centrada" },
+        { "value": "top_left", "label": "Parte superior de la columna izquierda" },
+        { "value": "top_right", "label": "Parte superior de la columna derecha" }
       ],
       "default": "top_center"
     },
-    { "type": "range", "id": "title_spacing", "label": "Title bottom spacing (desktop)", "min": 0, "max": 100, "step": 5, "default": 40, "unit": "px" },
-    { "type": "range", "id": "title_spacing_mobile", "label": "Title bottom spacing (mobile)", "min": 0, "max": 60, "step": 5, "default": 30, "unit": "px" },
-    { "type": "checkbox", "id": "first_item_active", "label": "First item active by default", "default": true },
-    { "type": "checkbox", "id": "open_links_new_tab", "label": "Open links in new tab", "default": false },
-    { "type": "checkbox", "id": "enable_color_scheme", "label": "Use theme color scheme", "default": false },
+    { "type": "range", "id": "title_spacing", "label": "Espacio inferior del título (escritorio)", "min": 0, "max": 100, "step": 5, "default": 40, "unit": "px" },
+    { "type": "range", "id": "title_spacing_mobile", "label": "Espacio inferior del título (móvil)", "min": 0, "max": 60, "step": 5, "default": 30, "unit": "px" },
+    { "type": "checkbox", "id": "first_item_active", "label": "Activar el primer elemento de forma predeterminada", "default": true },
+    { "type": "checkbox", "id": "open_links_new_tab", "label": "Abrir enlaces en una pestaña nueva", "default": false },
+    { "type": "checkbox", "id": "enable_color_scheme", "label": "Usar esquema de colores del tema", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.enable_color_scheme }}" },
-    { "type": "color", "id": "background_color", "label": "Section background color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "color", "id": "content_background_color", "label": "Right column background color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "image_picker", "id": "background_image", "label": "Background image", "info": "Shared background image behind all item images." },
-    { "type": "range", "id": "vertical_padding", "label": "Vertical padding (desktop)", "min": 0, "max": 100, "step": 5, "default": 60, "unit": "px" },
-    { "type": "range", "id": "vertical_padding_mobile", "label": "Vertical padding (mobile)", "min": 0, "max": 60, "step": 5, "default": 40, "unit": "px" },
-    { "type": "range", "id": "horizontal_padding", "label": "Horizontal padding (desktop)", "min": 0, "max": 60, "step": 5, "default": 30, "unit": "px" },
-    { "type": "range", "id": "horizontal_padding_mobile", "label": "Horizontal padding (mobile)", "min": 0, "max": 40, "step": 5, "default": 20, "unit": "px" }
+    { "type": "color", "id": "background_color", "label": "Color de fondo de la sección", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "content_background_color", "label": "Color de fondo de la columna derecha", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "image_picker", "id": "background_image", "label": "Imagen de fondo", "info": "Imagen de fondo compartida detrás de las imágenes de todos los elementos." },
+    { "type": "range", "id": "vertical_padding", "label": "Relleno vertical (escritorio)", "min": 0, "max": 100, "step": 5, "default": 60, "unit": "px" },
+    { "type": "range", "id": "vertical_padding_mobile", "label": "Relleno vertical (móvil)", "min": 0, "max": 60, "step": 5, "default": 40, "unit": "px" },
+    { "type": "range", "id": "horizontal_padding", "label": "Relleno horizontal (escritorio)", "min": 0, "max": 60, "step": 5, "default": 30, "unit": "px" },
+    { "type": "range", "id": "horizontal_padding_mobile", "label": "Relleno horizontal (móvil)", "min": 0, "max": 40, "step": 5, "default": 20, "unit": "px" }
   ],
   "blocks": [
     {
       "type": "item",
-      "name": "Item",
+      "name": "Elemento",
       "limit": 12,
       "settings": [
-        { "type": "text", "id": "title", "label": "Title", "default": "Item Title" },
-        { "type": "text", "id": "item_label", "label": "List label", "info": "Uses Title when empty.", "default": "CORDIAL GLASS" },
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "A SWEET SIP" },
-        { "type": "richtext", "id": "description", "label": "Description", "default": "<p>For fine liqueurs and digestifs served in refined moderation.</p>" },
-        { "type": "text", "id": "button_text", "label": "Button text", "default": "SHOP CORDIAL GLASSES" },
-        { "type": "url", "id": "button_link", "label": "Button link" }
+        { "type": "text", "id": "title", "label": "Título", "default": "Item Title" },
+        { "type": "text", "id": "item_label", "label": "Etiqueta de la lista", "info": "Si está vacío, usa el título.", "default": "CORDIAL GLASS" },
+        { "type": "image_picker", "id": "image", "label": "Imagen" },
+        { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "A SWEET SIP" },
+        { "type": "richtext", "id": "description", "label": "Descripción", "default": "<p>For fine liqueurs and digestifs served in refined moderation.</p>" },
+        { "type": "text", "id": "button_text", "label": "Texto del botón", "default": "SHOP CORDIAL GLASSES" },
+        { "type": "url", "id": "button_link", "label": "Enlace del botón" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "AM Hover Explorer",
+      "name": "AM Explorador interactivo",
       "blocks": [
         { "type": "item", "settings": { "title": "Cordials", "item_label": "CORDIAL GLASS", "subtitle": "A SWEET SIP", "description": "<p>For fine liqueurs and digestifs served in refined moderation.</p>", "button_text": "SHOP CORDIAL GLASSES" } },
         { "type": "item", "settings": { "title": "Coupes", "item_label": "COUPE GLASS", "subtitle": "A SWEET SIP", "description": "<p>Description for coupe glass.</p>", "button_text": "SHOP COUPE GLASSES" } },

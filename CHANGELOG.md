@@ -8,6 +8,26 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Pendiente
 
+### Añadido
+
+- `AM Video + Carrusel` permite ocultar en conjunto las flechas, el control de pausa/reproducción y las barras de progreso sin desactivar el autoplay.
+- Los CTA textuales de `AM Explorador interactivo`, `AM Presentación numerada` y `AM Video + Carrusel` usan directamente el botón primario nativo de Pitch, sin un selector editorial de estilo.
+
+### Modificado
+
+- La interfaz completa de los schemas de `AM Divisor de color`, `AM Explorador interactivo`, `AM Presentación numerada` y `AM Video + Carrusel` se tradujo al español sin cambiar IDs, values ni contenido editorial predeterminado.
+- Archivos: `sections/am--color-divider.liquid`, `sections/am--hover-explorer.liquid`, `sections/am--numbered-slideshow.liquid`, `sections/am--video-with-carousel.liquid`, `assets/am--hover-explorer.css`, `assets/am--numbered-slideshow.css` y `assets/am--video-with-carousel.css`.
+- Impacto: las instancias existentes conservan controles visibles y adoptan colores, tipografía, bordes, espaciado y hover del botón primario del esquema activo. Los settings históricos de apariencia del CTA de video se preservan por compatibilidad, aunque ya no modifican el storefront.
+
+### Validación
+
+- Los cuatro schemas JSON, el setting nuevo de controles y el contrato Liquid/schema fueron validados correctamente; todos los CTA textuales usan la clase `button` sin overrides visuales locales.
+- `shopify theme check --path .` inspeccionó 313 archivos sin errores y mantuvo 24 advertencias preexistentes de `ValidScopedCSSClass`; `git diff --check` fue aprobado.
+
+### Reversión
+
+- Retirar `show_slider_controls` y sus condiciones Liquid restaura los controles anteriores; restaurar las clases y reglas locales de los CTA devuelve su presentación previa. Revertir las cadenas de schema devuelve la interfaz del editor al inglés sin afectar los valores guardados.
+
 ### Modificado
 
 - Los bloques Product Hotspots obtienen el producto exclusivamente desde `block.settings.product`. Esto permite que los hotspots configurados rendericen su producto, disponibilidad y `quick-add-component` fuera de un contexto de producto.

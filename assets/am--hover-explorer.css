@@ -165,15 +165,6 @@
   line-height: 1.5;
 }
 
-.am--hover-explorer__link {
-  color: var(--am-link-color, inherit);
-  font-size: 1rem;
-  line-height: 1.5;
-  letter-spacing: .06em;
-  text-underline-offset: 8px;
-  text-transform: uppercase;
-}
-
 .am--hover-explorer :focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 4px;

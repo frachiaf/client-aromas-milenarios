@@ -34,13 +34,9 @@
   assign text_color = 'inherit'
   assign heading_color = section.settings.heading_color | default: 'inherit'
   assign overlay_color = section.settings.video_text_color | default: '#ffffff'
-  assign button_background = section.settings.btn_color | default: 'transparent'
-  assign button_text_color = section.settings.btn_text_color | default: 'inherit'
-  assign button_border = section.settings.button_border_color | default: 'transparent'
   assign carousel_heading_color = section.settings.carousel_heading_color | default: 'inherit'
   assign slide_background = section.settings.slider_item_background_color | default: 'transparent'
   assign slide_heading_color = '#262a2b'
-  assign slide_link_color = 'inherit'
   assign slide_counter_color = '#ffffff'
   assign progress_color = section.settings.progress_color | default: '#000000'
   assign progress_background = section.settings.background_progress_color | default: '#fefefe'
@@ -54,13 +50,9 @@
     assign text_color = 'var(--color-foreground)'
     assign heading_color = 'var(--color-foreground-heading)'
     assign overlay_color = 'var(--color-foreground)'
-    assign button_background = 'var(--color-primary-button-background)'
-    assign button_text_color = 'var(--color-primary-button-text)'
-    assign button_border = 'var(--color-primary-button-border)'
     assign carousel_heading_color = 'var(--color-foreground-heading)'
     assign slide_background = 'var(--color-background)'
     assign slide_heading_color = 'var(--color-foreground-heading)'
-    assign slide_link_color = 'var(--color-primary)'
     assign slide_counter_color = 'var(--color-foreground)'
     assign progress_color = 'var(--color-primary)'
     assign progress_background = 'var(--color-border)'
@@ -73,7 +65,7 @@
 
 <am-video-with-carousel
   class="am--video-with-carousel{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.align_slider_items %} am--align-slider-items{% endif %}{% if section.settings.disable_smooth_transition %} am--disable-slide-transition{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}{% if section.settings.snow_animation %} am--has-snow{% endif %}"
-  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-button-background: {{ button_background }}; --am-button-text-color: {{ button_text_color }}; --am-button-border: {{ button_border }}; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-link-color: {{ slide_link_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }};"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }};"
   data-am-interval="{{ section.settings.carousel_timer | times: 1000 }}"
   data-am-autoplay="true"
 >
@@ -114,7 +106,7 @@
               {%- if section.settings.description != blank -%}<div class="am--video-with-carousel__media-description">{{ section.settings.description | escape }}</div>{%- endif -%}
               {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
                 <div class="am--video-with-carousel__button-wrapper">
-                  <a class="am--video-with-carousel__button{% if section.settings['plain-text-btn'] %} am--is-plain{% endif %}{% if section.settings.underline %} am--is-underlined{% endif %}" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+                  <a class="am--video-with-carousel__button button" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
                 </div>
               {%- endif -%}
             </div>
@@ -138,7 +130,7 @@
               {%- if section.settings.description != blank -%}<div class="am--video-with-carousel__media-description">{{ section.settings.description | escape }}</div>{%- endif -%}
               {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
                 <div class="am--video-with-carousel__button-wrapper">
-                  <a class="am--video-with-carousel__button{% if section.settings['plain-text-btn'] %} am--is-plain{% endif %}{% if section.settings.underline %} am--is-underlined{% endif %}" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+                  <a class="am--video-with-carousel__button button" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
                 </div>
               {%- endif -%}
             </div>
@@ -184,17 +176,19 @@
                   {%- else -%}
                     {{ 'lifestyle-1' | placeholder_svg_tag: 'am--video-with-carousel__placeholder' }}
                   {%- endif -%}
-                  <div class="am--video-with-carousel__progress-track" aria-hidden="true"><div class="am--video-with-carousel__progress" data-am-progress></div></div>
+                  {%- if section.settings.show_slider_controls -%}
+                    <div class="am--video-with-carousel__progress-track" aria-hidden="true"><div class="am--video-with-carousel__progress" data-am-progress></div></div>
+                  {%- endif -%}
                 </div>
                 <div class="am--video-with-carousel__slide-copy">
                   {%- if block.settings.title != blank -%}<h3 class="am--video-with-carousel__slide-title">{{ block.settings.title | escape }}</h3>{%- endif -%}
-                  {%- if block.settings.link_title != blank and block.settings.url != blank -%}<a class="am--video-with-carousel__slide-link" href="{{ block.settings.url }}">{{ block.settings.link_title | escape }}</a>{%- endif -%}
+                  {%- if block.settings.link_title != blank and block.settings.url != blank -%}<a class="am--video-with-carousel__slide-link button" href="{{ block.settings.url }}">{{ block.settings.link_title | escape }}</a>{%- endif -%}
                   <span class="am--video-with-carousel__counter" aria-hidden="true">{{ forloop.index }} | {{ forloop.length }}</span>
                 </div>
               </li>
             {%- endfor -%}
             </ul>
-            {%- if slider_items.size > 1 -%}
+            {%- if slider_items.size > 1 and section.settings.show_slider_controls -%}
               <button class="am--video-with-carousel__autoplay-button" type="button" data-am-carousel-toggle aria-label="Pause carousel" aria-pressed="false">
                 <svg class="am--video-with-carousel__icon-play" aria-hidden="true" viewBox="0 0 20 40"><path d="M18 18.3 3.7 5.1A2 2 0 0 0 .5 6.6v26.8A2 2 0 0 0 3.7 35L18 21.7a2.3 2.3 0 0 0 0-3.4Z"/></svg>
                 <svg class="am--video-with-carousel__icon-pause" aria-hidden="true" viewBox="0 0 10 12"><path d="M0 1.5a1.5 1.5 0 0 1 3 0v9a1.5 1.5 0 0 1-3 0Zm7 0a1.5 1.5 0 0 1 3 0v9a1.5 1.5 0 0 1-3 0Z"/></svg>
@@ -226,117 +220,118 @@
 
 {% schema %}
 {
-  "name": "AM Video + Carousel",
+  "name": "AM Video + Carrusel",
   "tag": "section",
   "class": "am--shopify-section-video-carousel",
   "settings": [
-    { "type": "header", "content": "General settings" },
-    { "type": "checkbox", "id": "snow_animation", "label": "Enable snow animation", "default": false },
-    { "type": "image_picker", "id": "snow_image_1", "label": "Snow layer 1" },
-    { "type": "image_picker", "id": "snow_image_2", "label": "Snow layer 2" },
-    { "type": "image_picker", "id": "snow_image_3", "label": "Snow layer 3" },
-    { "type": "text", "id": "heading", "label": "Section title", "default": "Section title" },
-    { "type": "checkbox", "id": "enable_color_scheme", "label": "Use theme color scheme", "default": false },
+    { "type": "header", "content": "Configuración general" },
+    { "type": "checkbox", "id": "snow_animation", "label": "Activar animación de nieve", "default": false },
+    { "type": "image_picker", "id": "snow_image_1", "label": "Capa de nieve 1" },
+    { "type": "image_picker", "id": "snow_image_2", "label": "Capa de nieve 2" },
+    { "type": "image_picker", "id": "snow_image_3", "label": "Capa de nieve 3" },
+    { "type": "text", "id": "heading", "label": "Título de la sección", "default": "Section title" },
+    { "type": "checkbox", "id": "enable_color_scheme", "label": "Usar esquema de colores del tema", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.enable_color_scheme }}" },
-    { "type": "color", "id": "heading_color", "label": "Heading color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "image_picker", "id": "background_image", "label": "Background image" },
-    { "type": "color", "id": "background_color", "label": "Background color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "header", "content": "Video settings" },
-    { "type": "image_picker", "id": "video_poster", "label": "Video poster" },
-    { "type": "text", "id": "video_url", "label": "Video URL", "info": "Direct URL to an MP4 video file." },
-    { "type": "checkbox", "id": "video_loop", "label": "Loop video", "default": true },
-    { "type": "header", "content": "Replace video with image" },
-    { "type": "image_picker", "id": "replacing_image", "label": "Replacing image", "info": "This image replaces the video when selected." },
-    { "type": "url", "id": "replacing_image_url", "label": "URL for the image" },
-    { "type": "header", "content": "Content settings" },
-    { "type": "text", "id": "title", "label": "Title", "default": "Title" },
-    { "type": "textarea", "id": "description", "label": "Description", "default": "Description" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Button" },
+    { "type": "color", "id": "heading_color", "label": "Color del encabezado", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "image_picker", "id": "background_image", "label": "Imagen de fondo" },
+    { "type": "color", "id": "background_color", "label": "Color de fondo", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "header", "content": "Configuración del video" },
+    { "type": "image_picker", "id": "video_poster", "label": "Imagen de portada del video" },
+    { "type": "text", "id": "video_url", "label": "URL del video", "info": "URL directa a un archivo de video MP4." },
+    { "type": "checkbox", "id": "video_loop", "label": "Repetir video", "default": true },
+    { "type": "header", "content": "Reemplazar video por imagen" },
+    { "type": "image_picker", "id": "replacing_image", "label": "Imagen de reemplazo", "info": "Al seleccionarla, esta imagen reemplaza el video." },
+    { "type": "url", "id": "replacing_image_url", "label": "Enlace de la imagen" },
+    { "type": "header", "content": "Configuración del contenido" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Title" },
+    { "type": "textarea", "id": "description", "label": "Descripción", "default": "Description" },
+    { "type": "text", "id": "button_label", "label": "Etiqueta del botón", "default": "Button" },
     {
-      "type": "select", "id": "text_horizontal_position", "label": "Text horizontal position",
-      "options": [ { "value": "start", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "end", "label": "Right" } ], "default": "center"
+      "type": "select", "id": "text_horizontal_position", "label": "Posición horizontal del texto",
+      "options": [ { "value": "start", "label": "Izquierda" }, { "value": "center", "label": "Centro" }, { "value": "end", "label": "Derecha" } ], "default": "center"
     },
     {
-      "type": "select", "id": "text_vertical_position", "label": "Text vertical position",
-      "options": [ { "value": "start", "label": "Start" }, { "value": "center", "label": "Center" }, { "value": "end", "label": "End" } ], "default": "end"
+      "type": "select", "id": "text_vertical_position", "label": "Posición vertical del texto",
+      "options": [ { "value": "start", "label": "Arriba" }, { "value": "center", "label": "Centro" }, { "value": "end", "label": "Abajo" } ], "default": "end"
     },
     {
-      "type": "select", "id": "text_align", "label": "Text alignment",
-      "options": [ { "value": "tl", "label": "Left" }, { "value": "tc", "label": "Center" }, { "value": "tr", "label": "Right" }, { "value": "tj", "label": "Justify" } ], "default": "tc"
+      "type": "select", "id": "text_align", "label": "Alineación del texto",
+      "options": [ { "value": "tl", "label": "Izquierda" }, { "value": "tc", "label": "Centro" }, { "value": "tr", "label": "Derecha" }, { "value": "tj", "label": "Justificado" } ], "default": "tc"
     },
     {
-      "type": "select", "id": "position", "label": "Button position",
-      "options": [ { "value": "start", "label": "Start" }, { "value": "center", "label": "Center" }, { "value": "end", "label": "End" } ], "default": "start"
+      "type": "select", "id": "position", "label": "Posición del botón",
+      "options": [ { "value": "start", "label": "Inicio" }, { "value": "center", "label": "Centro" }, { "value": "end", "label": "Final" } ], "default": "start"
     },
-    { "type": "checkbox", "id": "plain-text-btn", "label": "Plain text button", "default": false },
-    { "type": "checkbox", "id": "underline", "label": "Underline button", "default": false },
-    { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "color", "id": "video_text_color", "label": "Text color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "color", "id": "btn_color", "label": "Button background color", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "color", "id": "btn_text_color", "label": "Button text color", "default": "#ffffff", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "color", "id": "button_border_color", "label": "Button border color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "header", "content": "Carousel content" },
-    { "type": "text", "id": "carousel_heading", "label": "Carousel heading", "default": "Carousel heading" },
-    { "type": "color", "id": "carousel_heading_color", "label": "Carousel heading color", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "checkbox", "id": "align_slider_items", "label": "Align slider items in the same position", "default": false },
-    { "type": "checkbox", "id": "disable_smooth_transition", "label": "Disable smooth slide transition", "default": false },
-    { "type": "color", "id": "slider_item_background_color", "label": "Slider item background color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "checkbox", "id": "show_desktop", "label": "Show desktop", "default": true },
-    { "type": "checkbox", "id": "show_tablet", "label": "Show tablet", "default": true },
-    { "type": "checkbox", "id": "show_mobile", "label": "Show mobile", "default": true },
-    { "type": "range", "id": "carousel_timer", "label": "Autoplay slide duration", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 5 },
-    { "type": "color", "id": "progress_color", "label": "Progress color", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
-    { "type": "color", "id": "background_progress_color", "label": "Background progress color", "default": "#fefefe", "visible_if": "{{ section.settings.enable_color_scheme == false }}" }
+    { "type": "checkbox", "id": "plain-text-btn", "label": "Botón como texto simple", "default": false },
+    { "type": "checkbox", "id": "underline", "label": "Subrayar botón", "default": false },
+    { "type": "url", "id": "button_link", "label": "Enlace del botón" },
+    { "type": "color", "id": "video_text_color", "label": "Color del texto", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "btn_color", "label": "Color de fondo del botón", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "btn_text_color", "label": "Color del texto del botón", "default": "#ffffff", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "button_border_color", "label": "Color del borde del botón", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "header", "content": "Contenido del carrusel" },
+    { "type": "text", "id": "carousel_heading", "label": "Encabezado del carrusel", "default": "Carousel heading" },
+    { "type": "color", "id": "carousel_heading_color", "label": "Color del encabezado del carrusel", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "checkbox", "id": "show_slider_controls", "label": "Mostrar controles del carrusel", "default": true },
+    { "type": "checkbox", "id": "align_slider_items", "label": "Alinear las diapositivas en la misma posición", "default": false },
+    { "type": "checkbox", "id": "disable_smooth_transition", "label": "Desactivar transición suave entre diapositivas", "default": false },
+    { "type": "color", "id": "slider_item_background_color", "label": "Color de fondo de las diapositivas", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "checkbox", "id": "show_desktop", "label": "Mostrar en escritorio", "default": true },
+    { "type": "checkbox", "id": "show_tablet", "label": "Mostrar en tablet", "default": true },
+    { "type": "checkbox", "id": "show_mobile", "label": "Mostrar en móvil", "default": true },
+    { "type": "range", "id": "carousel_timer", "label": "Duración de cada diapositiva", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 5 },
+    { "type": "color", "id": "progress_color", "label": "Color del progreso", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "background_progress_color", "label": "Color de fondo del progreso", "default": "#fefefe", "visible_if": "{{ section.settings.enable_color_scheme == false }}" }
   ],
   "blocks": [
     {
-      "name": "Slider item", "type": "slide", "limit": 12,
+      "name": "Diapositiva", "type": "slide", "limit": 12,
       "settings": [
         {
-          "type": "select", "id": "media_type", "label": "Media type",
+          "type": "select", "id": "media_type", "label": "Tipo de contenido multimedia",
           "options": [
-            { "value": "image", "label": "Image" },
+            { "value": "image", "label": "Imagen" },
             { "value": "video", "label": "Video" }
           ],
           "default": "image"
         },
-        { "type": "image_picker", "id": "image", "label": "Image", "visible_if": "{{ block.settings.media_type == 'image' }}" },
+        { "type": "image_picker", "id": "image", "label": "Imagen", "visible_if": "{{ block.settings.media_type == 'image' }}" },
         { "type": "video", "id": "video", "label": "Video", "visible_if": "{{ block.settings.media_type == 'video' }}" },
-        { "type": "text", "id": "title", "label": "Title" },
-        { "type": "text", "id": "link_title", "label": "Link text" },
-        { "type": "url", "id": "url", "label": "Link" }
+        { "type": "text", "id": "title", "label": "Título" },
+        { "type": "text", "id": "link_title", "label": "Texto del enlace" },
+        { "type": "url", "id": "url", "label": "Enlace" }
       ]
     },
     {
-      "name": "Illustration", "type": "illustration", "limit": 4,
+      "name": "Ilustración", "type": "illustration", "limit": 4,
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image (desktop)" },
-        { "type": "image_picker", "id": "image_mobile", "label": "Image (mobile)" },
+        { "type": "image_picker", "id": "image", "label": "Imagen (escritorio)" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Imagen (móvil)" },
         {
-          "type": "select", "id": "horizontal_pos", "label": "Horizontal position (desktop)",
-          "options": [ { "value": "am--position-right", "label": "Right" }, { "value": "am--position-center", "label": "Center" }, { "value": "am--position-left", "label": "Left" } ], "default": "am--position-right"
+          "type": "select", "id": "horizontal_pos", "label": "Posición horizontal (escritorio)",
+          "options": [ { "value": "am--position-right", "label": "Derecha" }, { "value": "am--position-center", "label": "Centro" }, { "value": "am--position-left", "label": "Izquierda" } ], "default": "am--position-right"
         },
         {
-          "type": "select", "id": "horizontal_pos_mobile", "label": "Horizontal position (mobile)",
-          "options": [ { "value": "am--position-right-mobile", "label": "Right" }, { "value": "am--position-center-mobile", "label": "Center" }, { "value": "am--position-left-mobile", "label": "Left" } ], "default": "am--position-right-mobile"
+          "type": "select", "id": "horizontal_pos_mobile", "label": "Posición horizontal (móvil)",
+          "options": [ { "value": "am--position-right-mobile", "label": "Derecha" }, { "value": "am--position-center-mobile", "label": "Centro" }, { "value": "am--position-left-mobile", "label": "Izquierda" } ], "default": "am--position-right-mobile"
         },
         {
-          "type": "select", "id": "vertical_pos", "label": "Vertical position (desktop)",
-          "options": [ { "value": "am--position-top", "label": "Top" }, { "value": "am--position-middle", "label": "Middle" }, { "value": "am--position-bottom", "label": "Bottom" } ], "default": "am--position-top"
+          "type": "select", "id": "vertical_pos", "label": "Posición vertical (escritorio)",
+          "options": [ { "value": "am--position-top", "label": "Arriba" }, { "value": "am--position-middle", "label": "Centro" }, { "value": "am--position-bottom", "label": "Abajo" } ], "default": "am--position-top"
         },
         {
-          "type": "select", "id": "vertical_pos_mobile", "label": "Vertical position (mobile)",
-          "options": [ { "value": "am--position-top-mobile", "label": "Top" }, { "value": "am--position-middle-mobile", "label": "Middle" }, { "value": "am--position-bottom-mobile", "label": "Bottom" } ], "default": "am--position-top-mobile"
+          "type": "select", "id": "vertical_pos_mobile", "label": "Posición vertical (móvil)",
+          "options": [ { "value": "am--position-top-mobile", "label": "Arriba" }, { "value": "am--position-middle-mobile", "label": "Centro" }, { "value": "am--position-bottom-mobile", "label": "Abajo" } ], "default": "am--position-top-mobile"
         },
-        { "type": "range", "id": "horizontal_reposition", "label": "Horizontal reposition (desktop)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
-        { "type": "range", "id": "horizontal_reposition_mobile", "label": "Horizontal reposition (mobile)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
-        { "type": "checkbox", "id": "zindex", "label": "In front of content", "default": false }
+        { "type": "range", "id": "horizontal_reposition", "label": "Desplazamiento horizontal (escritorio)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
+        { "type": "range", "id": "horizontal_reposition_mobile", "label": "Desplazamiento horizontal (móvil)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
+        { "type": "checkbox", "id": "zindex", "label": "Delante del contenido", "default": false }
       ]
     }
   ],
   "presets": [
     {
-      "name": "AM Video + Carousel",
+      "name": "AM Video + Carrusel",
       "blocks": [
         { "type": "slide", "settings": { "title": "Bistro Style", "link_title": "Shop the Collection", "url": "#" } },
         { "type": "slide", "settings": { "title": "The world's most beautiful grill", "link_title": "Shop the Collection", "url": "#" } },

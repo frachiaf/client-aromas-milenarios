@@ -57,6 +57,8 @@ layout/theme.liquid
 - La preferencia global `settings.quick_add` conserva el control visual de los botones en tarjetas de producto, pero no condiciona la existencia del modal global: Product Hotspots puede usar Quick Add aunque esa preferencia esté desactivada.
 - Shopify resuelve un product setting como vacío cuando el recurso no está disponible en Online Store o en el mercado actual, incluso si el handle permanece guardado en el template JSON. Esos hotspots no se renderizan en storefront y conservan únicamente un marcador seleccionable dentro del Theme Editor.
 - Un hotspot con modo `click-quick-buy` usa el modal cuando hay un producto accesible y la carga termina correctamente. La card local queda limitada a productos reales agotados, ausencia inesperada del modal o fallos de carga; una solicitud cancelada por una interacción posterior no abre ningún fallback obsoleto.
+- Los modos desktop de Product Hotspots son excluyentes: `hover-preview-click-quick-buy` abre la card por hover o foco y reserva el click para Quick Add; `click-preview` alterna la card únicamente por click; `click-quick-buy` abre Quick Add y usa la card solo como fallback. Abrir una card cierra cualquier otra de la misma sección, y Escape, click exterior o salida del foco cierran la card activa.
+- La imagen alternativa es independiente del modo de interacción y solo responde a hover real en desktop con puntero fino. La capa anterior se oculta antes de cargar otra URL y la nueva imagen se activa después de cargar y decodificar; respuestas tardías o fallidas no pueden volver a mostrar un bitmap perteneciente a otro hotspot.
 
 ## Datos administrados por Shopify
 

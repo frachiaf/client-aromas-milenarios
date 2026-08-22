@@ -2,6 +2,7 @@
 
 {% liquid
   assign hotspot_product = block.settings.product
+  assign hotspot_dialog_id = 'HotspotDialog-' | append: section.id | append: '-' | append: block.id
 
   assign placeholder_product_title = 'placeholders.product_title' | t
   assign hotspot_product_title = hotspot_product.title | default: placeholder_product_title
@@ -26,6 +27,9 @@
     <button
       class="hotspot-trigger"
       aria-label="{{ 'accessibility.show_product_details' | t: product_name: hotspot_product_title }}"
+      aria-controls="{{ hotspot_dialog_id }}"
+      aria-expanded="false"
+      aria-haspopup="dialog"
       ref="trigger"
       on:click="/handleHotspotClick"
       style="anchor-name: --hotspot-trigger-{{ block.id }};"
@@ -37,6 +41,7 @@
       {% endif %}
     </button>
     <dialog
+      id="{{ hotspot_dialog_id }}"
       aria-label="{{ 'accessibility.product_details' | t }}"
       class="hotspot-dialog"
       ref="dialog"

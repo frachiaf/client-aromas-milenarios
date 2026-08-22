@@ -1,0 +1,348 @@
+{{ 'am--video-with-carousel.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'am--video-with-carousel.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign overlay_x = 'center'
+  if section.settings.text_horizontal_position == 'start'
+    assign overlay_x = 'flex-start'
+  elsif section.settings.text_horizontal_position == 'end'
+    assign overlay_x = 'flex-end'
+  endif
+  assign overlay_y = 'center'
+  if section.settings.text_vertical_position == 'start'
+    assign overlay_y = 'flex-start'
+  elsif section.settings.text_vertical_position == 'end'
+    assign overlay_y = 'flex-end'
+  endif
+  assign overlay_text_align = 'center'
+  if section.settings.text_align == 'tl'
+    assign overlay_text_align = 'left'
+  elsif section.settings.text_align == 'tr'
+    assign overlay_text_align = 'right'
+  elsif section.settings.text_align == 'tj'
+    assign overlay_text_align = 'justify'
+  endif
+  assign button_align = 'center'
+  if section.settings.position == 'start'
+    assign button_align = 'flex-start'
+  elsif section.settings.position == 'end'
+    assign button_align = 'flex-end'
+  endif
+  assign slider_items = section.blocks | where: 'type', 'slide'
+
+  assign background_color = section.settings.background_color | default: 'transparent'
+  assign text_color = 'inherit'
+  assign heading_color = section.settings.heading_color | default: 'inherit'
+  assign overlay_color = section.settings.video_text_color | default: '#ffffff'
+  assign button_background = section.settings.btn_color | default: 'transparent'
+  assign button_text_color = section.settings.btn_text_color | default: 'inherit'
+  assign button_border = section.settings.button_border_color | default: 'transparent'
+  assign carousel_heading_color = section.settings.carousel_heading_color | default: 'inherit'
+  assign slide_background = section.settings.slider_item_background_color | default: 'transparent'
+  assign slide_heading_color = '#262a2b'
+  assign slide_link_color = 'inherit'
+  assign slide_counter_color = '#ffffff'
+  assign progress_color = section.settings.progress_color | default: '#000000'
+  assign progress_background = section.settings.background_progress_color | default: '#fefefe'
+  assign arrow_text_color = '#000000'
+  assign arrow_background = 'rgba(255, 255, 255, .8)'
+  assign autoplay_text_color = '#ffffff'
+  assign autoplay_background = 'transparent'
+
+  if section.settings.enable_color_scheme
+    assign background_color = 'var(--color-background)'
+    assign text_color = 'var(--color-foreground)'
+    assign heading_color = 'var(--color-foreground-heading)'
+    assign overlay_color = 'var(--color-foreground)'
+    assign button_background = 'var(--color-primary-button-background)'
+    assign button_text_color = 'var(--color-primary-button-text)'
+    assign button_border = 'var(--color-primary-button-border)'
+    assign carousel_heading_color = 'var(--color-foreground-heading)'
+    assign slide_background = 'var(--color-background)'
+    assign slide_heading_color = 'var(--color-foreground-heading)'
+    assign slide_link_color = 'var(--color-primary)'
+    assign slide_counter_color = 'var(--color-foreground)'
+    assign progress_color = 'var(--color-primary)'
+    assign progress_background = 'var(--color-border)'
+    assign arrow_text_color = 'var(--color-primary-button-text)'
+    assign arrow_background = 'var(--color-primary-button-background)'
+    assign autoplay_text_color = 'var(--color-primary-button-text)'
+    assign autoplay_background = 'var(--color-primary-button-background)'
+  endif
+-%}
+
+<am-video-with-carousel
+  class="am--video-with-carousel{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.align_slider_items %} am--align-slider-items{% endif %}{% if section.settings.disable_smooth_transition %} am--disable-slide-transition{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}{% if section.settings.snow_animation %} am--has-snow{% endif %}"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-button-background: {{ button_background }}; --am-button-text-color: {{ button_text_color }}; --am-button-border: {{ button_border }}; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-link-color: {{ slide_link_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }};"
+  data-am-interval="{{ section.settings.carousel_timer | times: 1000 }}"
+  data-am-autoplay="true"
+>
+  {%- if section.settings.heading != blank -%}
+    <div class="am--video-with-carousel__heading-wrapper">
+      <h2 class="am--video-with-carousel__heading">{{ section.settings.heading | escape }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="am--video-with-carousel__content">
+    {%- if section.settings.video_url != blank and section.settings.replacing_image == blank -%}
+      <div class="am--video-with-carousel__media">
+        <div class="am--video-with-carousel__media-frame">
+          <video
+            class="am--video-with-carousel__video"
+            data-am-video
+            playsinline
+            preload="metadata"
+            {% if section.settings.video_loop %}loop{% endif %}
+            {% if section.settings.video_poster != blank %}poster="{{ section.settings.video_poster | image_url: width: 1600 }}"{% endif %}
+          >
+            <source src="{{ section.settings.video_url | escape }}" type="video/mp4">
+          </video>
+          <div class="am--video-with-carousel__video-controls">
+            <button class="am--video-with-carousel__video-button" type="button" data-am-video-play aria-label="Play video" aria-pressed="true">
+              <svg class="am--video-with-carousel__icon-play" aria-hidden="true" viewBox="0 0 20 40"><path d="M18 18.3 3.7 5.1A2 2 0 0 0 .5 6.6v26.8A2 2 0 0 0 3.7 35L18 21.7a2.3 2.3 0 0 0 0-3.4Z"/></svg>
+              <svg class="am--video-with-carousel__icon-pause" aria-hidden="true" viewBox="0 0 10 12"><path d="M0 1.5a1.5 1.5 0 0 1 3 0v9a1.5 1.5 0 0 1-3 0Zm7 0a1.5 1.5 0 0 1 3 0v9a1.5 1.5 0 0 1-3 0Z"/></svg>
+            </button>
+            <button class="am--video-with-carousel__video-button" type="button" data-am-video-mute aria-label="Mute video" aria-pressed="false">
+              <svg class="am--video-with-carousel__icon-volume" aria-hidden="true" viewBox="0 0 16 16"><path d="M1 6h3l4-4v12l-4-4H1Zm9-1.5a1 1 0 0 1 1.4 0 5 5 0 0 1 0 7 1 1 0 1 1-1.4-1.4 3 3 0 0 0 0-4.2 1 1 0 0 1 0-1.4Z"/></svg>
+              <svg class="am--video-with-carousel__icon-muted" aria-hidden="true" viewBox="0 0 16 16"><path d="M1 6h3l4-4v12l-4-4H1Zm9.3-.7 1.7 1.7 1.7-1.7 1 1L13 8l1.7 1.7-1 1L12 9l-1.7 1.7-1-1L11 8 9.3 6.3Z"/></svg>
+            </button>
+            <input class="am--video-with-carousel__video-progress" data-am-video-progress type="range" min="0" max="100" step="0.1" value="0" aria-label="Video progress">
+          </div>
+          <div class="am--video-with-carousel__overlay">
+            <div class="am--video-with-carousel__overlay-inner">
+              {%- if section.settings.title != blank -%}<h3 class="am--video-with-carousel__media-title">{{ section.settings.title | escape }}</h3>{%- endif -%}
+              {%- if section.settings.description != blank -%}<div class="am--video-with-carousel__media-description">{{ section.settings.description | escape }}</div>{%- endif -%}
+              {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+                <div class="am--video-with-carousel__button-wrapper">
+                  <a class="am--video-with-carousel__button{% if section.settings['plain-text-btn'] %} am--is-plain{% endif %}{% if section.settings.underline %} am--is-underlined{% endif %}" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- elsif section.settings.replacing_image != blank -%}
+      <div class="am--video-with-carousel__media">
+        <div class="am--video-with-carousel__replacement">
+          {%- capture replacement_image -%}
+            {{ section.settings.replacing_image | image_url: width: 1800 | image_tag: widths: '375, 550, 750, 1100, 1500, 1800', sizes: '(min-width: 1024px) 40vw, 90vw', loading: 'lazy', class: 'am--video-with-carousel__replacement-image' }}
+          {%- endcapture -%}
+          {%- if section.settings.replacing_image_url != blank -%}
+            <a href="{{ section.settings.replacing_image_url }}" aria-label="{{ section.settings.replacing_image.alt | default: section.settings.title | escape }}">{{ replacement_image }}</a>
+          {%- else -%}
+            {{ replacement_image }}
+          {%- endif -%}
+          <div class="am--video-with-carousel__overlay">
+            <div class="am--video-with-carousel__overlay-inner">
+              {%- if section.settings.title != blank -%}<h3 class="am--video-with-carousel__media-title">{{ section.settings.title | escape }}</h3>{%- endif -%}
+              {%- if section.settings.description != blank -%}<div class="am--video-with-carousel__media-description">{{ section.settings.description | escape }}</div>{%- endif -%}
+              {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+                <div class="am--video-with-carousel__button-wrapper">
+                  <a class="am--video-with-carousel__button{% if section.settings['plain-text-btn'] %} am--is-plain{% endif %}{% if section.settings.underline %} am--is-underlined{% endif %}" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="am--video-with-carousel__carousel" aria-roledescription="carousel" aria-label="{{ section.settings.carousel_heading | default: 'Carousel' | escape }}">
+      {%- if section.settings.carousel_heading != blank -%}
+        <h2 class="am--video-with-carousel__carousel-heading">{{ section.settings.carousel_heading | escape }}</h2>
+      {%- endif -%}
+      {%- if slider_items.size > 0 -%}
+        <div class="am--video-with-carousel__carousel-viewport">
+          <div class="am--video-with-carousel__slides" data-am-slides>
+            <ul class="am--video-with-carousel__slide-list">
+            {%- for block in slider_items -%}
+              <li
+                class="am--video-with-carousel__slide{% if forloop.first %} am--is-active{% endif %}"
+                data-am-slide
+                aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+                aria-label="{{ forloop.index }} of {{ forloop.length }}"
+                {{ block.shopify_attributes }}
+              >
+                <div class="am--video-with-carousel__slide-image">
+                  {%- if block.settings.media_type == 'video' and block.settings.video != blank -%}
+                    <div class="am--video-with-carousel__slide-video-wrapper" aria-hidden="true">
+                      {{
+                        block.settings.video
+                        | video_tag:
+                          image_size: '1400x',
+                          autoplay: false,
+                          loop: true,
+                          muted: true,
+                          controls: false,
+                          playsinline: true,
+                          preload: 'none',
+                          class: 'am--video-with-carousel__slide-video'
+                      }}
+                    </div>
+                  {%- elsif block.settings.media_type != 'video' and block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 1400 | image_tag: widths: '300, 450, 600, 900, 1200, 1400', sizes: '(min-width: 1024px) 35vw, 85vw', loading: 'lazy' }}
+                  {%- else -%}
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'am--video-with-carousel__placeholder' }}
+                  {%- endif -%}
+                  <div class="am--video-with-carousel__progress-track" aria-hidden="true"><div class="am--video-with-carousel__progress" data-am-progress></div></div>
+                </div>
+                <div class="am--video-with-carousel__slide-copy">
+                  {%- if block.settings.title != blank -%}<h3 class="am--video-with-carousel__slide-title">{{ block.settings.title | escape }}</h3>{%- endif -%}
+                  {%- if block.settings.link_title != blank and block.settings.url != blank -%}<a class="am--video-with-carousel__slide-link" href="{{ block.settings.url }}">{{ block.settings.link_title | escape }}</a>{%- endif -%}
+                  <span class="am--video-with-carousel__counter" aria-hidden="true">{{ forloop.index }} | {{ forloop.length }}</span>
+                </div>
+              </li>
+            {%- endfor -%}
+            </ul>
+            {%- if slider_items.size > 1 -%}
+              <button class="am--video-with-carousel__autoplay-button" type="button" data-am-carousel-toggle aria-label="Pause carousel" aria-pressed="false">
+                <svg class="am--video-with-carousel__icon-play" aria-hidden="true" viewBox="0 0 20 40"><path d="M18 18.3 3.7 5.1A2 2 0 0 0 .5 6.6v26.8A2 2 0 0 0 3.7 35L18 21.7a2.3 2.3 0 0 0 0-3.4Z"/></svg>
+                <svg class="am--video-with-carousel__icon-pause" aria-hidden="true" viewBox="0 0 10 12"><path d="M0 1.5a1.5 1.5 0 0 1 3 0v9a1.5 1.5 0 0 1-3 0Zm7 0a1.5 1.5 0 0 1 3 0v9a1.5 1.5 0 0 1-3 0Z"/></svg>
+              </button>
+              <button class="am--video-with-carousel__arrow am--video-with-carousel__arrow--previous" type="button" data-am-previous aria-label="Previous slide"><svg aria-hidden="true" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.5" d="m10.5 2-6 6 6 6"/></svg></button>
+              <button class="am--video-with-carousel__arrow am--video-with-carousel__arrow--next" type="button" data-am-next aria-label="Next slide"><svg aria-hidden="true" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.5" d="m5.5 2 6 6-6 6"/></svg></button>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- assign illustrations = section.blocks | where: 'type', 'illustration' -%}
+  {%- for block in illustrations -%}
+    {%- if block.settings.image != blank -%}
+      <div
+        class="am--video-with-carousel__illustration {{ block.settings.horizontal_pos }} {{ block.settings.horizontal_pos_mobile }} {{ block.settings.vertical_pos }} {{ block.settings.vertical_pos_mobile }}{% if block.settings.image_mobile != blank %} am--has-mobile-image{% endif %}{% if block.settings.zindex %} am--position-front{% endif %}"
+        style="--am-reposition-desktop: {{ block.settings.horizontal_reposition }}%; --am-reposition-mobile: {{ block.settings.horizontal_reposition_mobile }}%; --am-illustration-width-desktop: {{ block.settings.image.width }}px; --am-illustration-height-desktop: {{ block.settings.image.height }}px;{% if block.settings.image_mobile != blank %} --am-illustration-width-mobile: {{ block.settings.image_mobile.width }}px; --am-illustration-height-mobile: {{ block.settings.image_mobile.height }}px;{% else %} --am-illustration-width-mobile: {{ block.settings.image.width }}px; --am-illustration-height-mobile: {{ block.settings.image.height }}px;{% endif %}"
+        data-am-illustration
+        {{ block.shopify_attributes }}
+      >
+        {{ block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: 'lazy', class: 'am--video-with-carousel__illustration-desktop' }}
+        {%- if block.settings.image_mobile != blank -%}{{ block.settings.image_mobile | image_url: width: block.settings.image_mobile.width | image_tag: loading: 'lazy', class: 'am--video-with-carousel__illustration-mobile' }}{%- endif -%}
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+</am-video-with-carousel>
+
+{% schema %}
+{
+  "name": "AM Video + Carousel",
+  "tag": "section",
+  "class": "am--shopify-section-video-carousel",
+  "settings": [
+    { "type": "header", "content": "General settings" },
+    { "type": "checkbox", "id": "snow_animation", "label": "Enable snow animation", "default": false },
+    { "type": "image_picker", "id": "snow_image_1", "label": "Snow layer 1" },
+    { "type": "image_picker", "id": "snow_image_2", "label": "Snow layer 2" },
+    { "type": "image_picker", "id": "snow_image_3", "label": "Snow layer 3" },
+    { "type": "text", "id": "heading", "label": "Section title", "default": "Section title" },
+    { "type": "checkbox", "id": "enable_color_scheme", "label": "Use theme color scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.enable_color_scheme }}" },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "image_picker", "id": "background_image", "label": "Background image" },
+    { "type": "color", "id": "background_color", "label": "Background color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "header", "content": "Video settings" },
+    { "type": "image_picker", "id": "video_poster", "label": "Video poster" },
+    { "type": "text", "id": "video_url", "label": "Video URL", "info": "Direct URL to an MP4 video file." },
+    { "type": "checkbox", "id": "video_loop", "label": "Loop video", "default": true },
+    { "type": "header", "content": "Replace video with image" },
+    { "type": "image_picker", "id": "replacing_image", "label": "Replacing image", "info": "This image replaces the video when selected." },
+    { "type": "url", "id": "replacing_image_url", "label": "URL for the image" },
+    { "type": "header", "content": "Content settings" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Title" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Description" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Button" },
+    {
+      "type": "select", "id": "text_horizontal_position", "label": "Text horizontal position",
+      "options": [ { "value": "start", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "end", "label": "Right" } ], "default": "center"
+    },
+    {
+      "type": "select", "id": "text_vertical_position", "label": "Text vertical position",
+      "options": [ { "value": "start", "label": "Start" }, { "value": "center", "label": "Center" }, { "value": "end", "label": "End" } ], "default": "end"
+    },
+    {
+      "type": "select", "id": "text_align", "label": "Text alignment",
+      "options": [ { "value": "tl", "label": "Left" }, { "value": "tc", "label": "Center" }, { "value": "tr", "label": "Right" }, { "value": "tj", "label": "Justify" } ], "default": "tc"
+    },
+    {
+      "type": "select", "id": "position", "label": "Button position",
+      "options": [ { "value": "start", "label": "Start" }, { "value": "center", "label": "Center" }, { "value": "end", "label": "End" } ], "default": "start"
+    },
+    { "type": "checkbox", "id": "plain-text-btn", "label": "Plain text button", "default": false },
+    { "type": "checkbox", "id": "underline", "label": "Underline button", "default": false },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "color", "id": "video_text_color", "label": "Text color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "btn_color", "label": "Button background color", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "btn_text_color", "label": "Button text color", "default": "#ffffff", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "button_border_color", "label": "Button border color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "header", "content": "Carousel content" },
+    { "type": "text", "id": "carousel_heading", "label": "Carousel heading", "default": "Carousel heading" },
+    { "type": "color", "id": "carousel_heading_color", "label": "Carousel heading color", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "checkbox", "id": "align_slider_items", "label": "Align slider items in the same position", "default": false },
+    { "type": "checkbox", "id": "disable_smooth_transition", "label": "Disable smooth slide transition", "default": false },
+    { "type": "color", "id": "slider_item_background_color", "label": "Slider item background color", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "checkbox", "id": "show_desktop", "label": "Show desktop", "default": true },
+    { "type": "checkbox", "id": "show_tablet", "label": "Show tablet", "default": true },
+    { "type": "checkbox", "id": "show_mobile", "label": "Show mobile", "default": true },
+    { "type": "range", "id": "carousel_timer", "label": "Autoplay slide duration", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 5 },
+    { "type": "color", "id": "progress_color", "label": "Progress color", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "color", "id": "background_progress_color", "label": "Background progress color", "default": "#fefefe", "visible_if": "{{ section.settings.enable_color_scheme == false }}" }
+  ],
+  "blocks": [
+    {
+      "name": "Slider item", "type": "slide", "limit": 12,
+      "settings": [
+        {
+          "type": "select", "id": "media_type", "label": "Media type",
+          "options": [
+            { "value": "image", "label": "Image" },
+            { "value": "video", "label": "Video" }
+          ],
+          "default": "image"
+        },
+        { "type": "image_picker", "id": "image", "label": "Image", "visible_if": "{{ block.settings.media_type == 'image' }}" },
+        { "type": "video", "id": "video", "label": "Video", "visible_if": "{{ block.settings.media_type == 'video' }}" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "link_title", "label": "Link text" },
+        { "type": "url", "id": "url", "label": "Link" }
+      ]
+    },
+    {
+      "name": "Illustration", "type": "illustration", "limit": 4,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image (desktop)" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Image (mobile)" },
+        {
+          "type": "select", "id": "horizontal_pos", "label": "Horizontal position (desktop)",
+          "options": [ { "value": "am--position-right", "label": "Right" }, { "value": "am--position-center", "label": "Center" }, { "value": "am--position-left", "label": "Left" } ], "default": "am--position-right"
+        },
+        {
+          "type": "select", "id": "horizontal_pos_mobile", "label": "Horizontal position (mobile)",
+          "options": [ { "value": "am--position-right-mobile", "label": "Right" }, { "value": "am--position-center-mobile", "label": "Center" }, { "value": "am--position-left-mobile", "label": "Left" } ], "default": "am--position-right-mobile"
+        },
+        {
+          "type": "select", "id": "vertical_pos", "label": "Vertical position (desktop)",
+          "options": [ { "value": "am--position-top", "label": "Top" }, { "value": "am--position-middle", "label": "Middle" }, { "value": "am--position-bottom", "label": "Bottom" } ], "default": "am--position-top"
+        },
+        {
+          "type": "select", "id": "vertical_pos_mobile", "label": "Vertical position (mobile)",
+          "options": [ { "value": "am--position-top-mobile", "label": "Top" }, { "value": "am--position-middle-mobile", "label": "Middle" }, { "value": "am--position-bottom-mobile", "label": "Bottom" } ], "default": "am--position-top-mobile"
+        },
+        { "type": "range", "id": "horizontal_reposition", "label": "Horizontal reposition (desktop)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
+        { "type": "range", "id": "horizontal_reposition_mobile", "label": "Horizontal reposition (mobile)", "min": -200, "max": 200, "step": 5, "unit": "%", "default": 0 },
+        { "type": "checkbox", "id": "zindex", "label": "In front of content", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "AM Video + Carousel",
+      "blocks": [
+        { "type": "slide", "settings": { "title": "Bistro Style", "link_title": "Shop the Collection", "url": "#" } },
+        { "type": "slide", "settings": { "title": "The world's most beautiful grill", "link_title": "Shop the Collection", "url": "#" } },
+        { "type": "slide", "settings": { "title": "Seasonal collection", "link_title": "Shop the Collection", "url": "#" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

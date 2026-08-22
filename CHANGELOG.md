@@ -19,6 +19,8 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 - `product-hotspot.js` declara los tipos JSDoc de sus campos privados y eventos, cancela animaciones y observers al desmontarse, y limita hover/imagen alternativa a desktop con puntero fino y sin entrada táctil.
 - El posicionamiento de la card se calcula de forma sincrónica: se eliminó la espera artificial restante de 100 ms y `showDialog()` evita aperturas duplicadas.
 - El contenido editorial de Product Hotspots permite elegir alineación automática, inicio, centro o final. La opción automática conserva la alineación derivada de sus nueve posiciones y las opciones lógicas inicio/final son compatibles con RTL.
+- La imagen alternativa de Product Hotspots se oculta al cambiar de hotspot y solo reaparece después de que la nueva URL cargue y se decodifique. Las solicitudes se identifican y cachean por URL, por lo que una respuesta tardía o fallida no puede mostrar momentáneamente la imagen del hotspot anterior.
+- Los tres modos de interacción desktop tienen flujos excluyentes: hover/foco con Quick Add al click, preview alternable al click o Quick Add directo con fallback. Solo puede permanecer una card abierta y su trigger sincroniza `aria-expanded`, cierre por Escape, click exterior y salida del foco.
 
 - El modal global de Quick Add ahora se renderiza siempre una vez desde `layout/theme.liquid`, aunque la preferencia global oculte los botones en tarjetas de producto.
 - `QuickAddComponent.open()` carga y monta el producto antes de abrir el modal y devuelve `opened`, `unavailable`, `failed` o `aborted`; Product Hotspots espera ese resultado para usar su card solo como fallback.
@@ -27,6 +29,7 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 ### Documentado
 
 - Se documentó el contrato, el modal global único, el fetch+morph y los fallbacks de Quick Add en `docs/theme-architecture.md`.
+- Se documentó la matriz de los tres modos desktop y el contrato de carga segura de imágenes hover en Product Hotspots.
 - `AGENTS.md` exige inspeccionar cambios staged, unstaged y untracked al cerrar una tarea, y entregar un único commit message general en formato Conventional Commits sin ejecutar el commit automáticamente.
 
 ### Archivos
@@ -47,10 +50,12 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 - La regla de entrega documenta el formato, alcance global y tipos permitidos del commit sugerido; contempla `git status --short`, `git diff`, `git diff --cached` y archivos nuevos, y diferencia expresamente la sugerencia de la autorización para ejecutar `git commit`.
 - El schema de Product Hotspots acepta `overlay_content_alignment` con los valores `auto`, `start`, `center` y `end`; reutiliza traducciones existentes y no requiere cambios en templates JSON ni JavaScript.
 - Shopify Theme Check aprobó el markup, los estilos lógicos y el schema del nuevo control de alineación editorial.
+- `node --check` y el chequeo `checkJs` estricto aprobaron `assets/product-hotspot.js` sin diagnósticos; los schemas de sección y bloque conservaron sus values válidos.
 
 ### Reversión
 
 - Restaurar la asignación anterior del producto, el render de placeholders, los estilos y la medición de etiqueta en Product Hotspots revierte esta corrección sin modificar IDs ni `block_order`.
+- Restaurar el intercambio inmediato de `src` y los listeners anteriores revierte la carga segura y la coordinación de previews sin modificar settings ni datos guardados.
 
 ### Corregido
 
@@ -103,6 +108,39 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 ### Reversión
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
+
+## 2026-08-22 — Personalización visual de secciones AM
+
+### Añadido
+
+- `AM Numbered Slideshow` permite configurar imágenes de fondo independientes para desktop y mobile; la imagen desktop funciona como fallback cuando no se define una variante mobile.
+- `AM Video + Carousel` permite alinear las tarjetas en una misma posición, desactivar la transición suave entre slides y elegir el color de fondo de cada tarjeta.
+- Cada slider item de `AM Video + Carousel` permite elegir entre una imagen o un video alojado en Shopify sin perder el medio configurado al alternar el selector.
+- `AM Color Divider` crea transiciones decorativas de ancho completo, onduladas o en degradado, usando el fondo y el color de texto de un esquema nativo. Permite invertir los colores y ajustar alturas independientes para desktop y mobile.
+- `AM Hover Explorer`, `AM Numbered Slideshow` y `AM Video + Carousel` incorporan un modo opcional de color scheme que reemplaza los colores manuales con los tokens nativos del theme.
+
+### Modificado
+
+- Las tres secciones AM usan las familias tipográficas de párrafo, H2 y H3 configuradas globalmente en Pitch, conservando los tamaños propios de cada composición.
+- El selector de fuente genérica del botón de `AM Video + Carousel` se retiró para evitar que sus botones ignoren la tipografía elegida en el theme.
+- Los videos de slider se muestran con su poster nativo, autoplay silencioso y loop. El componente reproduce solo el slide activo, pausa y reinicia los demás, y suspende la reproducción cuando la pestaña queda oculta o la sección se desmonta.
+- Archivos: `sections/am--color-divider.liquid`, `sections/am--hover-explorer.liquid`, `sections/am--numbered-slideshow.liquid`, `sections/am--video-with-carousel.liquid`, `assets/am--hover-explorer.css`, `assets/am--numbered-slideshow.css`, `assets/am--video-with-carousel.css` y `assets/am--video-with-carousel.js`.
+- Impacto: el Theme Editor conserva el aspecto existente por defecto y expone los nuevos controles sin modificar templates ni datos administrados por Shopify.
+
+### Validación
+
+- Los tres schemas JSON y el contrato entre `section.settings` y sus IDs fueron validados correctamente.
+- `node --check` aprobó los tres módulos JavaScript asociados; el análisis `checkJs` no reportó diagnósticos nuevos en los métodos de reproducción del carrusel.
+- `shopify theme check --path .` finalizó sin errores en las secciones AM; reportó 24 advertencias preexistentes de `ValidScopedCSSClass` en otros ocho archivos.
+- El schema confirmó `media_type` con default `image` y settings condicionales válidos para imagen y video.
+- El schema de `AM Color Divider` validó sus estilos `wave` y `gradient`, preset agregable, inversión de colores y alturas responsive; Theme Check inspeccionó 313 archivos sin errores nuevos.
+- `git diff --check` y la revisión responsive/estática de las variantes de fondo, color scheme, alineación, transición y medios fueron aprobadas.
+
+### Reversión
+
+- Retirar los nuevos settings y modificadores Liquid/CSS restaura los fondos y el carrusel anteriores; los valores manuales de color permanecen guardados y vuelven a aplicarse al desactivar el color scheme.
+- Retirar `media_type`, `video` y la coordinación de reproducción restaura los slider items de imagen sin requerir migraciones de templates.
+- Eliminar `sections/am--color-divider.liquid` retira el nuevo divisor sin afectar templates ni datos existentes del Theme Editor.
 
 ## 2026-08-02 — Baseline de documentación
 

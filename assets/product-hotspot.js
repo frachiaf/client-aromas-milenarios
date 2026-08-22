@@ -22,6 +22,9 @@ class ProductHotspots extends HTMLElement {
   #activeSource = null;
   /** @type {number | null} */
   #hoverImageAnimationFrame = null;
+  #hoverImageRequestId = 0;
+  /** @type {Map<string, Promise<void>>} */
+  #hoverImageLoads = new Map();
 
   connectedCallback() {
     const hoverImage = this.querySelector('[data-hotspot-hover-image]');
@@ -33,37 +36,108 @@ class ProductHotspots extends HTMLElement {
   disconnectedCallback() {
     this.removeEventListener('product-hotspot-hover-image', this.#handleHoverImage);
     this.removeEventListener('product-hotspot-reset-image', this.#handleResetImage);
+    this.#hoverImageRequestId += 1;
     this.#cancelHoverImageAnimation();
     this.#activeSource = null;
     this.#hoverImage?.classList.remove('is-active');
     this.#hoverImage = null;
+    this.#hoverImageLoads.clear();
   }
 
   /** @param {Event} event */
-  #handleHoverImage = (event) => {
+  #handleHoverImage = async (event) => {
     if (!(event instanceof CustomEvent)) return;
 
     const { source, url } = /** @type {HotspotHoverImageDetail} */ (event.detail);
     const hoverImage = this.#hoverImage;
     if (!(source instanceof ProductHotspotComponent) || !hoverImage || typeof url !== 'string' || !url) return;
 
+    const requestId = ++this.#hoverImageRequestId;
     this.#activeSource = source;
     this.#cancelHoverImageAnimation();
 
-    if (hoverImage.dataset.src === url) {
+    if (hoverImage.dataset.src === url && hoverImage.complete && hoverImage.naturalWidth > 0) {
       hoverImage.classList.add('is-active');
       return;
     }
 
     hoverImage.classList.remove('is-active');
+
+    try {
+      await this.#preloadHoverImage(url);
+    } catch {
+      return;
+    }
+
+    if (
+      requestId !== this.#hoverImageRequestId ||
+      this.#activeSource !== source ||
+      this.#hoverImage !== hoverImage
+    ) {
+      return;
+    }
+
     hoverImage.src = url;
     hoverImage.dataset.src = url;
+
+    try {
+      await hoverImage.decode();
+    } catch {
+      if (!hoverImage.complete || hoverImage.naturalWidth === 0) return;
+    }
+
+    if (
+      requestId !== this.#hoverImageRequestId ||
+      this.#activeSource !== source ||
+      this.#hoverImage !== hoverImage ||
+      hoverImage.dataset.src !== url
+    ) {
+      return;
+    }
+
     this.#hoverImageAnimationFrame = requestAnimationFrame(() => {
       this.#hoverImageAnimationFrame = null;
-      if (this.#activeSource !== source || this.#hoverImage !== hoverImage) return;
+      if (
+        requestId !== this.#hoverImageRequestId ||
+        this.#activeSource !== source ||
+        this.#hoverImage !== hoverImage ||
+        hoverImage.dataset.src !== url
+      ) {
+        return;
+      }
       hoverImage.classList.add('is-active');
     });
   };
+
+  /**
+   * Loads and decodes a hover image once per URL.
+   * @param {string} url
+   * @returns {Promise<void>}
+   */
+  #preloadHoverImage(url) {
+    const cachedLoad = this.#hoverImageLoads.get(url);
+    if (cachedLoad) return cachedLoad;
+
+    const load = /** @type {Promise<void>} */ (new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = async () => {
+        try {
+          await image.decode();
+        } catch {
+          // A completed load is still safe to display when decode() is unavailable or rejects.
+        }
+        resolve();
+      };
+      image.onerror = () => reject(new Error(`Unable to load hotspot hover image: ${url}`));
+      image.src = url;
+    }));
+
+    this.#hoverImageLoads.set(url, load);
+    load.catch(() => {
+      if (this.#hoverImageLoads.get(url) === load) this.#hoverImageLoads.delete(url);
+    });
+    return load;
+  }
 
   /** @param {Event} event */
   #handleResetImage = (event) => {
@@ -79,9 +153,19 @@ class ProductHotspots extends HTMLElement {
   resetHoverImage(source) {
     if (source !== this.#activeSource) return;
 
+    this.#hoverImageRequestId += 1;
     this.#cancelHoverImageAnimation();
     this.#activeSource = null;
     this.#hoverImage?.classList.remove('is-active');
+  }
+
+  /** @param {ProductHotspotComponent} source */
+  closeOtherPreviews(source) {
+    for (const hotspot of this.querySelectorAll('product-hotspot-component')) {
+      if (hotspot instanceof ProductHotspotComponent && hotspot !== source) {
+        void hotspot.closeDialog();
+      }
+    }
   }
 
   #cancelHoverImageAnimation() {
@@ -108,6 +192,8 @@ export class ProductHotspotComponent extends Component {
   /** @type {(() => void) | null} */
   #pointerenterHandler = null;
   /** @type {(() => void) | null} */
+  #focusHandler = null;
+  /** @type {(() => void) | null} */
   #hoverImageEnterHandler = null;
   /** @type {(() => void) | null} */
   #hoverImageLeaveHandler = null;
@@ -127,6 +213,7 @@ export class ProductHotspotComponent extends Component {
     requestAnimationFrame(this.#measureQuickBuyLabel);
     document.fonts?.ready?.then(this.#measureQuickBuyLabel);
     this.#observeQuickBuyLabel();
+    this.addEventListener('focusout', this.#handleFocusOut);
 
     // Set up initial event listeners based on current breakpoint
     this.#handleBreakpointChange();
@@ -149,6 +236,7 @@ export class ProductHotspotComponent extends Component {
     mediaQueryFinePointer.removeEventListener('change', this.#handleBreakpointChange);
     this.#quickBuyLabelResizeObserver?.disconnect();
     this.#quickBuyLabelResizeObserver = null;
+    this.removeEventListener('focusout', this.#handleFocusOut);
   }
 
   #measureQuickBuyLabel = () => {
@@ -195,14 +283,16 @@ export class ProductHotspotComponent extends Component {
     const { trigger, dialog } = this.refs;
 
     if (this.desktopInteractionMode === 'hover-preview-click-quick-buy') {
-      const pointerenterHandler = () => {
+      const showPreview = () => {
         if (dialog.open) return;
         this.showDialog();
-        trigger.addEventListener('pointerleave', this.#handlePointerLeave);
       };
 
-      this.#pointerenterHandler = pointerenterHandler;
-      trigger.addEventListener('pointerenter', pointerenterHandler);
+      this.#pointerenterHandler = showPreview;
+      this.#focusHandler = showPreview;
+      trigger.addEventListener('pointerenter', showPreview);
+      trigger.addEventListener('pointerleave', this.#handlePointerLeave);
+      trigger.addEventListener('focus', showPreview);
     }
 
     if (this.dataset.hoverImageUrl) {
@@ -236,6 +326,10 @@ export class ProductHotspotComponent extends Component {
       trigger.removeEventListener('pointerleave', this.#handlePointerLeave);
       this.#pointerenterHandler = null;
     }
+    if (this.#focusHandler) {
+      trigger.removeEventListener('focus', this.#focusHandler);
+      this.#focusHandler = null;
+    }
 
     if (this.#hoverImageEnterHandler) {
       this.removeEventListener('pointerenter', this.#hoverImageEnterHandler);
@@ -258,6 +352,9 @@ export class ProductHotspotComponent extends Component {
     // Set up desktop hover listeners only (mobile uses on:click in template)
     if (!isMobileBreakpoint() && mediaQueryFinePointer.matches && !isTouchDevice()) {
       this.#setupDesktopListeners();
+    } else {
+      this.#hotspotsRoot?.resetHoverImage(this);
+      void this.closeDialog();
     }
   };
 
@@ -382,6 +479,7 @@ export class ProductHotspotComponent extends Component {
     const { dialog, trigger } = this.refs;
 
     if (!dialog.open) return;
+    if (this.matches(':focus-within')) return;
 
     const isLeavingTrigger = e.target === trigger;
     const isLeavingDialog = e.target === dialog;
@@ -393,6 +491,16 @@ export class ProductHotspotComponent extends Component {
     if ((isLeavingTrigger && !isGoingToDialog) || (isLeavingDialog && !isGoingToTrigger)) {
       this.closeDialog();
     }
+  };
+
+  /** @param {FocusEvent} event */
+  #handleFocusOut = (event) => {
+    if (!this.refs.dialog.open) return;
+
+    const nextTarget = event.relatedTarget;
+    if (nextTarget instanceof Node && this.contains(nextTarget)) return;
+
+    void this.closeDialog();
   };
 
   /**
@@ -415,11 +523,16 @@ export class ProductHotspotComponent extends Component {
     if (!this.dataset.productUrl) return;
 
     if (!isMobileBreakpoint() && !isTouchDevice() && this.desktopInteractionMode === 'click-preview') {
-      this.showDialog();
+      if (this.refs.dialog.open) {
+        void this.closeDialog();
+      } else {
+        this.showDialog();
+      }
       return;
     }
 
-    if (this.refs.dialog.open) this.closeDialog();
+    this.#hotspotsRoot?.closeOtherPreviews(this);
+    if (this.refs.dialog.open) void this.closeDialog();
 
     const requestId = ++this.#quickAddRequestId;
     const result = await this.#openQuickAddModal();
@@ -431,16 +544,19 @@ export class ProductHotspotComponent extends Component {
   };
 
   showDialog = () => {
-    const { dialog } = this.refs;
+    const { dialog, trigger } = this.refs;
     if (dialog.open) return;
+    this.#hotspotsRoot?.closeOtherPreviews(this);
     this.#calculateDialogPlacement();
+    delete dialog.dataset.closing;
     dialog.dataset.showing = 'true';
     dialog.show();
+    trigger.setAttribute('aria-expanded', 'true');
     document.body.addEventListener('click', this.lightDismissMouse);
     document.body.addEventListener('keydown', this.lightDismissKeyboard);
-    document.body.addEventListener('keyup', this.lightDismissKeyboard);
-    // Add pointerleave listener to dialog when it opens
-    dialog.addEventListener('pointerleave', this.#handlePointerLeave);
+    if (this.desktopInteractionMode === 'hover-preview-click-quick-buy') {
+      dialog.addEventListener('pointerleave', this.#handlePointerLeave);
+    }
   };
 
   /**
@@ -449,16 +565,18 @@ export class ProductHotspotComponent extends Component {
    */
   closeDialog = async () => {
     const { dialog, trigger } = this.refs;
-    if (!dialog.open) return;
+    if (!dialog.open) {
+      trigger.setAttribute('aria-expanded', 'false');
+      return;
+    }
 
     dialog.dataset.closing = 'true';
     dialog.close();
+    trigger.setAttribute('aria-expanded', 'false');
     document.body.removeEventListener('click', this.lightDismissMouse);
     document.body.removeEventListener('keydown', this.lightDismissKeyboard);
-    document.body.removeEventListener('keyup', this.lightDismissKeyboard);
-    // Remove pointerleave listeners when closing
+    // Remove the dialog listener; the trigger listener remains available for the next hover preview.
     dialog.removeEventListener('pointerleave', this.#handlePointerLeave);
-    trigger.removeEventListener('pointerleave', this.#handlePointerLeave);
     // we need to use a data-attribute to keep transition-behavior working only when open
     const animations = dialog.getAnimations({ subtree: true });
     await Promise.allSettled(animations.map((a) => a.finished));
@@ -487,13 +605,11 @@ export class ProductHotspotComponent extends Component {
    * @returns {void}
    */
   lightDismissKeyboard = (event) => {
-    const { dialog } = this.refs;
-    if (
-      (event.type === 'keydown' && event.key === 'Escape') ||
-      (event.type === 'keyup' && !dialog.matches(':is(:focus, :focus-visible, :focus-within)'))
-    ) {
-      this.closeDialog();
-    }
+    if (event.key !== 'Escape') return;
+
+    event.preventDefault();
+    void this.closeDialog();
+    this.refs.trigger.focus();
   };
 }
 

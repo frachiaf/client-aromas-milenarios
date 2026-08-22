@@ -579,21 +579,21 @@
     "am_video_with_carousel_7TDfyg": {
       "type": "am--video-with-carousel",
       "blocks": {
-        "slide_cbPjCC": {
+        "slide_pjcJQJ": {
           "type": "slide",
           "settings": {
             "media_type": "video",
-            "video": "shopify://files/videos/Diseño sin título (66).mp4",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.47 PM.mp4",
             "title": "",
             "link_title": "Shop the Collection",
             "url": "#"
           }
         },
-        "slide_pjcJQJ": {
+        "slide_cbPjCC": {
           "type": "slide",
           "settings": {
             "media_type": "video",
-            "video": "shopify://files/videos/Diseño sin título (70).mp4",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM.mp4",
             "title": "",
             "link_title": "Shop the Collection",
             "url": "#"
@@ -603,7 +603,7 @@
           "type": "slide",
           "settings": {
             "media_type": "video",
-            "video": "shopify://files/videos/Diseño sin título (71).mp4",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (4).mp4",
             "title": "",
             "link_title": "Shop the Collection",
             "url": "#"
@@ -611,8 +611,8 @@
         }
       },
       "block_order": [
-        "slide_cbPjCC",
         "slide_pjcJQJ",
+        "slide_cbPjCC",
         "slide_zaBGWV"
       ],
       "name": "AM Video + Carousel",
@@ -625,7 +625,7 @@
         "background_color": "",
         "video_url": "",
         "video_loop": true,
-        "replacing_image": "shopify://shop_images/Diseno_sin_titulo_17.png",
+        "replacing_image": "shopify://shop_images/2.png",
         "replacing_image_url": "",
         "title": "Title",
         "description": "Description",

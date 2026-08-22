@@ -562,8 +562,8 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "section_width": "page-width",
-        "section_height": "auto",
+        "section_width": "full-width",
+        "section_height": "21 / 9",
         "desktop_interaction_mode": "click-quick-buy",
         "quick_buy_hover_label": "VER MÁS",
         "hotspot_color": "#ffffff57",
@@ -572,7 +572,7 @@
         "product_title_gap": 8,
         "product_title_preset": "",
         "product_price_preset": "",
-        "padding-block-start": 40,
+        "padding-block-start": 0,
         "padding-block-end": 40
       }
     },

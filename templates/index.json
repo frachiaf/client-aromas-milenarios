@@ -576,6 +576,84 @@
         "padding-block-end": 40
       }
     },
+    "am_video_with_carousel_7TDfyg": {
+      "type": "am--video-with-carousel",
+      "blocks": {
+        "slide_cbPjCC": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/Diseño sin título (66).mp4",
+            "title": "",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        },
+        "slide_pjcJQJ": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/Diseño sin título (70).mp4",
+            "title": "",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        },
+        "slide_zaBGWV": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/Diseño sin título (71).mp4",
+            "title": "",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        }
+      },
+      "block_order": [
+        "slide_cbPjCC",
+        "slide_pjcJQJ",
+        "slide_zaBGWV"
+      ],
+      "name": "AM Video + Carousel",
+      "settings": {
+        "snow_animation": false,
+        "heading": "Section title",
+        "enable_color_scheme": true,
+        "color_scheme": "",
+        "heading_color": "",
+        "background_color": "",
+        "video_url": "",
+        "video_loop": true,
+        "replacing_image": "shopify://shop_images/Diseno_sin_titulo_17.png",
+        "replacing_image_url": "",
+        "title": "Title",
+        "description": "Description",
+        "button_label": "Button",
+        "text_horizontal_position": "center",
+        "text_vertical_position": "end",
+        "text_align": "tc",
+        "position": "start",
+        "plain-text-btn": false,
+        "underline": false,
+        "button_link": "",
+        "video_text_color": "",
+        "btn_color": "#000000",
+        "btn_text_color": "#ffffff",
+        "button_border_color": "",
+        "carousel_heading": "Carousel heading",
+        "carousel_heading_color": "#000000",
+        "align_slider_items": true,
+        "disable_smooth_transition": true,
+        "slider_item_background_color": "",
+        "show_desktop": true,
+        "show_tablet": true,
+        "show_mobile": true,
+        "carousel_timer": 5,
+        "progress_color": "#000000",
+        "background_progress_color": "#fefefe"
+      }
+    },
     "section_7aFhAa": {
       "type": "section",
       "blocks": {
@@ -2096,6 +2174,7 @@
     "section_6PnLrM",
     "hero_mqfmaA",
     "product_hotspots_bENwVW",
+    "am_video_with_carousel_7TDfyg",
     "section_7aFhAa",
     "media_with_content_E7M3aJ",
     "section_38NEeA",

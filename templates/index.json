@@ -759,6 +759,17 @@
         "padding-block-end": 48
       }
     },
+    "am_color_divider_HPtyJK": {
+      "type": "am--color-divider",
+      "name": "AM Color Divider",
+      "settings": {
+        "color_scheme": "",
+        "separator_style": "wave",
+        "invert_colors": false,
+        "height_desktop": 180,
+        "height_mobile": 100
+      }
+    },
     "media_with_content_E7M3aJ": {
       "type": "media-with-content",
       "blocks": {
@@ -900,6 +911,7 @@
     },
     "section_38NEeA": {
       "type": "section",
+      "disabled": true,
       "name": "t:names.custom_section",
       "settings": {
         "content_direction": "column",
@@ -2176,6 +2188,7 @@
     "product_hotspots_bENwVW",
     "am_video_with_carousel_7TDfyg",
     "section_7aFhAa",
+    "am_color_divider_HPtyJK",
     "media_with_content_E7M3aJ",
     "section_38NEeA",
     "media_with_content_MUN3P3",

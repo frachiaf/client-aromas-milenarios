@@ -730,8 +730,8 @@
           "type": "_hotspot-product",
           "settings": {
             "product": "vela-magdalena",
-            "x-position": 27,
-            "y-position": 48
+            "x-position": 24,
+            "y-position": 83
           },
           "blocks": {}
         },
@@ -811,6 +811,7 @@
         "hotspot_product_bL6VxX",
         "hotspot_product_cQUWGB"
       ],
+      "disabled": true,
       "name": "t:names.product_hotspots",
       "settings": {
         "image": "shopify://shop_images/FridayNightLights_shoppable_1296x_a35fbc6d-03b8-426a-801c-c4eca70d07c1.webp",

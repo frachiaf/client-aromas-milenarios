@@ -640,7 +640,7 @@
         "overlay_heading": "Experiencias Milenarias",
         "overlay_text": "",
         "overlay_button_label": "Elegí como sentirte",
-        "overlay_button_link": "",
+        "overlay_button_link": "shopify://collections",
         "overlay_content_position": "bottom-center",
         "overlay_content_alignment": "auto",
         "toggle_overlay": false,
@@ -657,7 +657,7 @@
         "product_title_gap": 8,
         "product_title_preset": "",
         "product_price_preset": "",
-        "padding-block-start": 0,
+        "padding-block-start": 40,
         "padding-block-end": 40
       }
     },

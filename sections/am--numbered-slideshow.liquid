@@ -20,8 +20,8 @@
 -%}
 
 <am-numbered-slideshow
-  class="am--numbered-slideshow{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}"
-  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }}; --am-heading-color: {{ heading_color }}; --am-padding-y: {{ section.settings.vertical_padding }}px; --am-progress-color: {{ progress_color }}; --am-progress-muted: {{ progress_muted }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}"
+  class="am--numbered-slideshow{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.section_height != 'auto' %} am--has-section-ratio{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }}; --am-heading-color: {{ heading_color }}; --am-padding-y: {{ section.settings.vertical_padding }}px; --am-progress-color: {{ progress_color }}; --am-progress-muted: {{ progress_muted }}; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%;{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}"
   data-am-autoplay="{{ section.settings.autoplay }}"
   data-am-loop="{{ section.settings.loop }}"
   data-am-interval="{{ section.settings.autoplay_slide_duration | times: 1000 }}"
@@ -133,6 +133,18 @@
     { "type": "checkbox", "id": "show_desktop", "label": "Mostrar en escritorio", "default": true },
     { "type": "checkbox", "id": "show_tablet", "label": "Mostrar en tablet", "default": true },
     { "type": "checkbox", "id": "show_mobile", "label": "Mostrar en móvil", "default": true },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "Altura de la sección (escritorio)",
+      "options": [
+        { "value": "auto", "label": "Automática" },
+        { "value": "21 / 9", "label": "Pequeña" },
+        { "value": "16 / 9", "label": "Mediana" },
+        { "value": "4 / 3", "label": "Grande" }
+      ],
+      "default": "auto"
+    },
     { "type": "range", "id": "vertical_padding", "label": "Relleno vertical", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 60 },
     { "type": "checkbox", "id": "enable_color_scheme", "label": "Usar esquema de colores del tema", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.enable_color_scheme }}" },
@@ -144,6 +156,7 @@
     { "type": "range", "id": "autoplay_slide_duration", "label": "Duración de cada diapositiva", "min": 3, "max": 8, "step": 1, "default": 8, "unit": "s" },
     { "type": "color", "id": "progress_color", "label": "Color del progreso", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "header", "content": "Configuración de imágenes" },
+    { "type": "range", "id": "slide_width_desktop", "label": "Ancho de las diapositivas (escritorio)", "min": 50, "max": 100, "step": 5, "default": 100, "unit": "%" },
     { "type": "image_picker", "id": "background_image", "label": "Imagen de fondo (escritorio)" },
     { "type": "image_picker", "id": "background_image_mobile", "label": "Imagen de fondo (móvil)", "info": "Si está vacía, usa la imagen de escritorio." },
     {

@@ -196,6 +196,11 @@
     min-height: 609px;
   }
 
+  .am--hover-explorer.am--has-section-ratio .am--hover-explorer__desktop {
+    min-height: 0;
+    aspect-ratio: var(--am-section-ratio);
+  }
+
   .am--hover-explorer__desktop-title {
     display: block;
     margin-bottom: var(--am-title-spacing-desktop, 40px);

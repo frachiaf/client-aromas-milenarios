@@ -29,6 +29,8 @@
     assign button_align = 'flex-end'
   endif
   assign slider_items = section.blocks | where: 'type', 'slide'
+  assign media_sizes = '(min-width: 1024px) ' | append: section.settings.media_width_desktop | append: 'vw, 90vw'
+  assign slide_sizes = '(min-width: 1024px) ' | append: section.settings.slide_width_desktop | append: 'vw, 85vw'
 
   assign background_color = section.settings.background_color | default: 'transparent'
   assign text_color = 'inherit'
@@ -64,8 +66,8 @@
 -%}
 
 <am-video-with-carousel
-  class="am--video-with-carousel{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.align_slider_items %} am--align-slider-items{% endif %}{% if section.settings.disable_smooth_transition %} am--disable-slide-transition{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}{% if section.settings.snow_animation %} am--has-snow{% endif %}"
-  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }};"
+  class="am--video-with-carousel{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.section_height != 'auto' %} am--has-section-ratio{% endif %}{% if section.settings.align_slider_items %} am--align-slider-items{% endif %}{% if section.settings.disable_smooth_transition %} am--disable-slide-transition{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}{% if section.settings.snow_animation %} am--has-snow{% endif %}"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }}; --am-media-width-desktop: {{ section.settings.media_width_desktop }}%; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%; --am-content-justify-desktop: {{ section.settings.content_justify_desktop }};{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}"
   data-am-interval="{{ section.settings.carousel_timer | times: 1000 }}"
   data-am-autoplay="true"
 >
@@ -117,7 +119,7 @@
       <div class="am--video-with-carousel__media">
         <div class="am--video-with-carousel__replacement">
           {%- capture replacement_image -%}
-            {{ section.settings.replacing_image | image_url: width: 1800 | image_tag: widths: '375, 550, 750, 1100, 1500, 1800', sizes: '(min-width: 1024px) 40vw, 90vw', loading: 'lazy', class: 'am--video-with-carousel__replacement-image' }}
+            {{ section.settings.replacing_image | image_url: width: 1800 | image_tag: widths: '375, 550, 750, 1100, 1500, 1800', sizes: media_sizes, loading: 'lazy', class: 'am--video-with-carousel__replacement-image' }}
           {%- endcapture -%}
           {%- if section.settings.replacing_image_url != blank -%}
             <a href="{{ section.settings.replacing_image_url }}" aria-label="{{ section.settings.replacing_image.alt | default: section.settings.title | escape }}">{{ replacement_image }}</a>
@@ -172,7 +174,7 @@
                       }}
                     </div>
                   {%- elsif block.settings.media_type != 'video' and block.settings.image != blank -%}
-                    {{ block.settings.image | image_url: width: 1400 | image_tag: widths: '300, 450, 600, 900, 1200, 1400', sizes: '(min-width: 1024px) 35vw, 85vw', loading: 'lazy' }}
+                    {{ block.settings.image | image_url: width: 1400 | image_tag: widths: '300, 450, 600, 900, 1200, 1400', sizes: slide_sizes, loading: 'lazy' }}
                   {%- else -%}
                     {{ 'lifestyle-1' | placeholder_svg_tag: 'am--video-with-carousel__placeholder' }}
                   {%- endif -%}
@@ -279,6 +281,35 @@
     { "type": "checkbox", "id": "show_desktop", "label": "Mostrar en escritorio", "default": true },
     { "type": "checkbox", "id": "show_tablet", "label": "Mostrar en tablet", "default": true },
     { "type": "checkbox", "id": "show_mobile", "label": "Mostrar en móvil", "default": true },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "Altura de la sección (escritorio)",
+      "options": [
+        { "value": "auto", "label": "Automática" },
+        { "value": "21 / 9", "label": "Pequeña" },
+        { "value": "16 / 9", "label": "Mediana" },
+        { "value": "4 / 3", "label": "Grande" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Disposición en escritorio" },
+    { "type": "range", "id": "media_width_desktop", "label": "Ancho del medio", "min": 20, "max": 80, "step": 1, "default": 40, "unit": "%" },
+    { "type": "range", "id": "slide_width_desktop", "label": "Ancho de las diapositivas", "min": 20, "max": 80, "step": 1, "default": 38, "unit": "%" },
+    {
+      "type": "select",
+      "id": "content_justify_desktop",
+      "label": "Distribución del contenido",
+      "options": [
+        { "value": "flex-start", "label": "Inicio" },
+        { "value": "center", "label": "Centro" },
+        { "value": "flex-end", "label": "Final" },
+        { "value": "space-between", "label": "Espacio entre elementos" },
+        { "value": "space-around", "label": "Espacio alrededor" },
+        { "value": "space-evenly", "label": "Espacio uniforme" }
+      ],
+      "default": "space-around"
+    },
     { "type": "range", "id": "carousel_timer", "label": "Duración de cada diapositiva", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 5 },
     { "type": "color", "id": "progress_color", "label": "Color del progreso", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "color", "id": "background_progress_color", "label": "Color de fondo del progreso", "default": "#fefefe", "visible_if": "{{ section.settings.enable_color_scheme == false }}" }

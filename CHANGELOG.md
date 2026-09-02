@@ -10,22 +10,35 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Añadido
 
+- `AM Explorador interactivo`, `AM Video + Carrusel` y `AM Presentación numerada` permiten elegir en escritorio una altura automática, pequeña (21:9), mediana (16:9) o grande (4:3) para sus marcos visuales.
+- `AM Presentación numerada` permite ajustar entre 50% y 100% el ancho centrado de las diapositivas y su panel informativo en escritorio; móvil y tablet conservan el ancho completo.
+- `AM Video + Carrusel` permite ajustar en escritorio los anchos del medio y de la columna completa del carrusel entre 20% y 80%, además de distribuir ambas columnas al inicio, centro, final o con tres variantes de espaciado.
 - `AM Video + Carrusel` permite ocultar en conjunto las flechas, el control de pausa/reproducción y las barras de progreso sin desactivar el autoplay.
 - Los CTA textuales de `AM Explorador interactivo`, `AM Presentación numerada` y `AM Video + Carrusel` usan directamente el botón primario nativo de Pitch, sin un selector editorial de estilo.
 
 ### Modificado
 
+- Archivos: `sections/am--hover-explorer.liquid`, `sections/am--video-with-carousel.liquid`, `sections/am--numbered-slideshow.liquid`, `assets/am--hover-explorer.css`, `assets/am--video-with-carousel.css` y `assets/am--numbered-slideshow.css`.
+- Impacto: las instancias existentes mantienen su presentación mediante los defaults `auto` y `100%`; las proporciones y el recorte con `object-fit: cover` solo se activan desde 1024 px, sin modificar templates JSON, JavaScript ni datos editoriales.
+- Impacto: `AM Video + Carrusel` conserva por defecto los anchos 40%/38% y `space-around`; desde 1024 px permite ampliarlos sin el límite anterior de 680 px y los reduce proporcionalmente si no caben en una fila. Sus imágenes comunican al navegador el ancho editorial configurado y el layout apilado de tablet/móvil no cambia.
 - La interfaz completa de los schemas de `AM Divisor de color`, `AM Explorador interactivo`, `AM Presentación numerada` y `AM Video + Carrusel` se tradujo al español sin cambiar IDs, values ni contenido editorial predeterminado.
 - Archivos: `sections/am--color-divider.liquid`, `sections/am--hover-explorer.liquid`, `sections/am--numbered-slideshow.liquid`, `sections/am--video-with-carousel.liquid`, `assets/am--hover-explorer.css`, `assets/am--numbered-slideshow.css` y `assets/am--video-with-carousel.css`.
 - Impacto: las instancias existentes conservan controles visibles y adoptan colores, tipografía, bordes, espaciado y hover del botón primario del esquema activo. Los settings históricos de apariencia del CTA de video se preservan por compatibilidad, aunque ya no modifican el storefront.
 
 ### Validación
 
+- Los tres schemas JSON y el contrato de `section_height` y `slide_width_desktop` fueron validados; `shopify theme check --path .` inspeccionó 313 archivos sin errores y mantuvo 24 advertencias preexistentes de `ValidScopedCSSClass`; `git diff --check` fue aprobado.
+- El schema de `AM Video + Carrusel` validó `media_width_desktop`, `slide_width_desktop` y `content_justify_desktop`, incluidos sus defaults, rangos y seis valores permitidos; Theme Check volvió a finalizar sin errores, con las mismas 24 advertencias preexistentes.
+- El validador de la skill no pudo iniciar porque el entorno no dispone de `@shopify/theme-check-common`; Theme Check cubrió la validación Liquid y de schemas del theme.
+- El preview local respondió HTTP 200. En 1440 px, el ancho simulado de 50% quedó centrado en 690 px, el marco 21:9 midió 690 × 296 px y los dos marcos de `AM Video + Carrusel` respetaron 4:3 con `object-fit: cover`; en 768 px y 390 px las diapositivas recuperaron el ancho completo y los medios su proporción natural.
+- El preview activo respondió HTTP 200 y renderizó los defaults 40%/38%/`space-around`, una presentación numerada configurada al 85% y los dos CSS actualizados. Las aserciones de flexión confirmaron que 80% + 80% permanece en una fila y se reduce a 658 px por columna en 1440 px y 450 px en 1024 px; la automatización visual no pudo iniciarse porque el entorno cerró el canal CDP.
 - Los cuatro schemas JSON, el setting nuevo de controles y el contrato Liquid/schema fueron validados correctamente; todos los CTA textuales usan la clase `button` sin overrides visuales locales.
 - `shopify theme check --path .` inspeccionó 313 archivos sin errores y mantuvo 24 advertencias preexistentes de `ValidScopedCSSClass`; `git diff --check` fue aprobado.
 
 ### Reversión
 
+- Retirar `section_height`, `slide_width_desktop`, las variables y las reglas CSS asociadas restaura las alturas naturales y el ancho completo sin migrar templates ni valores existentes.
+- Retirar `media_width_desktop`, `content_justify_desktop` y el `slide_width_desktop` de `AM Video + Carrusel`, junto con sus variables y reglas desktop, restaura los anchos fijos 40%/38%, el límite de 680 px y `space-around`; retirar `__info` del selector compartido devuelve su ancho completo.
 - Retirar `show_slider_controls` y sus condiciones Liquid restaura los controles anteriores; restaurar las clases y reglas locales de los CTA devuelve su presentación previa. Revertir las cadenas de schema devuelve la interfaz del editor al inglés sin afectar los valores guardados.
 
 ### Modificado

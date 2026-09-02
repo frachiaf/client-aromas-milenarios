@@ -248,6 +248,11 @@
   .am--numbered-slideshow.am--hide-desktop { display: none; }
 
   .am--numbered-slideshow__inner { padding-inline: 30px; }
+  .am--numbered-slideshow__viewport,
+  .am--numbered-slideshow__info {
+    width: var(--am-slide-width-desktop, 100%);
+    margin-inline: auto;
+  }
   .am--numbered-slideshow__image { aspect-ratio: auto; }
   .am--numbered-slideshow__image img { height: auto; }
   .am--numbered-slideshow__info { flex-wrap: nowrap; }
@@ -256,6 +261,22 @@
   .am--numbered-slideshow__control { font-size: 1.5rem; }
   .am--numbered-slideshow__numbers { gap: 60px; }
   .am--numbered-slideshow__progress-track { display: block; }
+
+  .am--numbered-slideshow.am--has-section-ratio .am--numbered-slideshow__viewport {
+    aspect-ratio: var(--am-section-ratio);
+  }
+
+  .am--numbered-slideshow.am--has-section-ratio .am--numbered-slideshow__list,
+  .am--numbered-slideshow.am--has-section-ratio .am--numbered-slideshow__slide,
+  .am--numbered-slideshow.am--has-section-ratio .am--numbered-slideshow__image {
+    height: 100%;
+  }
+
+  .am--numbered-slideshow.am--has-section-ratio .am--numbered-slideshow__image img,
+  .am--numbered-slideshow.am--has-section-ratio .am--numbered-slideshow__placeholder {
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

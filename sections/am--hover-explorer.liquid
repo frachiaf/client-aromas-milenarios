@@ -31,8 +31,8 @@
 -%}
 
 <am-hover-explorer
-  class="am--hover-explorer{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}"
-  style="--am-background-color: {{ section_bg }}; --am-text-color: {{ section_text_color }}; --am-heading-color: {{ section_heading_color }}; --am-content-background-color: {{ content_bg }}; --am-content-text-color: {{ content_text_color }}; --am-content-heading-color: {{ content_heading_color }}; --am-padding-desktop-y: {{ section.settings.vertical_padding }}px; --am-padding-mobile-y: {{ section.settings.vertical_padding_mobile }}px; --am-padding-desktop-x: {{ section.settings.horizontal_padding }}px; --am-padding-mobile-x: {{ section.settings.horizontal_padding_mobile }}px; --am-title-spacing-desktop: {{ section.settings.title_spacing }}px; --am-title-spacing-mobile: {{ section.settings.title_spacing_mobile }}px;"
+  class="am--hover-explorer{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.section_height != 'auto' %} am--has-section-ratio{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}"
+  style="--am-background-color: {{ section_bg }}; --am-text-color: {{ section_text_color }}; --am-heading-color: {{ section_heading_color }}; --am-content-background-color: {{ content_bg }}; --am-content-text-color: {{ content_text_color }}; --am-content-heading-color: {{ content_heading_color }}; --am-padding-desktop-y: {{ section.settings.vertical_padding }}px; --am-padding-mobile-y: {{ section.settings.vertical_padding_mobile }}px; --am-padding-desktop-x: {{ section.settings.horizontal_padding }}px; --am-padding-mobile-x: {{ section.settings.horizontal_padding_mobile }}px; --am-title-spacing-desktop: {{ section.settings.title_spacing }}px; --am-title-spacing-mobile: {{ section.settings.title_spacing_mobile }}px;{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}"
 >
   <div class="am--hover-explorer__inner">
     {%- if section.settings.title != blank and section.settings.title_position == 'top_center' -%}
@@ -202,6 +202,18 @@
     { "type": "checkbox", "id": "show_desktop", "label": "Mostrar en escritorio", "default": true },
     { "type": "checkbox", "id": "show_tablet", "label": "Mostrar en tablet", "default": true },
     { "type": "checkbox", "id": "show_mobile", "label": "Mostrar en móvil", "default": true },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "Altura de la sección (escritorio)",
+      "options": [
+        { "value": "auto", "label": "Automática" },
+        { "value": "21 / 9", "label": "Pequeña" },
+        { "value": "16 / 9", "label": "Mediana" },
+        { "value": "4 / 3", "label": "Grande" }
+      ],
+      "default": "auto"
+    },
     { "type": "text", "id": "title", "label": "Título de la sección", "default": "Know Your Glassware" },
     {
       "type": "select",

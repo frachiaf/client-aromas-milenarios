@@ -653,9 +653,9 @@
         "show_tablet": true,
         "show_mobile": true,
         "section_height": "auto",
-        "media_width_desktop": 40,
-        "slide_width_desktop": 38,
-        "content_justify_desktop": "space-around",
+        "media_width_desktop": 30,
+        "slide_width_desktop": 30,
+        "content_justify_desktop": "space-evenly",
         "carousel_timer": 5,
         "progress_color": "#000000",
         "background_progress_color": "#fefefe"
@@ -703,7 +703,7 @@
         "loop": true,
         "autoplay_slide_duration": 8,
         "progress_color": "",
-        "slide_width_desktop": 100,
+        "slide_width_desktop": 80,
         "image_aspect_ratio_mobile": "am--numbered-slideshow__image--auto"
       }
     },

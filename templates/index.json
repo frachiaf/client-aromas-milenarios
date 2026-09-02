@@ -814,9 +814,9 @@
       "name": "t:names.product_hotspots",
       "settings": {
         "image": "shopify://shop_images/FridayNightLights_shoppable_1296x_a35fbc6d-03b8-426a-801c-c4eca70d07c1.webp",
-        "overlay_heading": "Experiencias Milenarias",
+        "overlay_heading": "",
         "overlay_text": "",
-        "overlay_button_label": "Elegí como sentirte",
+        "overlay_button_label": "",
         "overlay_button_link": "",
         "overlay_content_position": "bottom-center",
         "overlay_content_alignment": "auto",

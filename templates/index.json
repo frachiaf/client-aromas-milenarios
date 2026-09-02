@@ -669,6 +669,131 @@
         "padding-block-end": 16
       }
     },
+    "product_hotspots_bEbnA8": {
+      "type": "product-hotspots",
+      "blocks": {
+        "hotspot_product_a6JQKf": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "settings": {
+            "product": "vela-oceano",
+            "x-position": 12,
+            "y-position": 48
+          },
+          "blocks": {}
+        },
+        "hotspot_product_VBGbb7": {
+          "type": "_hotspot-product",
+          "settings": {
+            "product": "vela-magdalena",
+            "x-position": 27,
+            "y-position": 48
+          },
+          "blocks": {}
+        },
+        "hotspot_product_9E73bd": {
+          "type": "_hotspot-product",
+          "settings": {
+            "product": "",
+            "x-position": 42,
+            "y-position": 48
+          },
+          "blocks": {}
+        },
+        "hotspot_product_UPaUpT": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "settings": {
+            "product": "vela-selene",
+            "x-position": 58,
+            "y-position": 48
+          },
+          "blocks": {}
+        },
+        "hotspot_product_bL6VxX": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "settings": {
+            "product": "vela-oriente",
+            "x-position": 73,
+            "y-position": 48
+          },
+          "blocks": {}
+        },
+        "hotspot_product_cQUWGB": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "settings": {
+            "product": "vela-jardin-del-alma",
+            "x-position": 88,
+            "y-position": 48
+          },
+          "blocks": {}
+        },
+        "heading": {
+          "type": "text",
+          "name": "t:names.heading",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "text": "<h2>Compra el look</h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h4",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "hotspot_product_a6JQKf",
+        "hotspot_product_VBGbb7",
+        "hotspot_product_9E73bd",
+        "hotspot_product_UPaUpT",
+        "hotspot_product_bL6VxX",
+        "hotspot_product_cQUWGB"
+      ],
+      "name": "t:names.product_hotspots",
+      "settings": {
+        "image": "shopify://shop_images/FridayNightLights_shoppable_1296x_a35fbc6d-03b8-426a-801c-c4eca70d07c1.webp",
+        "overlay_heading": "Experiencias Milenarias",
+        "overlay_text": "",
+        "overlay_button_label": "Elegí como sentirte",
+        "overlay_button_link": "",
+        "overlay_content_position": "bottom-center",
+        "overlay_content_alignment": "auto",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "section_width": "page-width",
+        "section_height": "auto",
+        "desktop_interaction_mode": "hover-preview-click-quick-buy",
+        "quick_buy_hover_label": "VER MÁS",
+        "hotspot_color": "#ffffff57",
+        "bullseye_color": "#ffffff",
+        "color_scheme": "scheme-1",
+        "product_title_gap": 8,
+        "product_title_preset": "",
+        "product_price_preset": "",
+        "padding-block-start": 0,
+        "padding-block-end": 40
+      }
+    },
     "section_7aFhAa": {
       "type": "section",
       "blocks": {
@@ -2203,6 +2328,7 @@
     "product_hotspots_bENwVW",
     "am_video_with_carousel_7TDfyg",
     "divider_phjVXD",
+    "product_hotspots_bEbnA8",
     "section_7aFhAa",
     "am_color_divider_HPtyJK",
     "media_with_content_E7M3aJ",

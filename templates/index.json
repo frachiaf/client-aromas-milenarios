@@ -448,6 +448,89 @@
         "padding-block-end": 40
       }
     },
+    "am_video_with_carousel_7TDfyg": {
+      "type": "am--video-with-carousel",
+      "blocks": {
+        "slide_pjcJQJ": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.47 PM.mp4",
+            "title": "",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        },
+        "slide_cbPjCC": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM.mp4",
+            "title": "",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        },
+        "slide_zaBGWV": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (4).mp4",
+            "title": "",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        }
+      },
+      "block_order": [
+        "slide_pjcJQJ",
+        "slide_cbPjCC",
+        "slide_zaBGWV"
+      ],
+      "name": "AM Video + Carousel",
+      "settings": {
+        "snow_animation": false,
+        "heading": "Section title",
+        "enable_color_scheme": true,
+        "color_scheme": "",
+        "heading_color": "#ad8995",
+        "background_color": "#eaeaea",
+        "video_url": "",
+        "video_loop": true,
+        "replacing_image": "shopify://shop_images/Sin_titulo_300_x_533_px.png",
+        "replacing_image_url": "",
+        "title": "",
+        "description": "",
+        "button_label": "Splash",
+        "text_horizontal_position": "center",
+        "text_vertical_position": "end",
+        "text_align": "tc",
+        "position": "start",
+        "plain-text-btn": false,
+        "underline": false,
+        "button_link": "shopify://collections",
+        "video_text_color": "#ad8995",
+        "btn_color": "#ad8995",
+        "btn_text_color": "#ffffff",
+        "button_border_color": "",
+        "carousel_heading": "Carousel heading",
+        "carousel_heading_color": "#000000",
+        "show_slider_controls": false,
+        "align_slider_items": true,
+        "disable_smooth_transition": true,
+        "slider_item_background_color": "",
+        "show_desktop": true,
+        "show_tablet": true,
+        "show_mobile": true,
+        "section_height": "auto",
+        "media_width_desktop": 30,
+        "slide_width_desktop": 30,
+        "content_justify_desktop": "space-evenly",
+        "carousel_timer": 5,
+        "progress_color": "#000000",
+        "background_progress_color": "#fefefe"
+      }
+    },
     "product_hotspots_bENwVW": {
       "type": "product-hotspots",
       "blocks": {
@@ -576,89 +659,6 @@
         "product_price_preset": "",
         "padding-block-start": 0,
         "padding-block-end": 40
-      }
-    },
-    "am_video_with_carousel_7TDfyg": {
-      "type": "am--video-with-carousel",
-      "blocks": {
-        "slide_pjcJQJ": {
-          "type": "slide",
-          "settings": {
-            "media_type": "video",
-            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.47 PM.mp4",
-            "title": "",
-            "link_title": "Shop the Collection",
-            "url": "#"
-          }
-        },
-        "slide_cbPjCC": {
-          "type": "slide",
-          "settings": {
-            "media_type": "video",
-            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM.mp4",
-            "title": "",
-            "link_title": "Shop the Collection",
-            "url": "#"
-          }
-        },
-        "slide_zaBGWV": {
-          "type": "slide",
-          "settings": {
-            "media_type": "video",
-            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (4).mp4",
-            "title": "",
-            "link_title": "Shop the Collection",
-            "url": "#"
-          }
-        }
-      },
-      "block_order": [
-        "slide_pjcJQJ",
-        "slide_cbPjCC",
-        "slide_zaBGWV"
-      ],
-      "name": "AM Video + Carousel",
-      "settings": {
-        "snow_animation": false,
-        "heading": "Section title",
-        "enable_color_scheme": true,
-        "color_scheme": "",
-        "heading_color": "#ad8995",
-        "background_color": "#eaeaea",
-        "video_url": "",
-        "video_loop": true,
-        "replacing_image": "shopify://shop_images/Sin_titulo_300_x_533_px.png",
-        "replacing_image_url": "",
-        "title": "",
-        "description": "",
-        "button_label": "Splash",
-        "text_horizontal_position": "center",
-        "text_vertical_position": "end",
-        "text_align": "tc",
-        "position": "start",
-        "plain-text-btn": false,
-        "underline": false,
-        "button_link": "shopify://collections",
-        "video_text_color": "#ad8995",
-        "btn_color": "#ad8995",
-        "btn_text_color": "#ffffff",
-        "button_border_color": "",
-        "carousel_heading": "Carousel heading",
-        "carousel_heading_color": "#000000",
-        "show_slider_controls": false,
-        "align_slider_items": true,
-        "disable_smooth_transition": true,
-        "slider_item_background_color": "",
-        "show_desktop": true,
-        "show_tablet": true,
-        "show_mobile": true,
-        "section_height": "auto",
-        "media_width_desktop": 30,
-        "slide_width_desktop": 30,
-        "content_justify_desktop": "space-evenly",
-        "carousel_timer": 5,
-        "progress_color": "#000000",
-        "background_progress_color": "#fefefe"
       }
     },
     "am_numbered_slideshow_zGrUpX": {
@@ -2378,8 +2378,8 @@
   "order": [
     "section_6PnLrM",
     "hero_mqfmaA",
-    "product_hotspots_bENwVW",
     "am_video_with_carousel_7TDfyg",
+    "product_hotspots_bENwVW",
     "am_numbered_slideshow_zGrUpX",
     "divider_phjVXD",
     "product_hotspots_bEbnA8",

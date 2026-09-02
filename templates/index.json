@@ -457,7 +457,7 @@
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.47 PM.mp4",
             "title": "",
-            "link_title": "Shop the Collection",
+            "link_title": "",
             "url": "#"
           }
         },
@@ -467,7 +467,7 @@
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM.mp4",
             "title": "",
-            "link_title": "Shop the Collection",
+            "link_title": "",
             "url": "#"
           }
         },
@@ -477,7 +477,7 @@
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (4).mp4",
             "title": "",
-            "link_title": "Shop the Collection",
+            "link_title": "",
             "url": "#"
           }
         }
@@ -526,7 +526,7 @@
         "media_width_desktop": 30,
         "slide_width_desktop": 30,
         "content_justify_desktop": "space-evenly",
-        "carousel_timer": 5,
+        "carousel_timer": 3,
         "progress_color": "#000000",
         "background_progress_color": "#fefefe"
       }

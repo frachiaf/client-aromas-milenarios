@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -24,6 +25,7 @@
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "bottom",
             "thumbnail_width": 44,
+            "thumbnail_radius": 0,
             "aspect_ratio": "1",
             "constrain_to_viewport": false,
             "media_fit": "cover",
@@ -70,7 +72,6 @@
               "type": "group",
               "name": "Main information",
               "settings": {
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -94,11 +95,13 @@
                 "border_width": 1,
                 "border_opacity": 100,
                 "border_radius": 0,
-                "placeholder": "",
                 "toggle_overlay": false,
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -112,6 +115,7 @@
                     "show_number": true,
                     "rating_color": "primary",
                     "type_preset": "paragraph",
+                    "width": "100%",
                     "alignment": "left"
                   },
                   "blocks": {}
@@ -202,7 +206,6 @@
               "type": "group",
               "name": "Product form",
               "settings": {
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -226,11 +229,13 @@
                 "border_width": 1,
                 "border_opacity": 100,
                 "border_radius": 0,
-                "placeholder": "",
                 "toggle_overlay": false,
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
                 "padding-block-start": 32,
                 "padding-block-end": 32,
                 "padding-inline-start": 0,
@@ -321,7 +326,6 @@
               "type": "group",
               "name": "Benefits",
               "settings": {
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -340,16 +344,19 @@
                 "color_scheme": "scheme-5",
                 "background_media": "image",
                 "video_position": "cover",
+                "background_image": "shopify://shop_images/ChatGPT_Image_13_sept_2026_01_06_34_a.m._1.png",
                 "background_image_position": "cover",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
                 "border_radius": 43,
-                "placeholder": "",
                 "toggle_overlay": false,
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
                 "padding-block-start": 60,
                 "padding-block-end": 60,
                 "padding-inline-start": 41,
@@ -386,7 +393,6 @@
                   "type": "group",
                   "name": "List",
                   "settings": {
-                    "open_in_new_tab": false,
                     "content_direction": "row",
                     "vertical_on_mobile": false,
                     "horizontal_alignment": "flex-start",
@@ -410,11 +416,13 @@
                     "border_width": 1,
                     "border_opacity": 100,
                     "border_radius": 0,
-                    "placeholder": "",
                     "toggle_overlay": false,
                     "overlay_color": "#00000026",
                     "overlay_style": "solid",
                     "gradient_direction": "to top",
+                    "link": "",
+                    "open_in_new_tab": false,
+                    "placeholder": "",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
@@ -500,6 +508,7 @@
         "equal_columns": true,
         "limit_details_width": false,
         "gap": 0,
+        "enable_sticky_add_to_cart": true,
         "color_scheme": "scheme-1",
         "padding-block-start": 0,
         "padding-block-end": 0
@@ -512,6 +521,7 @@
           "type": "image",
           "name": "t:names.image",
           "settings": {
+            "link": "",
             "image_ratio": "portrait",
             "width": "custom",
             "custom_width": 35,
@@ -533,7 +543,6 @@
           "type": "group",
           "name": "Content",
           "settings": {
-            "open_in_new_tab": false,
             "content_direction": "column",
             "vertical_on_mobile": true,
             "horizontal_alignment": "flex-start",
@@ -557,11 +566,13 @@
             "border_width": 1,
             "border_opacity": 100,
             "border_radius": 0,
-            "placeholder": "",
             "toggle_overlay": false,
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -1025,7 +1036,6 @@
             "group_ynR9F8": {
               "type": "_product-card-group",
               "settings": {
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -1053,6 +1063,8 @@
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,

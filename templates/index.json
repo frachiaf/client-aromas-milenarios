@@ -451,11 +451,61 @@
     "am_video_with_carousel_7TDfyg": {
       "type": "am--video-with-carousel",
       "blocks": {
+        "slide_EfWtje": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (3).mp4",
+            "title": "",
+            "link_title": "",
+            "url": "#"
+          }
+        },
         "slide_pjcJQJ": {
           "type": "slide",
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.47 PM.mp4",
+            "title": "",
+            "link_title": "",
+            "url": "#"
+          }
+        },
+        "slide_igJyin": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.45 PM.mp4",
+            "title": "",
+            "link_title": "",
+            "url": "#"
+          }
+        },
+        "slide_H9pxQe": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (5).mp4",
+            "title": "",
+            "link_title": "",
+            "url": "#"
+          }
+        },
+        "slide_A3TFMD": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (2).mp4",
+            "title": "",
+            "link_title": "",
+            "url": "#"
+          }
+        },
+        "slide_FmbWPG": {
+          "type": "slide",
+          "settings": {
+            "media_type": "video",
+            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (1).mp4",
             "title": "",
             "link_title": "",
             "url": "#"
@@ -483,7 +533,12 @@
         }
       },
       "block_order": [
+        "slide_EfWtje",
         "slide_pjcJQJ",
+        "slide_igJyin",
+        "slide_H9pxQe",
+        "slide_A3TFMD",
+        "slide_FmbWPG",
         "slide_cbPjCC",
         "slide_zaBGWV"
       ],

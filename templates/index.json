@@ -710,7 +710,7 @@
         "overlay_style": "solid",
         "gradient_direction": "to top",
         "section_width": "full-width",
-        "section_height": "21 / 9",
+        "section_height": "auto",
         "desktop_interaction_mode": "click-quick-buy",
         "quick_buy_hover_label": "VER MÁS",
         "hotspot_color": "#ffffff57",

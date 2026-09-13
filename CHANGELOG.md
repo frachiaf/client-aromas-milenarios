@@ -6,6 +6,70 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Modificado
+
+- Objetivo: `AM Video + Carrusel` permite elegir una relación de aspecto común para el medio principal y todas las diapositivas.
+- Archivos: `sections/am--video-with-carousel.liquid`, `assets/am--video-with-carousel.css`, `CHANGELOG.md`.
+- Impacto: el selector existente `section_height` conserva su ID y pasa a llamarse “Relación de aspecto”; ofrece Automática, 21:9, 16:9, 4:3, 1:1 y 3:4, con 16:9 como default para nuevas secciones. Cuando se selecciona una proporción, se aplica en escritorio, tablet y móvil y los medios se recortan con `object-fit: cover`; Automática preserva las dimensiones intrínsecas, incluidos los videos de diapositivas.
+- Objetivo: el CTA general del carrusel incorpora un rango para ajustar únicamente su margen superior entre 0 y 120 px.
+- Impacto: `carousel_button_margin_top` conserva los 24 px actuales por defecto; el wrapper mantiene su ancho del 90%, centrado horizontal y alineación interna controlada por “Posición del botón”.
+- Objetivo: `AM Video + Carrusel` permite limitar la imagen de fondo al área de contenido, dejando el encabezado fuera de su cobertura.
+- Impacto: el nuevo checkbox `background_image_on_content` está desactivado por defecto; al activarlo traslada visualmente la imagen a `.am--video-with-carousel__content`, mantiene el color sobre toda la sección y conserva las capas animadas de nieve en la raíz.
+- Objetivo: los bloques `Grupo` y la sección `AM Video + Carrusel` permiten configurar una imagen de fondo específica para móvil.
+- Archivos: `blocks/group.liquid`, `snippets/group.liquid`, `snippets/background-media.liquid`, `sections/am--video-with-carousel.liquid`, `assets/am--video-with-carousel.css` y `CHANGELOG.md`.
+- Impacto: hasta 749 px, `Grupo` usa una fuente móvil mediante `<picture>` sin descargar simultáneamente la imagen de escritorio; hasta 767 px, `AM Video + Carrusel` cambia su fondo CSS preservando las capas de nieve y la opción de limitarlo al contenido. En ambos componentes la imagen principal funciona como fallback y una imagen móvil configurada por sí sola también evita mostrar un fondo vacío.
+
+### Validación
+
+- El schema JSON y el contrato Liquid validaron el ID preservado, el nuevo default y las seis opciones de `section_height`; el contrato CSS confirma que el marco proporcional y el ajuste `cover` no están limitados a escritorio.
+- El schema JSON y el contrato Liquid/CSS de `carousel_button_margin_top` validaron sus valores mínimo, predeterminado y máximo (0, 24 y 120 px); el wrapper conserva `margin-inline: auto` y el botón mantiene `justify-content: var(--am-button-align)`.
+- El schema y el contrato Liquid/CSS de `background_image_on_content` validaron los estados desactivado, activo, sin imagen y combinado con nieve; el contenido usa `cover` centrado y sin repetición, mientras la raíz conserva tres capas animadas y excluye la imagen base.
+- Los schemas JSON y el contrato Liquid/CSS de `background_image_mobile` validaron correctamente; el bloque pasa el setting explícitamente al snippet compartido, el `<source>` móvil declara `srcset`, `sizes`, ancho y alto, y la sección conserva los fallbacks en sus variantes normal, con nieve y con fondo sobre el contenido.
+- `git diff --check` fue aprobado.
+- `shopify.cmd theme check --path .` inspeccionó 313 archivos sin errores y reportó 29 advertencias existentes; mantiene `ExcessiveSettingsCount` en esta sección, ahora con 50 settings funcionales. La CLI volvió a mostrar una aserción interna de Node al cerrar tras emitir el resumen.
+- El validador de la skill Shopify Liquid no pudo iniciar porque falta la dependencia local `@shopify/theme-check-common`.
+- La comprobación visual en navegador no se ejecutó: el entorno bloqueó `shopify theme dev` porque el comando podía subir el theme a una tienda o cuenta no identificada. El `<picture>` y la cascada de la variable móvil se verificaron estáticamente para sus breakpoints y combinaciones con fallback, nieve y fondo limitado al contenido.
+
+### Reversión
+
+- Restaurar el label, opciones y default de `section_height`, junto con las reglas de proporción limitadas a escritorio, devuelve el comportamiento anterior sin migrar configuraciones guardadas.
+- Retirar `carousel_button_margin_top`, su variable CSS y restaurar `margin: 1.5rem auto 0` devuelve el espaciado fijo anterior.
+- Retirar `background_image_on_content`, su clase modificadora y las reglas CSS asociadas restaura el fondo exclusivo del contenedor raíz.
+- Retirar `background_image_mobile`, su parámetro en los snippets y las reglas responsive asociadas restaura el uso de una única imagen de fondo sin requerir migraciones de datos.
+
+### Añadido
+
+- `AM Video + Carrusel` incorpora un botón general configurable para todo el carrusel, renderizado debajo de las cards y sus controles cuando la etiqueta y el enlace están completos.
+- Archivos: `sections/am--video-with-carousel.liquid`, `assets/am--video-with-carousel.css`, `CHANGELOG.md`.
+- Impacto: el Theme Editor expone `Etiqueta del botón general` y `Enlace del botón general` bajo “Contenido del carrusel”; las instancias existentes no muestran el nuevo CTA porque ambos settings quedan vacíos por defecto. El storefront conserva los CTA individuales de cada card, usa el botón primario nativo de Pitch para el CTA general y hereda la alineación del setting existente “Posición del botón”.
+
+### Validación
+
+- El schema JSON de `sections/am--video-with-carousel.liquid` validó correctamente y el contrato Liquid/schema confirma `carousel_button_label` y `carousel_button_link` con render condicionado por ambos valores.
+- `git diff --check` fue aprobado.
+- `shopify.cmd theme check --path .` inspeccionó 313 archivos sin errores y reportó 29 advertencias; se mantiene la advertencia nueva `ExcessiveSettingsCount` porque la sección declara 47 settings tras sumar el CTA general y se preservaron settings históricos por compatibilidad editorial. La CLI cerró con una aserción interna de Node al finalizar el resumen.
+- El validador de la skill Shopify Liquid no pudo iniciar porque falta la dependencia local `@shopify/theme-check-common`.
+- La comprobación responsive en navegador no se ejecutó desde este entorno; el CSS del wrapper fue verificado estáticamente para alinear el botón debajo del viewport del carrusel con `--am-button-align`, sin tocar autoplay, flechas ni CTA individuales.
+
+### Reversión
+
+- Retirar `carousel_button_label`, `carousel_button_link`, el render del CTA global y su wrapper CSS restaura el carrusel anterior sin migrar datos editoriales.
+
+### Corregido
+
+- `AM Video + Carrusel` reserva desde el render inicial la proporción intrínseca de cada diapositiva configurada con video Shopify y precarga sus metadatos, evitando cambios de altura al descubrir el medio.
+- Archivos: `sections/am--video-with-carousel.liquid`, `assets/am--video-with-carousel.css`.
+- Impacto: los videos de diapositivas mantienen la reproducción exclusiva del item activo; solo se solicitan metadatos, no los archivos completos, y no se modifican schema ni templates JSON administrados por Shopify.
+
+### Validación
+
+- `shopify.cmd theme check --path .` finalizó correctamente y `git diff --check` fue aprobado.
+- La comprobación visual responsive no pudo completarse: el preview local no logra subir el theme por referencias preexistentes a videos Shopify no aplicables en `templates/index.json` y `templates/product.velas.json`; la automatización de navegador además cerró su canal CDP al iniciarse.
+
+### Reversión
+
+- Restaurar `preload: 'none'` y retirar la variable de proporción y sus reglas CSS devuelve la carga y el dimensionamiento anteriores sin migrar datos editoriales.
+
 ### Pendiente
 
 ### Añadido

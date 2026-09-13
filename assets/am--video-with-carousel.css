@@ -19,6 +19,21 @@
   animation: am--snowfall 15s linear infinite;
 }
 
+.am--video-with-carousel.am--background-image-on-content {
+  background-image: none;
+}
+
+.am--video-with-carousel.am--background-image-on-content.am--has-snow {
+  background-image: var(--am-snow-1, none), var(--am-snow-2, none), var(--am-snow-3, none), none;
+}
+
+.am--video-with-carousel.am--background-image-on-content .am--video-with-carousel__content {
+  background-image: var(--am-background-image, none);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 @keyframes am--snowfall {
   0% { background-position: 0 0, 0 0, 0 0, center; }
   50% { background-position: 500px 500px, 100px 200px, -100px 150px, center; }
@@ -89,6 +104,30 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__media-frame,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__replacement,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-list {
+  aspect-ratio: var(--am-section-ratio);
+  overflow: hidden;
+}
+
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__replacement > a,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-image,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-video-wrapper {
+  display: block;
+  height: 100%;
+}
+
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__video,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__replacement-image,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-image > img,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-video,
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__placeholder {
+  height: 100%;
+  object-fit: cover;
 }
 
 .am--video-with-carousel__video-controls {
@@ -210,6 +249,15 @@
   margin-inline: auto;
 }
 
+.am--video-with-carousel__carousel-button-wrapper {
+  display: flex;
+  justify-content: var(--am-button-align, center);
+  width: 90%;
+  margin-top: var(--am-carousel-button-margin-top, 24px);
+  margin-inline: auto;
+  margin-bottom: 0;
+}
+
 .am--video-with-carousel__slides {
   position: relative;
   width: 100%;
@@ -270,6 +318,13 @@
 
 .am--video-with-carousel__slide-video-wrapper {
   width: 100%;
+  aspect-ratio: var(--am-slide-video-aspect-ratio);
+  overflow: hidden;
+}
+
+.am--video-with-carousel__slide-video {
+  height: 100%;
+  object-fit: cover;
 }
 
 .am--video-with-carousel__progress-track {
@@ -277,6 +332,14 @@
   height: 2px;
   margin-top: 1rem;
   background: var(--am-progress-background, rgba(255,255,255,.4));
+}
+
+.am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__progress-track {
+  position: absolute;
+  z-index: 4;
+  bottom: 0;
+  left: 0;
+  margin-top: 0;
 }
 
 .am--video-with-carousel__progress {
@@ -404,6 +467,18 @@
 .am--video-with-carousel__illustration-mobile { display: block; }
 
 @media (max-width: 767px) {
+  .am--video-with-carousel {
+    background-image: var(--am-background-image-mobile, var(--am-background-image, none));
+  }
+
+  .am--video-with-carousel.am--has-snow {
+    background-image: var(--am-snow-1, none), var(--am-snow-2, none), var(--am-snow-3, none), var(--am-background-image-mobile, var(--am-background-image, none));
+  }
+
+  .am--video-with-carousel.am--background-image-on-content .am--video-with-carousel__content {
+    background-image: var(--am-background-image-mobile, var(--am-background-image, none));
+  }
+
   .am--video-with-carousel__illustration.am--has-mobile-image .am--video-with-carousel__illustration-desktop { display: none; }
 }
 
@@ -462,37 +537,6 @@
   .am--video-with-carousel__slides:hover .am--video-with-carousel__arrow,
   .am--video-with-carousel__slides:focus-within .am--video-with-carousel__arrow { opacity: 1; }
 
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__media-frame,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__replacement,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-list {
-    aspect-ratio: var(--am-section-ratio);
-    overflow: hidden;
-  }
-
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__replacement > a,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-image,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-video-wrapper {
-    display: block;
-    height: 100%;
-  }
-
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__video,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__replacement-image,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-image > img,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__slide-video,
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__placeholder {
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .am--video-with-carousel.am--has-section-ratio .am--video-with-carousel__progress-track {
-    position: absolute;
-    z-index: 4;
-    bottom: 0;
-    left: 0;
-    margin-top: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

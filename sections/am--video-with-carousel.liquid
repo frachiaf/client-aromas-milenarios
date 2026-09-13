@@ -31,6 +31,7 @@
   assign slider_items = section.blocks | where: 'type', 'slide'
   assign media_sizes = '(min-width: 1024px) ' | append: section.settings.media_width_desktop | append: 'vw, 90vw'
   assign slide_sizes = '(min-width: 1024px) ' | append: section.settings.slide_width_desktop | append: 'vw, 85vw'
+  assign background_image = section.settings.background_image | default: section.settings.background_image_mobile
 
   assign background_color = section.settings.background_color | default: 'transparent'
   assign text_color = 'inherit'
@@ -66,8 +67,8 @@
 -%}
 
 <am-video-with-carousel
-  class="am--video-with-carousel{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.section_height != 'auto' %} am--has-section-ratio{% endif %}{% if section.settings.align_slider_items %} am--align-slider-items{% endif %}{% if section.settings.disable_smooth_transition %} am--disable-slide-transition{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}{% if section.settings.snow_animation %} am--has-snow{% endif %}"
-  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }}; --am-media-width-desktop: {{ section.settings.media_width_desktop }}%; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%; --am-content-justify-desktop: {{ section.settings.content_justify_desktop }};{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}"
+  class="am--video-with-carousel{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.background_image_on_content %} am--background-image-on-content{% endif %}{% if section.settings.section_height != 'auto' %} am--has-section-ratio{% endif %}{% if section.settings.align_slider_items %} am--align-slider-items{% endif %}{% if section.settings.disable_smooth_transition %} am--disable-slide-transition{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}{% if section.settings.snow_animation %} am--has-snow{% endif %}"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if background_image != blank %} --am-background-image: url('{{ background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-carousel-button-margin-top: {{ section.settings.carousel_button_margin_top }}px; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }}; --am-media-width-desktop: {{ section.settings.media_width_desktop }}%; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%; --am-content-justify-desktop: {{ section.settings.content_justify_desktop }};{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}"
   data-am-interval="{{ section.settings.carousel_timer | times: 1000 }}"
   data-am-autoplay="true"
 >
@@ -159,7 +160,7 @@
               >
                 <div class="am--video-with-carousel__slide-image">
                   {%- if block.settings.media_type == 'video' and block.settings.video != blank -%}
-                    <div class="am--video-with-carousel__slide-video-wrapper" aria-hidden="true">
+                    <div class="am--video-with-carousel__slide-video-wrapper" style="--am-slide-video-aspect-ratio: {{ block.settings.video.aspect_ratio }};" aria-hidden="true">
                       {{
                         block.settings.video
                         | video_tag:
@@ -169,7 +170,7 @@
                           muted: true,
                           controls: false,
                           playsinline: true,
-                          preload: 'none',
+                          preload: 'metadata',
                           class: 'am--video-with-carousel__slide-video'
                       }}
                     </div>
@@ -200,6 +201,11 @@
             {%- endif -%}
           </div>
         </div>
+        {%- if section.settings.carousel_button_label != blank and section.settings.carousel_button_link != blank -%}
+          <div class="am--video-with-carousel__carousel-button-wrapper">
+            <a class="am--video-with-carousel__carousel-button button" href="{{ section.settings.carousel_button_link }}">{{ section.settings.carousel_button_label | escape }}</a>
+          </div>
+        {%- endif -%}
       {%- endif -%}
     </div>
   </div>
@@ -236,6 +242,8 @@
     { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.enable_color_scheme }}" },
     { "type": "color", "id": "heading_color", "label": "Color del encabezado", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "image_picker", "id": "background_image", "label": "Imagen de fondo" },
+    { "type": "image_picker", "id": "background_image_mobile", "label": "Imagen de fondo (móvil)", "info": "Si está vacía, usa la imagen principal." },
+    { "type": "checkbox", "id": "background_image_on_content", "label": "Aplicar imagen de fondo solo al contenido", "default": false },
     { "type": "color", "id": "background_color", "label": "Color de fondo", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "header", "content": "Configuración del video" },
     { "type": "image_picker", "id": "video_poster", "label": "Imagen de portada del video" },
@@ -273,6 +281,9 @@
     { "type": "color", "id": "button_border_color", "label": "Color del borde del botón", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "header", "content": "Contenido del carrusel" },
     { "type": "text", "id": "carousel_heading", "label": "Encabezado del carrusel", "default": "Carousel heading" },
+    { "type": "text", "id": "carousel_button_label", "label": "Etiqueta del botón general" },
+    { "type": "url", "id": "carousel_button_link", "label": "Enlace del botón general" },
+    { "type": "range", "id": "carousel_button_margin_top", "label": "Margen superior del botón general", "min": 0, "max": 120, "step": 4, "default": 24, "unit": "px" },
     { "type": "color", "id": "carousel_heading_color", "label": "Color del encabezado del carrusel", "default": "#000000", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "checkbox", "id": "show_slider_controls", "label": "Mostrar controles del carrusel", "default": true },
     { "type": "checkbox", "id": "align_slider_items", "label": "Alinear las diapositivas en la misma posición", "default": false },
@@ -284,14 +295,16 @@
     {
       "type": "select",
       "id": "section_height",
-      "label": "Altura de la sección (escritorio)",
+      "label": "Relación de aspecto",
       "options": [
         { "value": "auto", "label": "Automática" },
-        { "value": "21 / 9", "label": "Pequeña" },
-        { "value": "16 / 9", "label": "Mediana" },
-        { "value": "4 / 3", "label": "Grande" }
+        { "value": "21 / 9", "label": "21:9" },
+        { "value": "16 / 9", "label": "16:9" },
+        { "value": "4 / 3", "label": "4:3" },
+        { "value": "1 / 1", "label": "1:1" },
+        { "value": "3 / 4", "label": "3:4" }
       ],
-      "default": "auto"
+      "default": "16 / 9"
     },
     { "type": "header", "content": "Disposición en escritorio" },
     { "type": "range", "id": "media_width_desktop", "label": "Ancho del medio", "min": 20, "max": 80, "step": 1, "default": 40, "unit": "%" },

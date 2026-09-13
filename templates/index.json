@@ -712,7 +712,7 @@
         "product_title_gap": 8,
         "product_title_preset": "",
         "product_price_preset": "",
-        "padding-block-start": 40,
+        "padding-block-start": 0,
         "padding-block-end": 40
       }
     },

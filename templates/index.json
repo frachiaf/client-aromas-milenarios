@@ -36,6 +36,7 @@
             "video_position": "cover",
             "background_image": "shopify://shop_images/ChatGPT_Image_2_sept_2026_01_00_33_a.m._2.png",
             "background_image_position": "cover",
+            "background_image_mobile": "shopify://shop_images/WhatsApp_Image_2026-09-13_at_2.17.55_AM.jpg",
             "border": "none",
             "border_width": 10,
             "border_opacity": 100,

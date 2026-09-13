@@ -1886,6 +1886,17 @@
         "padding-block-end": 48
       }
     },
+    "am_color_divider_hh8rRA": {
+      "type": "am--color-divider",
+      "name": "AM Divisor de color",
+      "settings": {
+        "color_scheme": "",
+        "separator_style": "wave",
+        "invert_colors": false,
+        "height_desktop": 180,
+        "height_mobile": 100
+      }
+    },
     "section_eeFGpP": {
       "type": "section",
       "blocks": {
@@ -2111,6 +2122,17 @@
         "gradient_direction": "to top",
         "padding-block-start": 0,
         "padding-block-end": 0
+      }
+    },
+    "am_color_divider_AhjHnV": {
+      "type": "am--color-divider",
+      "name": "AM Divisor de color",
+      "settings": {
+        "color_scheme": "",
+        "separator_style": "wave",
+        "invert_colors": true,
+        "height_desktop": 180,
+        "height_mobile": 100
       }
     },
     "section_KCRfxt": {
@@ -2618,7 +2640,9 @@
     "media_with_content_MUN3P3",
     "media_with_content_J4njzh",
     "product_list_z7QLNk",
+    "am_color_divider_hh8rRA",
     "section_eeFGpP",
+    "am_color_divider_AhjHnV",
     "section_KCRfxt",
     "product_list_UVeP3P"
   ]

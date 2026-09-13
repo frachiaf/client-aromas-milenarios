@@ -1357,6 +1357,17 @@
         "padding-block-end": 0
       }
     },
+    "am_color_divider_HDngyH": {
+      "type": "am--color-divider",
+      "name": "AM Divisor de color",
+      "settings": {
+        "color_scheme": "",
+        "separator_style": "wave",
+        "invert_colors": true,
+        "height_desktop": 180,
+        "height_mobile": 100
+      }
+    },
     "media_with_content_MUN3P3": {
       "type": "media-with-content",
       "blocks": {
@@ -2637,6 +2648,7 @@
     "am_color_divider_HPtyJK",
     "media_with_content_E7M3aJ",
     "section_38NEeA",
+    "am_color_divider_HDngyH",
     "media_with_content_MUN3P3",
     "media_with_content_J4njzh",
     "product_list_z7QLNk",

@@ -491,7 +491,7 @@
       "settings": {
         "snow_animation": false,
         "heading": "Section title",
-        "enable_color_scheme": true,
+        "enable_color_scheme": false,
         "color_scheme": "",
         "heading_color": "#ad8995",
         "background_color": "#eaeaea",
@@ -514,7 +514,7 @@
         "btn_text_color": "#ffffff",
         "button_border_color": "",
         "carousel_heading": "Carousel heading",
-        "carousel_heading_color": "#000000",
+        "carousel_heading_color": "#AD8995",
         "show_slider_controls": false,
         "align_slider_items": true,
         "disable_smooth_transition": true,

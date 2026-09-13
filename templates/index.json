@@ -1026,7 +1026,7 @@
           "static": true,
           "settings": {
             "media_type": "image",
-            "image": "shopify://shop_images/ChatGPT_Image_31_jul_2026_02_26_32_a.m..png",
+            "image": "shopify://shop_images/3-6224ec3e4ac4b7a87817172072037148-1024-1024.webp",
             "link": "",
             "video_loop": true,
             "video_autoplay": false,
@@ -1048,7 +1048,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<h2>Join the <em><strong>club</strong></em></h2>",
+                "text": "<h2>Sección Masculina</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",

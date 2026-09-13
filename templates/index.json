@@ -643,14 +643,14 @@
         "vertical_padding": 60,
         "enable_color_scheme": false,
         "color_scheme": "",
-        "background_color": "",
+        "background_color": "#EAEAEA",
         "text_color": "",
         "autoplay": true,
         "loop": true,
         "autoplay_slide_duration": 8,
         "progress_color": "",
         "slide_width_desktop": 80,
-        "background_image": "shopify://shop_images/Sin_titulo_300_x_533_px_3.png",
+        "background_image": "shopify://shop_images/Sin_titulo_300_x_533_px_4.png",
         "image_aspect_ratio_mobile": "am--numbered-slideshow__image--auto"
       }
     },

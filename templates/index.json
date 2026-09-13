@@ -593,6 +593,52 @@
         "background_progress_color": "#fefefe"
       }
     },
+    "am_numbered_slideshow_zGrUpX": {
+      "type": "am--numbered-slideshow",
+      "blocks": {
+        "slide_CNAHdh": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Vintage-19th-Century-Provincial-Elm-Wood-Stool-Weston-Table-1023-OG-Banner_1080x_bea69f0d-ac7a-43ef-b20e-04924984de7e.webp",
+            "title": "Bistro Style",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        },
+        "slide_zxwfik": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Safari_Camp_Beds-Weston-Table_2402x_5d75960d-9158-4f97-aec3-74d74acf8411.webp",
+            "title": "The world's most beautiful grill",
+            "link_title": "Shop the Collection",
+            "url": "#"
+          }
+        }
+      },
+      "block_order": [
+        "slide_CNAHdh",
+        "slide_zxwfik"
+      ],
+      "name": "AM Presentación numerada",
+      "settings": {
+        "heading": "",
+        "show_desktop": true,
+        "show_tablet": true,
+        "show_mobile": true,
+        "section_height": "auto",
+        "vertical_padding": 60,
+        "enable_color_scheme": false,
+        "color_scheme": "",
+        "background_color": "",
+        "text_color": "",
+        "autoplay": true,
+        "loop": true,
+        "autoplay_slide_duration": 8,
+        "progress_color": "",
+        "slide_width_desktop": 80,
+        "image_aspect_ratio_mobile": "am--numbered-slideshow__image--auto"
+      }
+    },
     "product_hotspots_bENwVW": {
       "type": "product-hotspots",
       "blocks": {
@@ -721,52 +767,6 @@
         "product_price_preset": "",
         "padding-block-start": 0,
         "padding-block-end": 40
-      }
-    },
-    "am_numbered_slideshow_zGrUpX": {
-      "type": "am--numbered-slideshow",
-      "blocks": {
-        "slide_CNAHdh": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/Vintage-19th-Century-Provincial-Elm-Wood-Stool-Weston-Table-1023-OG-Banner_1080x_bea69f0d-ac7a-43ef-b20e-04924984de7e.webp",
-            "title": "Bistro Style",
-            "link_title": "Shop the Collection",
-            "url": "#"
-          }
-        },
-        "slide_zxwfik": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/Safari_Camp_Beds-Weston-Table_2402x_5d75960d-9158-4f97-aec3-74d74acf8411.webp",
-            "title": "The world's most beautiful grill",
-            "link_title": "Shop the Collection",
-            "url": "#"
-          }
-        }
-      },
-      "block_order": [
-        "slide_CNAHdh",
-        "slide_zxwfik"
-      ],
-      "name": "AM Presentación numerada",
-      "settings": {
-        "heading": "",
-        "show_desktop": true,
-        "show_tablet": true,
-        "show_mobile": true,
-        "section_height": "auto",
-        "vertical_padding": 60,
-        "enable_color_scheme": false,
-        "color_scheme": "",
-        "background_color": "",
-        "text_color": "",
-        "autoplay": true,
-        "loop": true,
-        "autoplay_slide_duration": 8,
-        "progress_color": "",
-        "slide_width_desktop": 80,
-        "image_aspect_ratio_mobile": "am--numbered-slideshow__image--auto"
       }
     },
     "divider_phjVXD": {
@@ -2589,8 +2589,8 @@
     "section_6PnLrM",
     "hero_mqfmaA",
     "am_video_with_carousel_7TDfyg",
-    "product_hotspots_bENwVW",
     "am_numbered_slideshow_zGrUpX",
+    "product_hotspots_bENwVW",
     "divider_phjVXD",
     "marquee_t4nXej",
     "divider_raVfmY",

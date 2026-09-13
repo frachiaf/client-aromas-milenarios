@@ -546,7 +546,7 @@
       "name": "AM Video + Carousel",
       "settings": {
         "snow_animation": false,
-        "heading": "",
+        "heading": "Seccion",
         "enable_color_scheme": false,
         "color_scheme": "",
         "heading_color": "#ad8995",
@@ -560,7 +560,7 @@
         "replacing_image_url": "",
         "title": "",
         "description": "",
-        "button_label": "Splash",
+        "button_label": "Splash corporal",
         "text_horizontal_position": "center",
         "text_vertical_position": "end",
         "text_align": "tc",
@@ -572,8 +572,8 @@
         "btn_color": "#ad8995",
         "btn_text_color": "#ffffff",
         "button_border_color": "",
-        "carousel_heading": "Carousel heading",
-        "carousel_button_label": "",
+        "carousel_heading": "",
+        "carousel_button_label": "Splash Ambiente - Textil",
         "carousel_button_link": "",
         "carousel_button_margin_top": 24,
         "carousel_heading_color": "#ad8995",
@@ -783,20 +783,6 @@
         "padding-block-end": 16
       }
     },
-    "divider_raVfmY": {
-      "type": "divider",
-      "name": "t:names.divider_section",
-      "settings": {
-        "color_scheme": "",
-        "section_width": "full-width",
-        "thickness": 1,
-        "corner_radius": "square",
-        "width_percent": 100,
-        "alignment_horizontal": "center",
-        "padding-block-start": 16,
-        "padding-block-end": 16
-      }
-    },
     "marquee_t4nXej": {
       "type": "marquee",
       "blocks": {
@@ -926,6 +912,20 @@
         "padding-block-start": 24,
         "padding-block-end": 24,
         "gap_between_elements": 24
+      }
+    },
+    "divider_raVfmY": {
+      "type": "divider",
+      "name": "t:names.divider_section",
+      "settings": {
+        "color_scheme": "",
+        "section_width": "full-width",
+        "thickness": 1,
+        "corner_radius": "square",
+        "width_percent": 100,
+        "alignment_horizontal": "center",
+        "padding-block-start": 16,
+        "padding-block-end": 16
       }
     },
     "product_hotspots_bEbnA8": {

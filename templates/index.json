@@ -1765,6 +1765,7 @@
               "type": "image",
               "name": "t:names.image",
               "settings": {
+                "image": "shopify://shop_images/ChatGPT_Image_13_sept_2026_01_06_35_a.m._3.png",
                 "link": "",
                 "image_ratio": "adapt",
                 "width": "custom",
@@ -1859,6 +1860,7 @@
               "type": "image",
               "name": "t:names.image",
               "settings": {
+                "image": "shopify://shop_images/ChatGPT_Image_13_sept_2026_12_54_55_a.m..png",
                 "link": "",
                 "image_ratio": "adapt",
                 "width": "custom",

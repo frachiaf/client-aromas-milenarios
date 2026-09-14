@@ -51,6 +51,7 @@
         const active = slideIndex === boundedIndex;
         slide.classList.toggle('am--is-active', active);
         slide.setAttribute('aria-hidden', String(!active));
+        if (!active) slide.querySelector('product-hotspots')?.resetState?.();
         slide.querySelectorAll('a, button, input, select, textarea, [tabindex]').forEach((element) => {
           if (active) {
             if (element.hasAttribute('data-am-previous-tabindex')) {

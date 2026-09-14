@@ -6,6 +6,31 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Añadido
+
+- Objetivo: `AM Presentación numerada` permite activar hasta tres hotspots de producto por diapositiva, con posiciones independientes, título y enlace opcionales, imagen alternativa al hover y los tres modos de interacción de `Product Hotspots`. También incorpora numeración romana visual opcional y una animación respirante configurable por diapositiva para destacar sus hotspots.
+- Archivos: `sections/am--numbered-slideshow.liquid`, `assets/am--numbered-slideshow.css`, `assets/am--numbered-slideshow.js`, `snippets/product-hotspot.liquid`, `assets/product-hotspot.css`, `assets/product-hotspot.js`, `blocks/_hotspot-product.liquid`, `sections/product-hotspots.liquid`, `snippets/quick-add.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: los tres hotspots, la numeración romana y la animación quedan desactivados por defecto y no alteran las instancias existentes ni requieren editar templates JSON. Cada slide comparte una sola capa de imagen hover; el producto sigue siendo obligatorio en storefront, mientras el Theme Editor conserva un marcador para configuraciones activas sin producto accesible. La numeración romana conserva índices arábigos accesibles y el halo solo se ejecuta en la diapositiva activa, se oculta durante la interacción y respeta `prefers-reduced-motion`.
+
+### Modificado
+
+- El markup y los estilos de hotspot pasan a un snippet y asset compartidos sin cambiar el schema de `Product Hotspots`. Quick Add acepta un `instance_id` opcional para generar formularios únicos cuando una diapositiva contiene varios hotspots, y el slideshow cierra previews y restaura la imagen base al cambiar de slide.
+- Shopify no admite `visible_if` en settings de tipo `product`: cada selector de producto permanece visible, mientras texto, URL, imagen hover y posiciones sí se ocultan hasta activar su checkbox.
+- Los controles de la presentación pueden mostrarse con contadores CSS `upper-roman` hasta el límite de 12 diapositivas. El halo usa exclusivamente `transform` y `opacity`, sin modificar el tamaño ni la posición del hotspot.
+
+### Validación
+
+- Los schemas Liquid se parsearon como JSON y un control automatizado confirmó IDs únicos, 26 settings funcionales por slide, checkboxes desactivados, posiciones predeterminadas 25%/50%, 50%/50% y 75%/50%, tres modos de interacción y compatibilidad exacta del schema anterior de `Product Hotspots`.
+- El contrato Liquid/CSS confirmó los defaults `false` de `use_roman_numerals` y `animate_hotspots`, la numeración visual `I`–`XII` sin alterar los nombres accesibles y la activación del halo únicamente en slides activos, con pausa durante hover, foco o card abierta y cancelación bajo movimiento reducido.
+- `node --check assets/product-hotspot.js`, `node --check assets/am--numbered-slideshow.js` y `git diff --check` fueron aprobados; no hay cambios en `templates/` ni `config/`.
+- `shopify.cmd theme check --path .` inspeccionó 314 archivos sin errores y mantuvo 29 advertencias preexistentes; la CLI volvió a emitir su aserción interna de Node después del resumen.
+- El validador de la skill Shopify Liquid no pudo iniciar porque falta la dependencia local `@shopify/theme-check-common`; se utilizó Theme Check como fallback oficial sin instalar ni modificar dependencias.
+- El chequeo `checkJs` estricto no pudo ejecutarse porque `tsc` no está instalado en el entorno. No se inició `shopify theme dev` para evitar subir el theme a una tienda no identificada; responsive, foco, estados inactivos y fallbacks de imagen se revisaron estáticamente.
+
+### Reversión
+
+- Retirar los settings y el render por slide, las clases y keyframes de numeración/animación, restaurar el markup/estilos internos de `Product Hotspots` y eliminar el parámetro opcional `instance_id` devuelve el comportamiento anterior sin migrar datos ni modificar templates JSON.
+
 ### Modificado
 
 - Objetivo: `AM Video + Carrusel` permite elegir una relación de aspecto común para el medio principal y todas las diapositivas.

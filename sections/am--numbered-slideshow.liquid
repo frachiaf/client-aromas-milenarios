@@ -17,11 +17,29 @@
   endif
 
   assign slider_items = section.blocks | where: 'type', 'slide'
+  assign has_hotspots = false
+  assign hotspot_color_scheme = section.settings.color_scheme | default: 'scheme-1'
+
+  for block in slider_items
+    if block.settings.hotspot_1_enabled or block.settings.hotspot_2_enabled or block.settings.hotspot_3_enabled
+      assign has_hotspots = true
+      break
+    endif
+  endfor
 -%}
+
+{%- if has_hotspots -%}
+  {{ 'product-hotspot.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-hotspot.js' | asset_url }}" type="module" fetchpriority="low"></script>
+  {% render 'quick-add-styles' %}
+  {% render 'quick-add-modal-styles' %}
+  {% render 'buy-buttons-styles' %}
+  {% render 'product-badges-styles' %}
+{%- endif -%}
 
 <am-numbered-slideshow
   class="am--numbered-slideshow{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.section_height != 'auto' %} am--has-section-ratio{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}"
-  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }}; --am-heading-color: {{ heading_color }}; --am-padding-y: {{ section.settings.vertical_padding }}px; --am-progress-color: {{ progress_color }}; --am-progress-muted: {{ progress_muted }}; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%;{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }}; --am-heading-color: {{ heading_color }}; --am-padding-y: {{ section.settings.vertical_padding }}px; --am-progress-color: {{ progress_color }}; --am-progress-muted: {{ progress_muted }}; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%; --product-title-gap: {{ section.settings.product_title_gap }}px;{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}{% if section.settings.background_image != blank %} --am-background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}"
   data-am-autoplay="{{ section.settings.autoplay }}"
   data-am-loop="{{ section.settings.loop }}"
   data-am-interval="{{ section.settings.autoplay_slide_duration | times: 1000 }}"
@@ -34,9 +52,15 @@
     <div class="am--numbered-slideshow__viewport" aria-roledescription="carousel" aria-label="Slideshow">
       <ul class="am--numbered-slideshow__list">
         {%- for block in slider_items -%}
+          {%- liquid
+            assign slide_has_hotspots = false
+            if block.settings.hotspot_1_enabled or block.settings.hotspot_2_enabled or block.settings.hotspot_3_enabled
+              assign slide_has_hotspots = true
+            endif
+          -%}
           <li
             id="am--numbered-slide-{{ section.id }}-{{ forloop.index0 }}"
-            class="am--numbered-slideshow__slide{% if forloop.first %} am--is-active{% endif %}"
+            class="am--numbered-slideshow__slide{% if forloop.first %} am--is-active{% endif %}{% if block.settings.animate_hotspots %} am--animate-hotspots{% endif %}"
             data-am-slide
             role="tabpanel"
             aria-labelledby="am--numbered-control-{{ section.id }}-{{ forloop.index0 }}"
@@ -44,13 +68,56 @@
             aria-label="{{ forloop.index }} of {{ forloop.length }}"
             {{ block.shopify_attributes }}
           >
-            <div class="am--numbered-slideshow__image {{ section.settings.image_aspect_ratio_mobile }}">
+            <product-hotspots class="am--numbered-slideshow__image {{ section.settings.image_aspect_ratio_mobile }}">
               {%- if block.settings.image != blank -%}
                 {{ block.settings.image | image_url: width: 2400 | image_tag: widths: '375, 550, 750, 1100, 1500, 2000, 2400', sizes: '(min-width: 1440px) 1380px, (min-width: 1024px) calc(100vw - 60px), calc(100vw - 40px)', loading: 'lazy' }}
               {%- else -%}
                 {{ 'lifestyle-1' | placeholder_svg_tag: 'am--numbered-slideshow__placeholder' }}
               {%- endif -%}
-            </div>
+
+              {%- if slide_has_hotspots -%}
+                <img
+                  class="hotspots__background-image hotspots__background-image--hover"
+                  alt=""
+                  aria-hidden="true"
+                  width="2000"
+                  height="2000"
+                  data-hotspot-hover-image
+                >
+                <div class="hotspots-container">
+                  {%- for hotspot_number in (1..3) -%}
+                    {%- liquid
+                      assign enabled_key = 'hotspot_' | append: hotspot_number | append: '_enabled'
+                      assign product_key = 'hotspot_' | append: hotspot_number | append: '_product'
+                      assign text_key = 'hotspot_' | append: hotspot_number | append: '_text'
+                      assign url_key = 'hotspot_' | append: hotspot_number | append: '_url'
+                      assign hover_image_key = 'hotspot_' | append: hotspot_number | append: '_hover_image'
+                      assign x_position_key = 'hotspot_' | append: hotspot_number | append: '_x_position'
+                      assign y_position_key = 'hotspot_' | append: hotspot_number | append: '_y_position'
+                      assign hotspot_instance_id = block.id | append: '-hotspot-' | append: hotspot_number
+                    -%}
+                    {%- if block.settings[enabled_key] -%}
+                      {% render 'product-hotspot',
+                        product: block.settings[product_key],
+                        instance_id: hotspot_instance_id,
+                        x_position: block.settings[x_position_key],
+                        y_position: block.settings[y_position_key],
+                        hover_image: block.settings[hover_image_key],
+                        title_override: block.settings[text_key],
+                        url_override: block.settings[url_key],
+                        hotspot_color: section.settings.hotspot_color,
+                        bullseye_color: section.settings.bullseye_color,
+                        desktop_interaction_mode: section.settings.desktop_interaction_mode,
+                        quick_buy_hover_label: section.settings.quick_buy_hover_label,
+                        color_scheme: hotspot_color_scheme,
+                        product_title_preset: section.settings.product_title_preset,
+                        product_price_preset: section.settings.product_price_preset
+                      %}
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </product-hotspots>
           </li>
         {%- endfor -%}
       </ul>
@@ -59,7 +126,7 @@
     {%- if slider_items.size > 0 -%}
       <div class="am--numbered-slideshow__info">
         <div class="am--numbered-slideshow__tabs">
-          <ul class="am--numbered-slideshow__numbers" role="tablist" aria-label="Select a slide to show">
+          <ul class="am--numbered-slideshow__numbers{% if section.settings.use_roman_numerals %} am--numbered-slideshow__numbers--roman{% endif %}" role="tablist" aria-label="Select a slide to show">
             {%- for block in slider_items -%}
               <li role="presentation">
                 <button
@@ -70,8 +137,11 @@
                   role="tab"
                   aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
                   aria-controls="am--numbered-slide-{{ section.id }}-{{ forloop.index0 }}"
+                  aria-label="{{ forloop.index }}"
                   tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
-                >{{ forloop.index }}</button>
+                >
+                  <span class="am--numbered-slideshow__control-number" aria-hidden="true">{{ forloop.index }}</span>
+                </button>
               </li>
             {%- endfor -%}
           </ul>
@@ -151,10 +221,59 @@
     { "type": "color", "id": "background_color", "label": "Color de fondo", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "color", "id": "text_color", "label": "Color del texto", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "header", "content": "Configuración de la presentación" },
+    { "type": "checkbox", "id": "use_roman_numerals", "label": "Usar números romanos", "default": false },
     { "type": "checkbox", "id": "autoplay", "label": "Reproducción automática", "default": true },
     { "type": "checkbox", "id": "loop", "label": "Repetir", "default": true },
     { "type": "range", "id": "autoplay_slide_duration", "label": "Duración de cada diapositiva", "min": 3, "max": 8, "step": 1, "default": 8, "unit": "s" },
     { "type": "color", "id": "progress_color", "label": "Color del progreso", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
+    { "type": "header", "content": "Puntos interactivos" },
+    {
+      "type": "select",
+      "id": "desktop_interaction_mode",
+      "label": "Interacción en escritorio",
+      "options": [
+        { "value": "hover-preview-click-quick-buy", "label": "Preview al hover y compra rápida al hacer clic" },
+        { "value": "click-preview", "label": "Preview al hacer clic" },
+        { "value": "click-quick-buy", "label": "Compra rápida al hacer clic" }
+      ],
+      "default": "hover-preview-click-quick-buy"
+    },
+    {
+      "type": "text",
+      "id": "quick_buy_hover_label",
+      "label": "Texto al pasar el cursor",
+      "default": "VER MÁS",
+      "visible_if": "{{ section.settings.desktop_interaction_mode == 'click-quick-buy' }}"
+    },
+    { "type": "color", "id": "hotspot_color", "label": "Color del punto interactivo", "default": "#FFFFFF57", "alpha": true },
+    { "type": "color", "id": "bullseye_color", "label": "Color del centro", "default": "#ffffff", "alpha": true },
+    { "type": "range", "id": "product_title_gap", "label": "Espacio bajo el título del producto", "min": 0, "max": 50, "step": 1, "unit": "px", "default": 8 },
+    {
+      "type": "select",
+      "id": "product_title_preset",
+      "label": "Tipografía del título del producto",
+      "options": [
+        { "value": "", "label": "Predeterminada" },
+        { "value": "paragraph", "label": "Párrafo" },
+        { "value": "h4", "label": "Encabezado 4" },
+        { "value": "h5", "label": "Encabezado 5" },
+        { "value": "h6", "label": "Encabezado 6" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "product_price_preset",
+      "label": "Tipografía del precio",
+      "options": [
+        { "value": "", "label": "Predeterminada" },
+        { "value": "paragraph", "label": "Párrafo" },
+        { "value": "h4", "label": "Encabezado 4" },
+        { "value": "h5", "label": "Encabezado 5" },
+        { "value": "h6", "label": "Encabezado 6" }
+      ],
+      "default": ""
+    },
     { "type": "header", "content": "Configuración de imágenes" },
     { "type": "range", "id": "slide_width_desktop", "label": "Ancho de las diapositivas (escritorio)", "min": 50, "max": 100, "step": 5, "default": 100, "unit": "%" },
     { "type": "image_picker", "id": "background_image", "label": "Imagen de fondo (escritorio)" },
@@ -181,7 +300,32 @@
         { "type": "image_picker", "id": "image", "label": "Imagen" },
         { "type": "text", "id": "title", "label": "Título" },
         { "type": "text", "id": "link_title", "label": "Texto del enlace" },
-        { "type": "url", "id": "url", "label": "Enlace" }
+        { "type": "url", "id": "url", "label": "Enlace" },
+        { "type": "checkbox", "id": "animate_hotspots", "label": "Animar hotspots", "default": false },
+        { "type": "header", "content": "Hotspot 1" },
+        { "type": "checkbox", "id": "hotspot_1_enabled", "label": "Activar hotspot 1", "default": false },
+        { "type": "product", "id": "hotspot_1_product", "label": "Producto" },
+        { "type": "text", "id": "hotspot_1_text", "label": "Título alternativo", "info": "Si está vacío, usa el título del producto.", "visible_if": "{{ block.settings.hotspot_1_enabled }}" },
+        { "type": "url", "id": "hotspot_1_url", "label": "Enlace alternativo", "info": "Solo reemplaza el enlace de la card; Quick Buy usa el producto.", "visible_if": "{{ block.settings.hotspot_1_enabled }}" },
+        { "type": "image_picker", "id": "hotspot_1_hover_image", "label": "Imagen al pasar el cursor", "visible_if": "{{ block.settings.hotspot_1_enabled }}" },
+        { "type": "range", "id": "hotspot_1_x_position", "label": "Posición horizontal", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 25, "visible_if": "{{ block.settings.hotspot_1_enabled }}" },
+        { "type": "range", "id": "hotspot_1_y_position", "label": "Posición vertical", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "visible_if": "{{ block.settings.hotspot_1_enabled }}" },
+        { "type": "header", "content": "Hotspot 2" },
+        { "type": "checkbox", "id": "hotspot_2_enabled", "label": "Activar hotspot 2", "default": false },
+        { "type": "product", "id": "hotspot_2_product", "label": "Producto" },
+        { "type": "text", "id": "hotspot_2_text", "label": "Título alternativo", "info": "Si está vacío, usa el título del producto.", "visible_if": "{{ block.settings.hotspot_2_enabled }}" },
+        { "type": "url", "id": "hotspot_2_url", "label": "Enlace alternativo", "info": "Solo reemplaza el enlace de la card; Quick Buy usa el producto.", "visible_if": "{{ block.settings.hotspot_2_enabled }}" },
+        { "type": "image_picker", "id": "hotspot_2_hover_image", "label": "Imagen al pasar el cursor", "visible_if": "{{ block.settings.hotspot_2_enabled }}" },
+        { "type": "range", "id": "hotspot_2_x_position", "label": "Posición horizontal", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "visible_if": "{{ block.settings.hotspot_2_enabled }}" },
+        { "type": "range", "id": "hotspot_2_y_position", "label": "Posición vertical", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "visible_if": "{{ block.settings.hotspot_2_enabled }}" },
+        { "type": "header", "content": "Hotspot 3" },
+        { "type": "checkbox", "id": "hotspot_3_enabled", "label": "Activar hotspot 3", "default": false },
+        { "type": "product", "id": "hotspot_3_product", "label": "Producto" },
+        { "type": "text", "id": "hotspot_3_text", "label": "Título alternativo", "info": "Si está vacío, usa el título del producto.", "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
+        { "type": "url", "id": "hotspot_3_url", "label": "Enlace alternativo", "info": "Solo reemplaza el enlace de la card; Quick Buy usa el producto.", "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
+        { "type": "image_picker", "id": "hotspot_3_hover_image", "label": "Imagen al pasar el cursor", "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
+        { "type": "range", "id": "hotspot_3_x_position", "label": "Posición horizontal", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 75, "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
+        { "type": "range", "id": "hotspot_3_y_position", "label": "Posición vertical", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "visible_if": "{{ block.settings.hotspot_3_enabled }}" }
       ]
     },
     {

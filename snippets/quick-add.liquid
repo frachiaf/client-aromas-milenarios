@@ -5,10 +5,12 @@
   @param {string} section_id - The section ID
   @param {object} [block] - The block object
   @param {string} [color_scheme] - The color scheme to use
+  @param {string} [instance_id] - Unique suffix when a block renders more than one Quick Add form
 {%- enddoc -%}
 
 {% liquid
-  assign product_form_id = 'QuickAdd-ProductForm-' | append: product.id | append: '-' | append: block.id
+  assign quick_add_instance_id = instance_id | default: block.id
+  assign product_form_id = 'QuickAdd-ProductForm-' | append: product.id | append: '-' | append: quick_add_instance_id
   assign add_to_cart_text = 'actions.add' | t
   assign choose_options_text = 'actions.choose' | t
   assign color_scheme = color_scheme | default: settings.quick_add_color_scheme

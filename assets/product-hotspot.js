@@ -168,6 +168,21 @@ class ProductHotspots extends HTMLElement {
     }
   }
 
+  /**
+   * Restores the base image and closes every preview owned by this media container.
+   * Used when a carousel slide becomes inactive.
+   */
+  resetState() {
+    this.#hoverImageRequestId += 1;
+    this.#cancelHoverImageAnimation();
+    this.#activeSource = null;
+    this.#hoverImage?.classList.remove('is-active');
+
+    for (const hotspot of this.querySelectorAll('product-hotspot-component')) {
+      if (hotspot instanceof ProductHotspotComponent) void hotspot.closeDialog();
+    }
+  }
+
   #cancelHoverImageAnimation() {
     if (this.#hoverImageAnimationFrame === null) return;
 

@@ -617,7 +617,7 @@
             "title": "Bistro Style",
             "link_title": "Shop the Collection",
             "url": "#",
-            "animate_hotspots": false,
+            "animate_hotspots": true,
             "hotspot_1_enabled": true,
             "hotspot_1_product": "spray-ambiente-textil-celta",
             "hotspot_1_text": "",

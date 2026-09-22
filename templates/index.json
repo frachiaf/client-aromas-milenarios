@@ -693,12 +693,41 @@
             "hotspot_3_x_position": 75,
             "hotspot_3_y_position": 50
           }
+        },
+        "slide_7j7AgB": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/ChatGPT_Image_22_sept_2026_01_16_00_a.m..png",
+            "title": "",
+            "link_title": "",
+            "url": "",
+            "animate_hotspots": false,
+            "hotspot_1_enabled": false,
+            "hotspot_1_product": "",
+            "hotspot_1_text": "",
+            "hotspot_1_url": "",
+            "hotspot_1_x_position": 25,
+            "hotspot_1_y_position": 50,
+            "hotspot_2_enabled": false,
+            "hotspot_2_product": "",
+            "hotspot_2_text": "",
+            "hotspot_2_url": "",
+            "hotspot_2_x_position": 50,
+            "hotspot_2_y_position": 50,
+            "hotspot_3_enabled": false,
+            "hotspot_3_product": "",
+            "hotspot_3_text": "",
+            "hotspot_3_url": "",
+            "hotspot_3_x_position": 75,
+            "hotspot_3_y_position": 50
+          }
         }
       },
       "block_order": [
         "slide_CNAHdh",
         "slide_dii6KR",
-        "slide_zxwfik"
+        "slide_zxwfik",
+        "slide_7j7AgB"
       ],
       "name": "AM Presentación numerada",
       "settings": {

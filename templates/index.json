@@ -741,7 +741,7 @@
         "color_scheme": "",
         "background_color": "#eaeaea",
         "text_color": "",
-        "use_roman_numerals": false,
+        "use_roman_numerals": true,
         "autoplay": true,
         "loop": true,
         "autoplay_slide_duration": 8,

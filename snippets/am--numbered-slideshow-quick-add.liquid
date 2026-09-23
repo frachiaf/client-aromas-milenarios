@@ -1,0 +1,77 @@
+{%- doc -%}
+  Renders the product CTA used by AM Numbered Slideshow.
+
+  @param {object} product - Product selected for the slide CTA
+  @param {string} label - Merchant-defined CTA label
+  @param {string} section_id - Section ID used by the product form
+  @param {string} instance_id - Unique form suffix for the slide
+{%- enddoc -%}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign can_add_to_cart = variant.available
+  assign product_form_id = 'NumberedSlideshow-ProductForm-' | append: product.id | append: '-' | append: instance_id
+  assign quantity = variant.quantity_rule.min | default: 1
+-%}
+
+<quick-add-component
+  class="am--numbered-slideshow__quick-add"
+  data-product-title="{{ product.title | escape }}"
+  data-product-url="{{ product.url | escape }}"
+  data-product-options-count="{{ product.options.size }}"
+>
+  <product-form-component
+    data-section-id="{{ section_id }}"
+    data-product-id="{{ product.id }}"
+    on:submit="/handleSubmit"
+  >
+    <div
+      class="visually-hidden"
+      aria-live="assertive"
+      role="status"
+      aria-atomic="true"
+      ref="liveRegion"
+    ></div>
+    {%- form 'product', product, id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+      <input
+        type="hidden"
+        name="id"
+        ref="variantId"
+        value="{{ variant.id }}"
+        {% unless can_add_to_cart %}
+          disabled
+        {% endunless %}
+      >
+      <input type="hidden" name="quantity" value="{{ quantity }}">
+
+      {%- if product.variants_count == 1 -%}
+        <add-to-cart-component ref="addToCartButtonContainer" data-add-to-cart-animation="false">
+          <button
+            type="submit"
+            name="add"
+            ref="addToCartButton"
+            on:click="/handleClick"
+            class="am--numbered-slideshow__caption-link button"
+            {% unless can_add_to_cart %}
+              disabled
+            {% endunless %}
+          >
+            {{- label | escape -}}
+          </button>
+        </add-to-cart-component>
+      {%- else -%}
+        <button
+          type="button"
+          name="add"
+          on:click="quick-add-component/handleClick"
+          class="am--numbered-slideshow__caption-link button"
+          {% unless can_add_to_cart %}
+            disabled
+          {% endunless %}
+        >
+          {{- label | escape -}}
+        </button>
+      {%- endif -%}
+    {%- endform -%}
+  </product-form-component>
+</quick-add-component>

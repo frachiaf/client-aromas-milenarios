@@ -151,6 +151,13 @@
   opacity: 1;
 }
 
+.am--numbered-slideshow__quick-add,
+.am--numbered-slideshow__quick-add product-form-component,
+.am--numbered-slideshow__quick-add .shopify-product-form,
+.am--numbered-slideshow__quick-add add-to-cart-component {
+  display: inline-flex;
+}
+
 .am--numbered-slideshow__slide.am--is-active.am--animate-hotspots .hotspot::before {
   content: '';
   position: absolute;

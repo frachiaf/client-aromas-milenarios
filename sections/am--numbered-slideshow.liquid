@@ -155,6 +155,10 @@
 
         <div class="am--numbered-slideshow__captions">
           {%- for block in slider_items -%}
+            {%- liquid
+              assign caption_product = block.settings.caption_product
+              assign caption_quick_add_instance_id = block.id | append: '-caption'
+            -%}
             <div
               class="am--numbered-slideshow__caption{% if forloop.first %} am--is-active{% endif %}"
               data-am-caption
@@ -163,7 +167,14 @@
               {%- if block.settings.title != blank -%}
                 <h3 class="am--numbered-slideshow__caption-title">{{ block.settings.title | escape }}</h3>
               {%- endif -%}
-              {%- if block.settings.link_title != blank and block.settings.url != blank -%}
+              {%- if block.settings.link_title != blank and block.settings.add_product_on_click and caption_product != blank -%}
+                {% render 'am--numbered-slideshow-quick-add',
+                  product: caption_product,
+                  label: block.settings.link_title,
+                  section_id: section.id,
+                  instance_id: caption_quick_add_instance_id
+                %}
+              {%- elsif block.settings.link_title != blank and block.settings.url != blank -%}
                 <a class="am--numbered-slideshow__caption-link button" href="{{ block.settings.url }}">{{ block.settings.link_title | escape }}</a>
               {%- endif -%}
             </div>
@@ -301,6 +312,8 @@
         { "type": "text", "id": "title", "label": "Título" },
         { "type": "text", "id": "link_title", "label": "Texto del enlace" },
         { "type": "url", "id": "url", "label": "Enlace" },
+        { "type": "checkbox", "id": "add_product_on_click", "label": "Agregar producto al hacer clic", "default": false },
+        { "type": "product", "id": "caption_product", "label": "Producto del CTA" },
         { "type": "checkbox", "id": "animate_hotspots", "label": "Animar hotspots", "default": false },
         { "type": "header", "content": "Hotspot 1" },
         { "type": "checkbox", "id": "hotspot_1_enabled", "label": "Activar hotspot 1", "default": false },

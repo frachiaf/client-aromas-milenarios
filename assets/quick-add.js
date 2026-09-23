@@ -16,15 +16,17 @@ export class QuickAddComponent extends Component {
   #cartUpdateAbortController = new AbortController();
 
   get productPageUrl() {
+    const explicitProductUrl = this.dataset.productUrl;
     const productCard = /** @type {import('./product-card').ProductCard | null} */ (this.closest('product-card'));
     const hotspotProduct = /** @type {import('./product-hotspot').ProductHotspotComponent | null} */ (
       this.closest('product-hotspot-component')
     );
     const productLink = productCard?.getProductCardLink() || hotspotProduct?.getHotspotProductLink();
+    const productUrl = explicitProductUrl || productLink?.href;
 
-    if (!productLink?.href) return '';
+    if (!productUrl) return '';
 
-    const url = new URL(productLink.href);
+    const url = new URL(productUrl, window.location.origin);
 
     if (url.searchParams.has('variant')) {
       return url.toString();

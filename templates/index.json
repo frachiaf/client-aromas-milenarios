@@ -1767,6 +1767,7 @@
           "type": "am--media-carousel-card",
           "name": "Card editorial AM",
           "settings": {
+            "image": "shopify://shop_images/Imagen_de_ChatGPT_30_sept_2026_01_06_13_a.m..png",
             "title": "",
             "description": "",
             "button_label": "",
@@ -1802,6 +1803,7 @@
         "am_media_carousel_card_k9PbJa": {
           "type": "am--media-carousel-card",
           "settings": {
+            "image": "shopify://shop_images/Imagen_de_ChatGPT_30_sept_2026_12_52_32_a.m..png",
             "title": "Tarjeta 3",
             "description": "",
             "button_label": "",

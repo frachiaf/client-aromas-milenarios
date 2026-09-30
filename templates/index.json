@@ -1767,11 +1767,11 @@
           "type": "am--media-carousel-card",
           "name": "Card editorial AM",
           "settings": {
-            "image": "shopify://shop_images/Imagen_de_ChatGPT_30_sept_2026_01_06_13_a.m..png",
-            "title": "",
-            "description": "",
-            "button_label": "",
-            "button_link": "",
+            "image": "shopify://shop_images/Imagen_de_ChatGPT_30_sept_2026_05_25_27_p.m..png",
+            "title": "Vela Alba",
+            "description": "La frescura de un nuevo comienzo",
+            "button_label": "Ver Más",
+            "button_link": "shopify://collections",
             "content_position": "overlay"
           },
           "blocks": {}
@@ -1780,9 +1780,9 @@
           "type": "am--media-carousel-card",
           "settings": {
             "image": "shopify://shop_images/WhatsApp_Image_2026-09-30_at_12.41.01_AM.jpg",
-            "title": "Tarjeta 1",
-            "description": "tTEXTO",
-            "button_label": "bOTON",
+            "title": "Vela Morada",
+            "description": "Raíz y refugio",
+            "button_label": "Ver Más",
             "button_link": "shopify://collections/frontpage",
             "content_position": "overlay"
           },
@@ -1792,10 +1792,10 @@
           "type": "am--media-carousel-card",
           "settings": {
             "image": "shopify://shop_images/WhatsApp_Image_2026-09-30_at_12.41.02_AM.jpg",
-            "title": "Tarjeta 2",
-            "description": "",
-            "button_label": "",
-            "button_link": "",
+            "title": "Vela Himalaya",
+            "description": "Elevá tu interior",
+            "button_label": "Ver Más",
+            "button_link": "shopify://collections",
             "content_position": "overlay"
           },
           "blocks": {}
@@ -1803,11 +1803,11 @@
         "am_media_carousel_card_k9PbJa": {
           "type": "am--media-carousel-card",
           "settings": {
-            "image": "shopify://shop_images/Imagen_de_ChatGPT_30_sept_2026_12_52_32_a.m..png",
-            "title": "Tarjeta 3",
-            "description": "",
-            "button_label": "",
-            "button_link": "",
+            "image": "shopify://shop_images/Imagen_de_ChatGPT_30_sept_2026_12_55_35_a.m..png",
+            "title": "Vela Relicario",
+            "description": "Un tesoro por descubrir",
+            "button_label": "Ver Más",
+            "button_link": "shopify://collections",
             "content_position": "overlay"
           },
           "blocks": {}

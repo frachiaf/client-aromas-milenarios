@@ -1512,7 +1512,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<h2>Novedades</h2>",
+                "text": "<h2>¿Qué de vos habita en lo que elegís?</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -1538,7 +1538,7 @@
               "type": "text",
               "name": "t:text_defaults.heading",
               "settings": {
-                "text": "<h4>The skincare standard</h4>",
+                "text": "<h4>Lo que tu alma reconoce, antes de que puedas explicarlo.</h4>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "center",
@@ -1563,7 +1563,7 @@
             "text_xYkVGw": {
               "type": "text",
               "settings": {
-                "text": "<p>We set our standards high, and so should you. Our soothing formulas give your skin exactly what it needs and nothing more. </p>",
+                "text": "<p>Un aroma en la piel, una vela encendida, un objeto que encuentra su lugar en casa. Cada elección dice algo de nosotros: lo que nos conmueve, lo que buscamos, lo que queremos tener cerca.</p><p>Observar esas elecciones es una forma de conocernos. Preguntarnos qué nos atrae y para qué lo elegimos nos ayuda a reconocer qué queremos sentir y con qué queremos rodearnos.</p><p>Aromas Milenarios nace para acompañar esa conexión: acercar la naturaleza a lo cotidiano y crear experiencias que te inviten a descubrir qué tiene sentido para vos.</p>",
                 "width": "100%",
                 "max_width": "narrow",
                 "alignment": "center",

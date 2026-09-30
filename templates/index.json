@@ -1480,145 +1480,93 @@
         "height_mobile": 100
       }
     },
-    "media_with_content_MUN3P3": {
-      "type": "media-with-content",
+    "section_FNaLNP": {
+      "type": "section",
       "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "disabled": true,
-          "static": true,
+        "text_QMxCrh": {
+          "type": "text",
+          "name": "t:names.heading",
           "settings": {
-            "media_type": "video",
-            "image": "shopify://shop_images/ChatGPT_Image_31_jul_2026_02_38_03_a.m..png",
-            "link": "",
-            "video": "shopify://files/videos/Diseño sin título (66).mp4",
-            "video_loop": true,
-            "video_autoplay": false,
-            "image_position": "contain",
-            "video_position": "cover"
+            "text": "<h2>¿Qué de vos habita en lo que elegís?</h2><h4>Lo que tu alma reconoce, antes de que puedas explicarlo.</h4>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
           "blocks": {}
         },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
+        "text_9Ycc3U": {
+          "type": "text",
+          "name": "t:names.text",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "center",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 24
+            "text": "<p>Un aroma en la piel, una vela encendida, un objeto que encuentra su lugar en casa. Cada elección dice algo de nosotros: lo que nos conmueve, lo que buscamos, lo que queremos tener cerca.</p><p>Observar esas elecciones es una forma de conocernos. Preguntarnos qué nos atrae y para qué lo elegimos nos ayuda a reconocer qué queremos sentir y con qué queremos rodearnos.</p><p>Aromas Milenarios nace para acompañar esa conexión: acercar la naturaleza a lo cotidiano y crear experiencias que te inviten a descubrir qué tiene sentido para vos.</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
-          "blocks": {
-            "text_ftnPJH": {
-              "type": "text",
-              "name": "t:names.heading",
-              "settings": {
-                "text": "<h2>¿Qué de vos habita en lo que elegís?</h2>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_pQieJV": {
-              "type": "text",
-              "name": "t:text_defaults.heading",
-              "settings": {
-                "text": "<h4>Lo que tu alma reconoce, antes de que puedas explicarlo.</h4>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "center",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_xYkVGw": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Un aroma en la piel, una vela encendida, un objeto que encuentra su lugar en casa. Cada elección dice algo de nosotros: lo que nos conmueve, lo que buscamos, lo que queremos tener cerca.</p><p>Observar esas elecciones es una forma de conocernos. Preguntarnos qué nos atrae y para qué lo elegimos nos ayuda a reconocer qué queremos sentir y con qué queremos rodearnos.</p><p>Aromas Milenarios nace para acompañar esa conexión: acercar la naturaleza a lo cotidiano y crear experiencias que te inviten a descubrir qué tiene sentido para vos.</p>",
-                "width": "100%",
-                "max_width": "narrow",
-                "alignment": "center",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "button_xaEVYM": {
-              "type": "button",
-              "name": "t:names.button",
-              "settings": {
-                "label": "Comprar ahora",
-                "link": "shopify://collections/all",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_ftnPJH",
-            "text_pQieJV",
-            "text_xYkVGw",
-            "button_xaEVYM"
-          ]
+          "blocks": {}
         }
       },
-      "name": "t:names.media_with_text",
+      "block_order": [
+        "text_QMxCrh",
+        "text_9Ycc3U"
+      ],
+      "name": "t:names.custom_section",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "50svh",
-        "section_width": "full-width",
-        "extend_media": true,
-        "color_scheme": "scheme-1",
-        "padding-block-start": 20,
-        "padding-block-end": 20
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 36,
+        "padding-block-end": 35
       }
     },
     "media_with_content_J4njzh": {
@@ -2937,7 +2885,7 @@
     "media_with_content_E7M3aJ",
     "section_38NEeA",
     "am_color_divider_HDngyH",
-    "media_with_content_MUN3P3",
+    "section_FNaLNP",
     "media_with_content_J4njzh",
     "am_media_product_carousel_Up44th",
     "product_list_z7QLNk",

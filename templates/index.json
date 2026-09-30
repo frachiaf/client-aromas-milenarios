@@ -2521,7 +2521,7 @@
                   "type": "text",
                   "name": "t:names.heading",
                   "settings": {
-                    "text": "<h2>Find your perfect fit</h2>",
+                    "text": "<h2>Cosmética Natural</h2>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
@@ -2547,7 +2547,7 @@
                   "type": "text",
                   "name": "t:names.subheading",
                   "settings": {
-                    "text": "<p>Discover the best of both worlds</p>",
+                    "text": "<p>Elaboración Artesanal</p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",

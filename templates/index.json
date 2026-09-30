@@ -1907,7 +1907,7 @@
       "name": "AM Medio + Carrusel 60/40",
       "settings": {
         "section_width": "full-width",
-        "color_scheme": "",
+        "color_scheme": "scheme-4",
         "media_type": "video",
         "overlay_opacity": 25,
         "media_text_color": "#ffffff",

@@ -1,0 +1,128 @@
+<slideshow-slide
+  class="am-media-product-carousel__slide am-media-carousel-card am-media-carousel-card--{{ block.settings.content_position }}"
+  ref="slides[]"
+  {{ block.shopify_attributes }}
+>
+  <div class="am-media-carousel-card__media">
+    {% if block.settings.image != blank %}
+      {{ block.settings.image | image_url: width: 1200 | image_tag: widths: '300, 450, 600, 900, 1200', sizes: '(min-width: 1024px) 27vw, 62vw', loading: 'lazy' }}
+    {% elsif request.design_mode %}
+      {{ 'product-1' | placeholder_svg_tag: 'am-media-carousel-card__placeholder' }}
+    {% endif %}
+  </div>
+  <div class="am-media-carousel-card__content">
+    {% if block.settings.title != blank %}
+      <h3 class="am-media-carousel-card__title">{{ block.settings.title | escape }}</h3>
+    {% endif %}
+    {% if block.settings.description != blank %}
+      <div class="am-media-carousel-card__description">{{ block.settings.description | escape | newline_to_br }}</div>
+    {% endif %}
+    {% if block.settings.button_label != blank and block.settings.button_link != blank %}
+      <a class="am-media-carousel-card__button button" href="{{ block.settings.button_link }}">{{ block.settings.button_label | escape }}</a>
+    {% endif %}
+  </div>
+</slideshow-slide>
+
+{% stylesheet %}
+  .am-media-product-carousel__slide {
+    scroll-snap-align: start;
+  }
+
+  .am-media-carousel-card {
+    display: grid;
+    grid-template-rows: minmax(120px, 1fr) auto;
+    min-width: 0;
+    background: transparent;
+  }
+
+  .am-media-carousel-card__media {
+    position: relative;
+    min-height: 120px;
+    overflow: hidden;
+  }
+
+  .am-media-carousel-card__media img,
+  .am-media-carousel-card__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .am-media-carousel-card__media img,
+  .am-media-carousel-card__placeholder {
+    position: absolute;
+    inset: 0;
+  }
+
+  .am-media-carousel-card__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: var(--am-card-content-padding);
+    color: var(--color-foreground);
+  }
+
+  .am-media-carousel-card__title {
+    margin: 0;
+    color: inherit;
+    font-size: clamp(1rem, 1.6vw, 1.5rem);
+  }
+
+  .am-media-carousel-card__description {
+    line-height: 1.4;
+  }
+
+  .am-media-carousel-card__button {
+    margin-top: 4px;
+  }
+
+  .am-media-carousel-card--overlay {
+    grid-template-rows: minmax(min-content, 1fr);
+  }
+
+  .am-media-carousel-card--overlay .am-media-carousel-card__media,
+  .am-media-carousel-card--overlay .am-media-carousel-card__content {
+    grid-area: 1 / 1;
+  }
+
+  .am-media-carousel-card--overlay .am-media-carousel-card__content {
+    z-index: 1;
+    align-self: end;
+    color: #fff;
+    background: linear-gradient(transparent, rgb(0 0 0 / 0.72));
+    padding-block-start: calc(var(--am-card-content-padding) + 32px);
+  }
+
+  .am-media-carousel-card--overlay .am-media-carousel-card__media {
+    height: 100%;
+  }
+
+  .am-media-product-carousel--card-background .am-media-carousel-card__content {
+    color: var(--am-card-content-color);
+    background: var(--am-card-content-background);
+    --color-foreground: var(--am-card-content-color);
+  }
+
+  .am-media-product-carousel--card-background .am-media-carousel-card--overlay .am-media-carousel-card__content {
+    padding-block-start: var(--am-card-content-padding);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Card editorial AM",
+  "tag": null,
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen" },
+    { "type": "text", "id": "title", "label": "Título" },
+    { "type": "textarea", "id": "description", "label": "Texto" },
+    { "type": "text", "id": "button_label", "label": "Texto del botón" },
+    { "type": "url", "id": "button_link", "label": "Enlace del botón" },
+    { "type": "select", "id": "content_position", "label": "Ubicación del contenido", "options": [{ "value": "overlay", "label": "Sobre la imagen" }, { "value": "below", "label": "Debajo de la imagen" }], "default": "overlay" }
+  ],
+  "presets": [{ "name": "Card editorial AM" }]
+}
+{% endschema %}

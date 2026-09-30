@@ -6,6 +6,46 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Modificado
+
+- Objetivo (2026-09-30): ajustar la altura y el contenido de las cards de `AM Medio + Carrusel 60/40` para que queden centradas y más bajas que el medio principal, sin recortar textos largos.
+- Archivos: `sections/am--media-product-carousel.liquid`, `blocks/am--media-carousel-card.liquid` y `CHANGELOG.md`.
+- Impacto: el editor dispone de altura de cards en escritorio (50–90% del medio, 75% inicial) y móvil/tablet (260–520 px, 360 px inicial), padding textual (0–40 px, 16 px inicial) y fondo/texto opcionales compartidos por productos y bloques. Las imágenes llegan al borde y las cards crecen si el contenido supera la altura elegida. Los estilos del carrusel externo ya no añaden espacio al carrusel interno de productos; el solapamiento se calcula con una unidad de ancho de sección válida en el navegador. Los componentes nativos de producto, Quick Add y navegación se conservan.
+
+### Validación
+
+- Los schemas JSON y las referencias Liquid/settings de sección y bloque validaron correctamente. Una maqueta local del DOM en Chrome comprobó 50%, 75% y 90% en escritorio, 260, 360 y 520 px en móvil/tablet, ambos tipos de card, fondo/padding activados y desactivados, texto largo, una card y solapamientos 0%, 8% y 15% con ancho completo y de página. La galería de producto mantiene la imagen principal y la secundaria dentro de su viewport; no había storefront ni Theme Editor local para probar las interacciones reales.
+- `shopify.cmd theme check --path .` inspeccionó 317 archivos sin errores y con las 29 advertencias preexistentes. Tras emitir el resumen, la CLI volvió a cerrarse por una aserción interna de Node.
+
+### Reversión
+
+- Retirar los seis settings de card, sus variables y reglas de estilo específicas restaura la altura y el contenido anteriores; no se modificaron templates ni datos administrados por Shopify.
+
+### Añadido
+
+- Objetivo: `AM Medio + Carrusel 60/40` combina imagen o video principal con texto y dos CTA sobre un carrusel de productos elegidos o cards editoriales, en columnas 60/40 de escritorio y apilado en móvil.
+- Archivos: `sections/am--media-product-carousel.liquid`, `blocks/am--media-carousel-card.liquid` y `CHANGELOG.md`.
+- Impacto: la nueva sección se agrega mediante un preset sin editar templates JSON. Expone ancho completo o de página, medio y portada, fuente del carrusel, autoplay, bucle y flechas chevron. El modo Productos reutiliza la card estática de Pitch y muestra placeholders solo en el editor cuando la lista está vacía; el modo Bloques permite reordenar cards y elegir texto sobre o debajo de la imagen. El selector de productos permanece visible en ambos modos porque Shopify no permite `visible_if` para `product_list`.
+
+### Modificado
+
+- Objetivo: las cards del carrusel avanzan sobre el borde final de la imagen o video en escritorio, como en la referencia, sin desplazar el fondo de la columna 40%.
+- Archivos: `sections/am--media-product-carousel.liquid` y `CHANGELOG.md`.
+- Impacto: el nuevo ajuste `Solapamiento del carrusel` permite de 0% a 15% del ancho real de la sección, con 8% por defecto. El valor 0 conserva la disposición anterior; hasta 1023 px se mantiene el apilado sin solapamiento. El contenido superpuesto al medio reserva espacio para las cards.
+
+### Validación
+
+- Los schemas de la sección y el bloque se parsearon como JSON, sus referencias Liquid corresponden a IDs existentes y el JavaScript embebido aprobó `node --check`.
+- El schema y el contrato Liquid del solapamiento validaron su rango, default y referencia a setting. Se revisó estáticamente el desplazamiento con ambos anchos de sección y los valores 0%, 8% y 15%.
+- `shopify theme check --path .` inspeccionó 317 archivos sin errores y mantuvo 29 advertencias preexistentes. La CLI emitió una aserción interna de Node al cerrar después del resumen.
+- El validador de la skill Shopify Liquid no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; se usó Theme Check como verificación de Liquid y schema.
+- No había preview local disponible para completar interacciones en navegador; quedan por verificar visualmente el ajuste 60/40, el arrastre táctil, la selección en el editor y la reproducción del video en storefront.
+
+### Reversión
+
+- Eliminar la sección y el bloque retira la capacidad nueva; no hay migración ni cambios en datos administrados por Shopify.
+- Retirar `carousel_overlap` y sus reglas CSS de escritorio elimina el solapamiento sin modificar bloques ni templates JSON.
+
 ### Añadido
 
 - Objetivo: cada diapositiva de `AM Presentación numerada` puede convertir opcionalmente su CTA en Quick Add mediante `Agregar producto al hacer clic` y `Producto del CTA`.

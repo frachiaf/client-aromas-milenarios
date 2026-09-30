@@ -1766,6 +1766,7 @@
         "am_media_carousel_card_Pa6NHz": {
           "type": "am--media-carousel-card",
           "settings": {
+            "image": "shopify://shop_images/WhatsApp_Image_2026-09-30_at_12.41.01_AM.jpg",
             "title": "Tarjeta 1",
             "description": "",
             "button_label": "",
@@ -1777,6 +1778,7 @@
         "am_media_carousel_card_pxDJnb": {
           "type": "am--media-carousel-card",
           "settings": {
+            "image": "shopify://shop_images/WhatsApp_Image_2026-09-30_at_12.41.02_AM.jpg",
             "title": "Tarjeta 2",
             "description": "",
             "button_label": "",

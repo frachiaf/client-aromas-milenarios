@@ -1760,6 +1760,165 @@
         "padding-block-end": 20
       }
     },
+    "am_media_product_carousel_Up44th": {
+      "type": "am--media-product-carousel",
+      "blocks": {
+        "am_media_carousel_card_Pa6NHz": {
+          "type": "am--media-carousel-card",
+          "settings": {
+            "title": "Tarjeta 1",
+            "description": "",
+            "button_label": "",
+            "button_link": "",
+            "content_position": "overlay"
+          },
+          "blocks": {}
+        },
+        "am_media_carousel_card_pxDJnb": {
+          "type": "am--media-carousel-card",
+          "settings": {
+            "title": "Tarjeta 2",
+            "description": "",
+            "button_label": "",
+            "button_link": "",
+            "content_position": "overlay"
+          },
+          "blocks": {}
+        },
+        "am_media_carousel_card_k9PbJa": {
+          "type": "am--media-carousel-card",
+          "settings": {
+            "title": "Tarjeta 3",
+            "description": "",
+            "button_label": "",
+            "button_link": "",
+            "content_position": "overlay"
+          },
+          "blocks": {}
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 16,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_card_gallery_fYKAjw": {
+              "type": "_product-card-gallery",
+              "settings": {
+                "image_ratio": "portrait",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "product_title_TcdrpQ": {
+              "type": "product-title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "price_nTK4nX": {
+              "type": "price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "color": "var(--color-foreground)",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_card_gallery_fYKAjw",
+            "product_title_TcdrpQ",
+            "price_nTK4nX"
+          ]
+        }
+      },
+      "block_order": [
+        "am_media_carousel_card_Pa6NHz",
+        "am_media_carousel_card_pxDJnb",
+        "am_media_carousel_card_k9PbJa"
+      ],
+      "name": "AM Medio + Carrusel 60/40",
+      "settings": {
+        "section_width": "full-width",
+        "color_scheme": "",
+        "media_type": "image",
+        "overlay_opacity": 25,
+        "media_text_color": "#ffffff",
+        "title": "",
+        "description": "",
+        "text_position": "center",
+        "button_1_label": "",
+        "button_1_link": "",
+        "button_2_label": "",
+        "button_2_link": "",
+        "carousel_source": "blocks",
+        "carousel_heading": "",
+        "products": [],
+        "card_gap": 16,
+        "card_height_desktop": 75,
+        "card_height_mobile": 360,
+        "card_content_padding": 16,
+        "card_content_background_enabled": false,
+        "card_content_background": "#ffffff",
+        "card_content_color": "#1b1b1b",
+        "carousel_overlap": 8,
+        "show_arrows": true,
+        "arrow_shape": "circle",
+        "infinite": false,
+        "autoplay": false,
+        "autoplay_speed": 5
+      }
+    },
     "product_list_z7QLNk": {
       "type": "product-list",
       "blocks": {
@@ -2763,6 +2922,7 @@
     "am_color_divider_HDngyH",
     "media_with_content_MUN3P3",
     "media_with_content_J4njzh",
+    "am_media_product_carousel_Up44th",
     "product_list_z7QLNk",
     "am_color_divider_hh8rRA",
     "section_eeFGpP",

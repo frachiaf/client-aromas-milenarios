@@ -1763,14 +1763,26 @@
     "am_media_product_carousel_Up44th": {
       "type": "am--media-product-carousel",
       "blocks": {
+        "am_media_carousel_card_XEVUmA": {
+          "type": "am--media-carousel-card",
+          "name": "Card editorial AM",
+          "settings": {
+            "title": "",
+            "description": "",
+            "button_label": "",
+            "button_link": "",
+            "content_position": "overlay"
+          },
+          "blocks": {}
+        },
         "am_media_carousel_card_Pa6NHz": {
           "type": "am--media-carousel-card",
           "settings": {
             "image": "shopify://shop_images/WhatsApp_Image_2026-09-30_at_12.41.01_AM.jpg",
             "title": "Tarjeta 1",
-            "description": "",
-            "button_label": "",
-            "button_link": "",
+            "description": "tTEXTO",
+            "button_label": "bOTON",
+            "button_link": "shopify://collections/frontpage",
             "content_position": "overlay"
           },
           "blocks": {}
@@ -1885,6 +1897,7 @@
         }
       },
       "block_order": [
+        "am_media_carousel_card_XEVUmA",
         "am_media_carousel_card_Pa6NHz",
         "am_media_carousel_card_pxDJnb",
         "am_media_carousel_card_k9PbJa"
@@ -1893,14 +1906,14 @@
       "settings": {
         "section_width": "full-width",
         "color_scheme": "",
-        "media_type": "image",
+        "media_type": "video",
         "overlay_opacity": 25,
         "media_text_color": "#ffffff",
-        "title": "",
-        "description": "",
+        "title": "tituo",
+        "description": "texto",
         "text_position": "center",
-        "button_1_label": "",
-        "button_1_link": "",
+        "button_1_label": "boton",
+        "button_1_link": "#",
         "button_2_label": "",
         "button_2_link": "",
         "carousel_source": "blocks",

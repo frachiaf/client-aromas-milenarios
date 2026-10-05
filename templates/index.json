@@ -1599,7 +1599,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<h2>La huella de un <strong>aroma</strong></h2>",
+                "text": "<h2>Difusores para tu día a día</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -1625,7 +1625,7 @@
               "type": "text",
               "name": "t:text_defaults.heading",
               "settings": {
-                "text": "<h4>Eso que hace reconocible un lugar.</h4>",
+                "text": "<h4>En casa y en movimiento.</h4>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "center",
@@ -1650,7 +1650,7 @@
             "text_wmYyJj": {
               "type": "text",
               "settings": {
-                "text": "<p>Abrir la puerta y que huela increíble. Subirte al auto y disfrutar incluso el camino de siempre. Nuestros difusores mantienen vivo ese aroma que tanto te gusta y le dan a cada lugar algo que la decoración sola no puede: <em><strong>una bienvenida que se siente.</strong></em></p>",
+                "text": "<p>&nbsp;Nuestros difusores mantienen vivo ese aroma que tanto te gusta y le dan a cada lugar algo que la decoración sola no puede: <em><strong>una bienvenida que se siente.</strong></em></p>",
                 "width": "100%",
                 "max_width": "narrow",
                 "alignment": "center",
@@ -1676,7 +1676,7 @@
               "type": "button",
               "name": "t:names.button",
               "settings": {
-                "label": "Descubrí tu difusor",
+                "label": "Descubrí el tuyo",
                 "link": "shopify://collections/all",
                 "open_in_new_tab": false,
                 "style_class": "button",

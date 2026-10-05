@@ -1599,7 +1599,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<h2>Join the <em><strong>club</strong></em></h2>",
+                "text": "<h2>La huella de un <strong>aroma</strong></h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -1625,7 +1625,7 @@
               "type": "text",
               "name": "t:text_defaults.heading",
               "settings": {
-                "text": "<h4>Our philosophy</h4>",
+                "text": "<h4>Eso que hace reconocible un lugar.</h4>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "center",
@@ -1650,7 +1650,7 @@
             "text_wmYyJj": {
               "type": "text",
               "settings": {
-                "text": "<p>Skincare that actually cares for your skin. Made with only clean, carefully-selected ingredients that leave complexions glowing. </p>",
+                "text": "<p>A veces reconocés un lugar por su aroma antes de mirar alrededor. Los difusores perfuman de manera continua, hasta que esa fragancia se vuelve parte de lo cotidiano: la bienvenida al abrir la puerta, el aire que te acompaña en cada recorrido. Un detalle que termina formando parte de tus recuerdos.</p>",
                 "width": "100%",
                 "max_width": "narrow",
                 "alignment": "center",
@@ -1676,7 +1676,7 @@
               "type": "button",
               "name": "t:names.button",
               "settings": {
-                "label": "Comprar ahora",
+                "label": "Elegí tu difusor",
                 "link": "shopify://collections/all",
                 "open_in_new_tab": false,
                 "style_class": "button",

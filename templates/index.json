@@ -1290,9 +1290,9 @@
       "type": "am--color-divider",
       "name": "AM Color Divider",
       "settings": {
-        "color_scheme": "",
+        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
         "separator_style": "wave",
-        "invert_colors": false,
+        "invert_colors": true,
         "height_desktop": 180,
         "height_mobile": 100
       }
@@ -1431,7 +1431,7 @@
         "media_height": "50svh",
         "section_width": "full-width",
         "extend_media": true,
-        "color_scheme": "scheme-4",
+        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
         "padding-block-start": 20,
         "padding-block-end": 20
       }
@@ -1473,9 +1473,9 @@
       "type": "am--color-divider",
       "name": "AM Divisor de color",
       "settings": {
-        "color_scheme": "",
+        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
         "separator_style": "wave",
-        "invert_colors": true,
+        "invert_colors": false,
         "height_desktop": 180,
         "height_mobile": 100
       }

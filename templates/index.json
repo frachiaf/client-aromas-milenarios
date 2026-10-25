@@ -773,9 +773,9 @@
           "type": "_hotspot-product",
           "name": "t:names.hotspot_product",
           "settings": {
-            "product": "vela-oceano",
-            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_1.jpg",
-            "x-position": 12,
+            "product": "vela-magdalena",
+            "hover_image": "shopify://shop_images/Vela_MAGDALENA_entre_madera_y_rosas-1.png",
+            "x-position": 73,
             "y-position": 48
           },
           "blocks": {}
@@ -783,9 +783,9 @@
         "hotspot_product_GwbiQw": {
           "type": "_hotspot-product",
           "settings": {
-            "product": "vela-magdalena",
-            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_2.jpg",
-            "x-position": 27,
+            "product": "vela-selene",
+            "hover_image": "shopify://shop_images/Vela_Selene_bajo_una_luna_llena-1.png",
+            "x-position": 29,
             "y-position": 48
           },
           "blocks": {}
@@ -793,8 +793,9 @@
         "hotspot_product_UNWyqA": {
           "type": "_hotspot-product",
           "settings": {
-            "product": "",
-            "x-position": 42,
+            "product": "vela-celta",
+            "hover_image": "shopify://shop_images/Vela_CELTA_en_bosque_iluminado-3.png",
+            "x-position": 44,
             "y-position": 48
           },
           "blocks": {}
@@ -803,9 +804,9 @@
           "type": "_hotspot-product",
           "name": "t:names.hotspot_product",
           "settings": {
-            "product": "vela-selene",
-            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.19_PM.jpg",
-            "x-position": 58,
+            "product": "vela-oceano",
+            "hover_image": "shopify://shop_images/Vela_OCEANO_frente_a_playa_realista-1.png",
+            "x-position": 59,
             "y-position": 48
           },
           "blocks": {}
@@ -813,6 +814,7 @@
         "hotspot_product_AGfVmV": {
           "type": "_hotspot-product",
           "name": "t:names.hotspot_product",
+          "disabled": true,
           "settings": {
             "product": "vela-oriente",
             "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.19_PM_1.jpg",
@@ -824,6 +826,7 @@
         "hotspot_product_V9Ed6W": {
           "type": "_hotspot-product",
           "name": "t:names.hotspot_product",
+          "disabled": true,
           "settings": {
             "product": "vela-jardin-del-alma",
             "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_4.jpg",
@@ -871,7 +874,7 @@
       ],
       "name": "t:names.product_hotspots",
       "settings": {
-        "image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM.jpg",
+        "image": "shopify://shop_images/Cuatro_velas_sobre_madera_natural-1.png",
         "overlay_heading": "Experiencias Milenarias",
         "overlay_text": "",
         "overlay_button_label": "Elegí como sentirte",

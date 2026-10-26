@@ -57,13 +57,39 @@
               "name": "t:names.jumbo_text",
               "settings": {
                 "text": "Primavera",
-                "font": "subheading",
+                "font": "heading",
                 "alignment": "left",
                 "line_height": "0.8",
                 "letter_spacing": "-0.03em",
                 "case": "none",
                 "text_effect": "blur",
                 "animation_repeat": true
+              },
+              "blocks": {}
+            },
+            "text_tJBBLb": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<p>En Aromas Milenarios</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h4",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
               },
               "blocks": {}
             },
@@ -85,6 +111,7 @@
           },
           "block_order": [
             "jumbo_text_8hRbpM",
+            "text_tJBBLb",
             "button_ANe78D"
           ]
         },

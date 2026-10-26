@@ -1896,7 +1896,7 @@
             "link": "",
             "video_loop": true,
             "video_autoplay": false,
-            "image_position": "contain",
+            "image_position": "cover",
             "video_position": "cover"
           },
           "blocks": {}
@@ -2709,7 +2709,7 @@
                   "type": "button",
                   "name": "t:names.button",
                   "settings": {
-                    "label": "Ver todo",
+                    "label": "Ver más",
                     "link": "shopify://collections/all",
                     "open_in_new_tab": false,
                     "style_class": "button",
@@ -2723,6 +2723,7 @@
                 "button_ERYgrV": {
                   "type": "button",
                   "name": "t:names.button",
+                  "disabled": true,
                   "settings": {
                     "label": "Comprar ahora",
                     "link": "shopify://collections/all",
@@ -2751,7 +2752,7 @@
           "type": "comparison-slider",
           "name": "t:names.comparison_slider",
           "settings": {
-            "before_image": "shopify://shop_images/ChatGPT_Image_18_may_2026_01_12_07_a.m..png",
+            "before_image": "shopify://shop_images/WhatsApp_Image_2026-10-25_at_11.49.31_PM.jpg",
             "after_image": "shopify://shop_images/WhatsApp_Image_2026-05-18_at_12.47.04_AM.jpg",
             "slider_style": "horizontal",
             "show_text": false,

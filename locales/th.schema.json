@@ -200,6 +200,22 @@
     "layered_slideshow": "สไลด์โชว์แบบซ้อน"
   },
   "settings": {
+    "hotspots_animate": "ฮอตสปอตแบบเต้นเป็นจังหวะ",
+    "hotspots_quick_buy_x": "ตำแหน่งแนวนอนของดูเพิ่มเติมบนมือถือ",
+    "hotspots_quick_buy_y": "ตำแหน่งแนวตั้งของดูเพิ่มเติมบนมือถือ",
+    "hotspots_mobile_preview_quick_buy": "พรีวิวบนมือถือและซื้อด่วน",
+    "hotspots_use_mobile_position": "ใช้ตำแหน่งอื่นบนมือถือ",
+    "hotspots_x_position_mobile": "ตำแหน่งแนวนอนบนมือถือ",
+    "hotspots_y_position_mobile": "ตำแหน่งแนวตั้งบนมือถือ",
+    "hotspots_mobile_button_background_color": "พื้นหลังปุ่มบนมือถือ",
+    "hotspots_mobile_button_text_color": "สีข้อความปุ่มบนมือถือ",
+    "hotspots_image_mobile": "รูปภาพสำหรับมือถือ",
+    "hotspots_hover_image_mobile": "รูปภาพทางเลือกสำหรับมือถือ",
+    "hotspots_content_above_image": "แสดงหัวข้อและข้อความเหนือรูปภาพ",
+    "hotspots_button_below_image": "แสดงปุ่มส่วนไว้ด้านล่างสุด",
+    "hotspots_hide_mobile": "ซ่อนฮอตสปอตบนมือถือ",
+    "hotspots_show_mobile_button": "แสดงปุ่มรูปภาพบนมือถือ",
+    "hotspots_mobile_button_label": "ข้อความปุ่มบนมือถือ",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "ข้อความเมื่อวางเมาส์สำหรับการซื้อด่วน",
     "button_label": "ป้ายกำกับปุ่ม",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "สินค้ามาใหม่"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "แตะฮอตสปอตหรือปุ่มในตารางเพื่อเปลี่ยนรูปภาพและแสดงปุ่มซื้อด่วนด้านล่าง ปิดเพื่อคงการใช้งานบนมือถือแบบเดิม",
+    "hotspots_mobile_button": "ต้องมีสินค้าและรูปภาพทางเลือก ปุ่มจะแสดงใต้รูปภาพเป็นสองคอลัมน์ แตะเพื่อเปลี่ยนรูปภาพและแตะอีกครั้งเพื่อกลับไปยังรูปภาพเดิม",
+    "hotspots_mobile_button_label": "เว้นว่างไว้เพื่อใช้ชื่อสินค้า",
     "video_alt_text": "โปรดอธิบายวิดีโอสำหรับผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ",
     "video_autoplay": "วิดีโอจะถูกปิดเสียงตามค่าเริ่มต้น",
     "video_external": "ใช้ URL ของ YouTube หรือ Vimeo",

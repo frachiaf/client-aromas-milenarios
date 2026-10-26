@@ -200,6 +200,22 @@
     "layered_slideshow": "Presentazione a livelli"
   },
   "settings": {
+    "hotspots_animate": "Hotspot pulsanti",
+    "hotspots_quick_buy_x": "Posizione orizzontale di Mostra di più su mobile",
+    "hotspots_quick_buy_y": "Posizione verticale di Mostra di più su mobile",
+    "hotspots_mobile_preview_quick_buy": "Anteprima mobile e acquisto rapido",
+    "hotspots_use_mobile_position": "Usa una posizione diversa sui dispositivi mobili",
+    "hotspots_x_position_mobile": "Posizione orizzontale sui dispositivi mobili",
+    "hotspots_y_position_mobile": "Posizione verticale sui dispositivi mobili",
+    "hotspots_mobile_button_background_color": "Sfondo del pulsante mobile",
+    "hotspots_mobile_button_text_color": "Colore del testo del pulsante mobile",
+    "hotspots_image_mobile": "Immagine per dispositivi mobili",
+    "hotspots_hover_image_mobile": "Immagine alternativa per dispositivi mobili",
+    "hotspots_content_above_image": "Mostra titolo e testo sopra l’immagine",
+    "hotspots_button_below_image": "Mostra il pulsante della sezione in fondo",
+    "hotspots_hide_mobile": "Nascondi hotspot sui dispositivi mobili",
+    "hotspots_show_mobile_button": "Mostra pulsante immagine sui dispositivi mobili",
+    "hotspots_mobile_button_label": "Testo del pulsante mobile",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Testo al passaggio per l'acquisto rapido",
     "button_label": "Etichetta del pulsante",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Nuovi arrivi"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Tocca un hotspot o il suo pulsante nella griglia per cambiare immagine e mostrare l’acquisto rapido sotto. Disattiva per mantenere l’interazione mobile precedente.",
+    "hotspots_mobile_button": "Richiede un prodotto e un’immagine alternativa. I pulsanti appaiono sotto l’immagine su due colonne. Tocca per cambiare immagine e di nuovo per ripristinare l’originale.",
+    "hotspots_mobile_button_label": "Lascia vuoto per usare il titolo del prodotto.",
     "carousel_layout_on_mobile": "Sui dispositivi mobili viene sempre utilizzato il carosello.",
     "video_alt_text": "Descrivi il video per gli utenti di tecnologie assistive",
     "video_autoplay": "I video saranno senza audio per impostazione predefinita",

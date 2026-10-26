@@ -29,6 +29,8 @@
     "slider_label": "Schuifregelaar"
   },
   "accessibility": {
+    "hotspots_close_preview": "Voorbeeld sluiten en hoofdafbeelding herstellen",
+    "hotspots_select_product": "{{ product_name }} selecteren",
     "play_model": "3D-model afspelen",
     "play_video": "Video afspelen",
     "unit_price": "Eenheidsprijs",
@@ -85,6 +87,9 @@
     "price_filter_high": "Hoge prijs"
   },
   "actions": {
+    "hotspots_view_more": "Meer bekijken",
+    "hotspots_quick_buy": "Snel kopen",
+    "hotspots_view_product": "Product bekijken",
     "add_to_cart": "Aan winkelwagen toevoegen",
     "clear_all": "Alles wissen",
     "remove": "Verwijderen",

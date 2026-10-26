@@ -29,6 +29,8 @@
     "slider_label": "Suwak"
   },
   "accessibility": {
+    "hotspots_close_preview": "Zamknij podgląd i przywróć obraz główny",
+    "hotspots_select_product": "Wybierz {{ product_name }}",
     "play_model": "Odtwórz model 3D",
     "play_video": "Odtwórz film",
     "unit_price": "Cena jednostkowa",
@@ -87,6 +89,9 @@
     "price_filter_high": "Wysoka cena"
   },
   "actions": {
+    "hotspots_view_more": "Zobacz więcej",
+    "hotspots_quick_buy": "Szybki zakup",
+    "hotspots_view_product": "Zobacz produkt",
     "add_to_cart": "Dodaj do koszyka",
     "clear_all": "Wyczyść wszystko",
     "remove": "Usuń",

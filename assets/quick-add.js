@@ -1,7 +1,7 @@
 import { morph } from '@theme/morph';
 import { Component } from '@theme/component';
 import { CartUpdateEvent, ThemeEvents, VariantSelectedEvent } from '@theme/events';
-import { DialogComponent, DialogCloseEvent } from '@theme/dialog';
+import { DialogComponent, DialogCloseEvent, DialogOpenEvent } from '@theme/dialog';
 import { mediaQueryLarge, isMobileBreakpoint, getIOSVersion } from '@theme/utilities';
 import VariantPicker from '@theme/variant-picker';
 
@@ -62,9 +62,8 @@ export class QuickAddComponent extends Component {
   disconnectedCallback() {
     super.disconnectedCallback();
 
-    this.#openRequestId += 1;
+    this.cancelOpen();
     mediaQueryLarge.removeEventListener('change', this.#closeQuickAddModal);
-    this.#abortController?.abort();
     this.#cartUpdateAbortController.abort();
     document.removeEventListener(ThemeEvents.variantSelected, this.#updateQuickAddButtonState.bind(this));
   }
@@ -98,6 +97,12 @@ export class QuickAddComponent extends Component {
     await this.open();
   };
 
+  cancelOpen() {
+    this.#openRequestId += 1;
+    this.#abortController?.abort();
+    this.#abortController = null;
+  }
+
   /**
    * Loads the product content and opens the global quick-add modal.
    *
@@ -128,6 +133,9 @@ export class QuickAddComponent extends Component {
           this.#cachedContent.set(currentUrl, productGrid);
         }
       } catch (_error) {
+        if (requestId !== this.#openRequestId || activeRequestId !== QuickAddComponent.#activeOpenRequestId) {
+          return 'aborted';
+        }
         return 'failed';
       }
     }
@@ -145,8 +153,11 @@ export class QuickAddComponent extends Component {
       }
 
       this.#updateVariantPicker(productGrid);
-      return this.#openQuickAddModal() ? 'opened' : 'unavailable';
+      return await this.#openQuickAddModal(requestId, activeRequestId);
     } catch (_error) {
+      if (requestId !== this.#openRequestId || activeRequestId !== QuickAddComponent.#activeOpenRequestId) {
+        return 'aborted';
+      }
       return 'failed';
     }
   }
@@ -175,22 +186,37 @@ export class QuickAddComponent extends Component {
     return dialogComponent instanceof QuickAddDialog ? dialogComponent : null;
   }
 
-  #openQuickAddModal = () => {
+  /**
+   * @param {number} requestId
+   * @param {number} activeRequestId
+   * @returns {Promise<'opened' | 'unavailable' | 'aborted'>}
+   */
+  #openQuickAddModal = (requestId, activeRequestId) => {
     const dialogComponent = this.#getQuickAddDialog();
-    if (!dialogComponent) return false;
+    if (!dialogComponent) return Promise.resolve('unavailable');
 
-    this.#stayVisibleUntilDialogCloses(dialogComponent);
-
-    dialogComponent.showDialog();
-
-    // is nondeterministic when the open attribute is set on the dialog element after .showDialog() is called.
-    // Waiting until the open animation starts seemed to be the most reliable metric here.
-    const dialog = dialogComponent.refs?.dialog;
-    if (dialog) {
-      dialog.addEventListener('animationstart', this.#resetScroll.bind(this), { once: true });
+    if (dialogComponent.refs.dialog.open) {
+      this.#stayVisibleUntilDialogCloses(dialogComponent);
+      return Promise.resolve('opened');
     }
 
-    return true;
+    return new Promise((resolve) => {
+      const handleOpen = () => {
+        this.#stayVisibleUntilDialogCloses(dialogComponent);
+        dialogComponent.refs.dialog.addEventListener('animationstart', this.#resetScroll.bind(this), { once: true });
+        resolve('opened');
+      };
+      dialogComponent.addEventListener(DialogOpenEvent.eventName, handleOpen, { once: true });
+      dialogComponent.showDialog(() => {
+        const isCurrent =
+          requestId === this.#openRequestId && activeRequestId === QuickAddComponent.#activeOpenRequestId;
+        if (!isCurrent) {
+          dialogComponent.removeEventListener(DialogOpenEvent.eventName, handleOpen);
+          resolve('aborted');
+        }
+        return isCurrent;
+      });
+    });
   };
 
   #closeQuickAddModal = () => {
@@ -210,11 +236,12 @@ export class QuickAddComponent extends Component {
 
     // We use this to abort the previous fetch request if it's still pending.
     this.#abortController?.abort();
-    this.#abortController = new AbortController();
+    const abortController = new AbortController();
+    this.#abortController = abortController;
 
     try {
       const response = await fetch(productPageUrl, {
-        signal: this.#abortController.signal,
+        signal: abortController.signal,
       });
 
       if (!response.ok) {
@@ -232,7 +259,7 @@ export class QuickAddComponent extends Component {
         throw error;
       }
     } finally {
-      this.#abortController = null;
+      if (this.#abortController === abortController) this.#abortController = null;
     }
   }
 

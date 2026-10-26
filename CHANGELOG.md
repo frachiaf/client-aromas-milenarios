@@ -313,6 +313,99 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 - Retirar `media_type`, `video` y la coordinación de reproducción restaura los slider items de imagen sin requerir migraciones de templates.
 - Eliminar `sections/am--color-divider.liquid` retira el nuevo divisor sin afectar templates ni datos existentes del Theme Editor.
 
+## 2026-10-25 — Imágenes y controles móviles de Product Hotspots
+
+### Corregido — Recuperación del pulso y fundido de imágenes
+
+- Objetivo: recuperar el halo del último hotspot al cerrar por toque conservando el foco, y suavizar los cambios de imagen en desktop/mobile sin pasar por la principal entre productos.
+- Archivos: `assets/product-hotspot.js`, `assets/product-hotspot.css`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: la pausa por foco usa `:focus-visible` y el hover se limita al puntero fino; se conservan las pausas por selección/card y el ciclo de 2 segundos. El componente compartido crea dos capas decorativas sin cambiar Liquid ni settings. Mantiene la imagen actual durante carga/decodificación y funde la entrante durante 400 ms sobre la saliente opaca, que se retira al terminar. Las cargas corren en paralelo, los fundidos se serializan y se descartan selecciones pendientes obsoletas. Cierre, error o ausencia de imagen funden hacia la principal conservando las salidas; la limpieza de editor/breakpoint/desmontaje/slideshow continúa inmediata mediante `resetState()`. Movimiento reducido aplica el estado final sin animación y la caché sigue siendo bajo demanda.
+
+### Validación — Pulso y fundidos
+
+- `node --check` y `checkJs` estricto de los tres componentes JavaScript afectados por el trabajo acumulado aprobaron. Theme Check inspeccionó Liquid/schemas/locales sin errores y con las 29 advertencias preexistentes. El validador de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; se utilizó Shopify CLI.
+- Chrome local con los assets reales y respuestas de producto de prueba verificó eventos táctiles reales: punto → imagen → X conserva el foco y reactiva el halo; el foco visible de teclado mantiene la pausa. Pasaron los fundidos principal/alternativa, A→B con saliente opaca, selección rápida, carga/fallo/imagen ausente, cierre durante carga/fundido, movimiento reducido, cambio de breakpoint y remontaje sin reactivar imágenes antiguas. También se verificaron la caché de precarga, el cambio a movimiento reducido durante un fundido, el hover real de mouse y la limpieza inmediata de ambos buffers al desactivar el slideshow.
+- La regresión local verificó selección punto/grilla, X/Escape/exterior, Quick Buy y retorno de foco, cancelaciones, agotados/fallos, ocultación permanente, eventos simulados del editor, posiciones extremas/textos largos y ausencia de overflow a 320/390/749/750/1440 px. No había storefront ni Theme Editor reales disponibles; su comprobación sigue pendiente.
+
+### Reversión — Pulso y fundidos
+
+- Restaurar el manejo anterior de foco y la única capa hover elimina esta corrección; no hay migraciones ni cambios en templates o datos administrados.
+
+### Modificado — Ocultación y cierre de la vista previa mobile
+
+- Objetivo: ocultar los hotspots durante la selección mobile y permitir restaurar la imagen principal mediante una X junto a `Ver más`, Escape o click fuera del marco de imagen, conservando grilla y modal como controles de la selección.
+- Archivos: `assets/product-hotspot.js`, `sections/product-hotspots.liquid`, `snippets/product-hotspot.liquid`, los 31 locales storefront, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: solo con `mobile_preview_quick_buy` activo y hasta 749 px, los puntos se ocultan y su contenedor queda `inert` desde el comienzo de la selección. Restaurar libera los puntos y respeta la ocultación permanente configurada. La X usa el icono del theme, etiqueta traducida y área mínima de 44 px; acompaña también a `Ver producto` en agotados/fallos. El grupo conserva las coordenadas del centro de `Ver más`, suma 8 px de separación y mantiene ambos controles dentro de los 12 px interiores.
+- El cierre exterior se limita al marco, exceptúa los botones de la grilla de esta sección y el modal Quick Buy, y no impide otras acciones ni mueve el foco del elemento pulsado. X/Escape desde los controles devuelven el foco al punto disponible, su botón de grilla o el marco. La selección de bloques en el editor restaura la principal y libera el marcador. El modo anterior y desktop mantienen su interacción; no se añadieron settings ni se editaron templates o datos administrados.
+
+### Validación — Ocultación y cierre mobile
+
+- `node --check` y `checkJs` estricto aprobaron el JavaScript; los schemas, referencias, locales JSONC y la nueva etiqueta en 31 idiomas validaron sin claves duplicadas. Theme Check finalizó sin errores y con las 29 advertencias preexistentes; `git diff --check` limpio. El validador de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid y schemas.
+- Chrome con assets reales y respuestas de producto locales verificó ocultación previa a la carga, exclusión de foco, restauración/foco por X y Escape, clicks interiores/exteriores, huecos de grilla, selección de otro producto, navegación del CTA general y modal real. El cierre durante carga descartó respuestas tardías de imagen y Quick Buy; agotados y fallos conservaron una salida visible. Pasaron también ocultación permanente, fallback de foco al marco, eventos simulados del editor y remontaje sin estados `inert` obsoletos.
+- El grupo completo respetó los márgenes en centro y extremos a 320, 390 y 749 px, con texto largo y redimensionado. Las coordenadas siguieron refiriéndose al centro de `Ver más`; a 750/1440 px se conservó el preview desktop y el modo mobile anterior mantuvo su límite previo. No hubo excepciones del navegador. Storefront y Theme Editor reales siguen pendientes por no haber preview activo; la disposición editorial y los productos de prueba fueron locales.
+
+### Reversión — Ocultación y cierre mobile
+
+- Revertir esta entrada restaura los puntos visibles durante la selección, elimina la X y recupera el contenedor interactivo como límite exterior; no hay migración de settings ni IDs.
+
+### Añadido — Hotspots pulsantes y Ver más sobre la imagen
+
+- Objetivo: habilitar opcionalmente hotspots pulsantes y ubicar el CTA móvil `Ver más` sobre la imagen, con coordenadas propias por bloque y apertura del modal Quick Buy existente.
+- Archivos: `sections/product-hotspots.liquid`, `blocks/_hotspot-product.liquid`, `snippets/product-hotspot.liquid`, `assets/product-hotspot.css`, `assets/product-hotspot.js`, `assets/am--numbered-slideshow.css`, `locales/*.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto en el editor: el checkbox de sección `animate_hotspots` queda desactivado por defecto y actúa en escritorio/mobile. Cada bloque incorpora `mobile_quick_buy_x` y `mobile_quick_buy_y`, rangos 0–100% con paso 1 y valores iniciales de 50% y 85%; son independientes de la posición del punto y no requieren modificar templates ni datos administrados.
+- Impacto en storefront: el modo `mobile_preview_quick_buy` conserva Hover Mobile como primera opción y hover desktop como respaldo. Su panel mantiene el ID y los eventos, pasa al interior del marco y usa el texto traducible `Ver más`, ancho de contenido y transición de opacidad/desplazamiento de 200 ms. Las coordenadas se ajustan al tamaño real del botón para mantener 12 px interiores y se recalculan al redimensionar, cambiar el contenido o mostrar `Ver producto`. La capa permite tocar los puntos fuera del CTA. Se preservan selección, restauración, cancelación de cargas, modal, foco y colores de la grilla.
+- El halo de 2 segundos y su keyframe se centralizan en el CSS compartido. Conserva el pulso exclusivo de diapositivas activas del slideshow, se pausa/oculta durante selección, foco, hover real o preview abierta, respeta movimiento reducido y no altera el área interactiva ni anima marcadores vacíos de la sección.
+
+### Validación — Hotspots pulsantes y CTA posicionable
+
+- Schemas de sección/bloque, referencias a settings, defaults/rangos y los 51 locales JSONC validaron claves únicas y traducciones. `node --check assets/product-hotspot.js`, `checkJs` estricto de los tres componentes JavaScript afectados por el trabajo acumulado y `git diff --check` aprobaron.
+- Theme Check finalizó con cero errores y las 29 advertencias preexistentes. El validador de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid y schemas.
+- Chrome con los assets reales verificó pulso desactivado/activado en escritorio/mobile, pausa por selección/foco/hover/card, movimiento reducido, tamaño de trigger constante y contrato de slide activo/inactivo. El CTA respetó los márgenes en centro y cuatro extremos a 320, 390 y 749 px, posiciones distintas por bloque, cambio de ancho sin perder selección y texto largo; a 750 y 1440 px se conservó el preview desktop.
+- La regresión local del flujo mobile mantuvo selección punto/grilla, Hover Mobile/respaldo desktop, modal real, foco, doble toque, cancelación A→B, fallbacks, puntos ocultos, ausencia de overflow y eventos simulados del editor sin excepciones de navegador. No había storefront ni Theme Editor activos: las respuestas de producto y la disposición editorial fueron maquetas locales.
+
+### Reversión — Hotspots pulsantes y CTA posicionable
+
+- Desactivar `animate_hotspots` retira el pulso de esta sección. Restaurar los cambios de esta entrada devuelve el CTA al exterior del marco y la animación al CSS del slideshow, sin migrar IDs ni datos administrados.
+
+### Añadido — Selección y Quick Buy mobile
+
+- Objetivo: permitir hasta 749 px seleccionar un producto desde su punto o botón de grilla, mostrar su imagen alternativa y revelar un CTA de Quick Buy antes de la grilla, con transición de 200 ms y respeto por movimiento reducido.
+- Archivos: `sections/product-hotspots.liquid`, `blocks/_hotspot-product.liquid`, `snippets/product-hotspot.liquid`, `assets/product-hotspot.css`, `assets/product-hotspot.js`, `assets/quick-add.js`, `assets/dialog.js`, `locales/*.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto en el editor: `mobile_preview_quick_buy` activa el nuevo modo por sección; cada hotspot incorpora `use_mobile_position`, coordenadas mobile X/Y de 0–100% con valores iniciales de 50%, y colores opcionales de fondo/texto para su botón de grilla. Ambos checkboxes nuevos quedan desactivados; los colores vacíos mantienen el esquema. No se modificaron templates ni datos administrados por Shopify.
+- Impacto en storefront: punto y grilla comparten selección e imagen; un segundo toque, Escape, click exterior, eliminación del bloque o cambio de breakpoint restauran la base y ocultan el CTA. Los puntos ocultos no desactivan la grilla. Sin imagen o ante un error de imagen, el CTA permanece disponible; productos agotados, modal ausente o carga fallida ofrecen un enlace visible al producto. El modal conserva la selección y devuelve el foco al CTA al cerrar. Las coordenadas nuevas también alcanzan al marcador del editor; los colores explícitos se conservan durante hover y selección.
+- `QuickAddComponent.cancelOpen()` cancela solo la instancia correspondiente; `open()` espera a la apertura real y el guard opcional de `DialogComponent.showDialog()` evita aperturas obsoletas antes de bloquear el scroll. El modo anterior, los tres modos desktop y el slideshow conservan su contrato.
+
+### Validación — Selección y Quick Buy mobile
+
+- Los schemas de sección y bloque, sus referencias, los 20 locales schema y los 31 locales storefront validaron JSONC, claves únicas y nuevas traducciones/interpolaciones. `node --check` y `checkJs` estricto de `product-hotspot.js`, `quick-add.js` y `dialog.js` aprobaron sin diagnósticos; `git diff --check` limpio.
+- `shopify.cmd theme check --path . --output json` finalizó con cero errores y las 29 advertencias preexistentes. El validador de la skill Shopify sigue sin poder iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid y schemas.
+- Chrome verificó los assets reales de hotspots, Quick Add y dialog con respuestas de producto locales: selección punto/grilla, CTA, transición/movimiento reducido, foco, bloqueo de doble toque, modal, falta de imagen/modal, imágenes fallidas y agotados. Las cancelaciones durante fetch/render/frame y el cambio A→B no abrieron productos obsoletos ni bloquearon el scroll; ocho pruebas específicas adicionales cubrieron esas carreras y el contrato declarativo de dialog.
+- Las maquetas locales verificaron 320, 390, 749, 750 y 1440 px, colores independientes y persistentes en hover/selección, posiciones mobile de puntos/marcadores, ausencia de overflow, ocultación de puntos y eventos simulados de selección, reordenación, eliminación y remontaje del editor. También aprobaron la regresión de los tres modos desktop y el aislamiento entre contenedores, sin excepciones del navegador.
+- No había storefront ni Theme Editor activos para comprobar productos/datos reales y guardado de ajustes en Shopify; el contenido de producto de estas pruebas fue una respuesta local mínima.
+
+### Reversión — Selección y Quick Buy mobile
+
+- Desactivar `mobile_preview_quick_buy` y `use_mobile_position`, y limpiar los colores opcionales, recupera la interacción y coordenadas anteriores. Revertir los cambios de esta entrada elimina la capacidad sin migraciones ni modificaciones de IDs editoriales.
+
+### Añadido
+
+- Objetivo: permitir una imagen móvil para la sección y una alternativa móvil por hotspot, mover título/texto arriba del medio y el CTA general al final, ocultar los puntos en móvil y activar sus imágenes desde botones en una grilla de dos columnas.
+- Archivos: `sections/product-hotspots.liquid`, `blocks/_hotspot-product.liquid`, `snippets/product-hotspot.liquid`, `assets/product-hotspot.js`, `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto en el editor: los cuatro controles de sección y los tres controles de cada hotspot conservan las instancias previas mediante checkboxes desactivados. Cada botón se habilita en su bloque y admite texto propio, con el título del producto como fallback. Requiere producto accesible e imagen hover o alternativa móvil; no se modificaron templates ni configuración administrada por Shopify.
+- Impacto en storefront: hasta 749 px se elige la fuente de `<picture>` y, con altura automática, la proporción móvil. La imagen principal sirve como fallback; una imagen móvil por sí sola también funciona. Los botones se muestran debajo del medio, mantienen el orden de bloques y funcionan con los puntos ocultos. Un toque activa la alternativa móvil, con fallback a la imagen hover; otro toque, Escape, click exterior o cambio de breakpoint restaura la base. El CTA externo queda después de la grilla, y título/texto externos respetan la alineación editorial sin sombra.
+- Los botones se renderizan desde el contexto del propio theme block mediante `<template>` y se reúnen en la grilla sin leer settings de bloques desde la sección padre. Reemplazar, eliminar o reordenar bloques actualiza la grilla; el bloque seleccionado en el editor puede mostrar temporalmente su punto aunque esté oculto en móvil. El slideshow conserva sus controles y modos de interacción.
+
+### Validación
+
+- Los schemas de sección/bloque y los 20 locales schema validaron JSON, claves únicas, referencias a settings y traducciones. `node --check assets/product-hotspot.js`, el chequeo estricto `checkJs` del componente y `git diff --check` fueron aprobados.
+- `shopify.cmd theme check --path . --output json` finalizó sin errores y con las 29 advertencias preexistentes. El validador de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid y schemas.
+- Una maqueta local en Chrome con los assets reales verificó 320, 390, 749, 750 y 1440 px, las cuatro combinaciones de contenido/CTA externo, grilla con cantidad impar, ausencia de overflow, carga exclusiva de la fuente móvil, estados accesibles, puntos ocultos, alternancia/restauración de imagen, fallos y cargas tardías, hover y previews desktop. Los eventos simulados de selección, reordenación, eliminación y remontaje de bloques actualizaron la grilla sin excepciones del navegador.
+- No había storefront ni Theme Editor activos para probar publicación, productos reales o selección/guardado en Shopify; el flujo Quick Buy no recibió cambios y su regresión local se comprobó con un adaptador de prueba.
+
+### Reversión
+
+- Desactivar los checkboxes y quitar las imágenes móviles recupera la disposición anterior desde el editor. Revertir los archivos anteriores retira la capacidad sin migrar IDs, bloques ni datos administrados.
+
 ## 2026-08-02 — Baseline de documentación
 
 ### Añadido

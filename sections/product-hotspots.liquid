@@ -13,6 +13,46 @@
 {% render 'buy-buttons-styles' %}
 {% render 'product-badges-styles' %}
 
+{% liquid
+  assign base_image = section.settings.image | default: section.settings.image_mobile
+  assign overlay_content_alignment = section.settings.overlay_content_alignment | default: 'auto'
+  assign image_loading = 'lazy'
+  assign image_priority = 'auto'
+  if section.index <= 3
+    assign image_loading = 'eager'
+  endif
+  if section.index == 1
+    assign image_priority = 'high'
+  endif
+%}
+
+{% capture editorial_text %}
+  {% if section.settings.overlay_heading != blank %}
+    <h2 class="hotspots-editorial__heading">{{ section.settings.overlay_heading }}</h2>
+  {% endif %}
+  {% if section.settings.overlay_text != blank %}
+    <div class="hotspots-editorial__text rte">{{ section.settings.overlay_text }}</div>
+  {% endif %}
+{% endcapture %}
+{% assign editorial_text = editorial_text | strip %}
+
+{% capture editorial_button %}
+  {% if section.settings.overlay_button_label != blank %}
+    <a
+      class="button"
+      {% if section.settings.overlay_button_link != blank %}
+        href="{{ section.settings.overlay_button_link }}"
+      {% else %}
+        role="link"
+        aria-disabled="true"
+      {% endif %}
+    >
+      {{ section.settings.overlay_button_label | escape }}
+    </a>
+  {% endif %}
+{% endcapture %}
+{% assign editorial_button = editorial_button | strip %}
+
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 
 <div
@@ -20,6 +60,8 @@
     section
     section--{{ section.settings.section_width }}
     section-product-hotspots
+    {% if section.settings.animate_hotspots %}section-product-hotspots--animate-hotspots{% endif %}
+    {% if section.settings.hide_hotspots_mobile %}section-product-hotspots--hide-hotspots-mobile{% endif %}
     color-{{ section.settings.color_scheme }}
     spacing-style
     gap-style
@@ -30,9 +72,14 @@
     {% render 'gap-style', value: 28 %}
     {% if section.settings.section_height != 'auto' %}
       --ratio: {{ section.settings.section_height }};
-    {% elsif section.settings.image != blank %}
-      --ratio: {{ section.settings.image.aspect_ratio }};
+    {% elsif base_image != blank %}
+      --ratio: {{ base_image.aspect_ratio }};
+      {% if section.settings.image_mobile != blank %}
+        --ratio-mobile: {{ section.settings.image_mobile.aspect_ratio }};
+      {% endif %}
     {% endif %}
+    --hotspots-image-position: {{ base_image.presentation.focal_point | default: 'center' }};
+    --hotspots-image-position-mobile: {{ section.settings.image_mobile.presentation.focal_point | default: base_image.presentation.focal_point | default: 'center' }};
     --product-title-gap: {{ section.settings.product_title_gap }}px;
     --hotspot-size: 36px;
     --minimum-width-dialog: 260px;
@@ -45,53 +92,93 @@
       {% content_for 'block', type: 'text', id: 'heading' %}
     </div>
 
-    <product-hotspots class="section-product-hotspots__content">
-      {% if section.settings.toggle_overlay %}
-        {% render 'overlay', settings: section.settings, layer: '1' %}
-      {% endif %}
-
-      {% if section.settings.image != blank %}
-        {% render 'image', image: section.settings.image, class: 'hotspots__background-image hotspots__background-image--base' %}
-      {% else %}
-        {{ 'hero-apparel-1' | placeholder_svg_tag: 'hotspots__background-image hotspots__background-image--base' }}
-      {% endif %}
-
-      <img class="hotspots__background-image hotspots__background-image--hover" alt="" aria-hidden="true" width="2000" height="2000" data-hotspot-hover-image>
-
-      {% if section.settings.overlay_heading != blank
-        or section.settings.overlay_text != blank
-        or section.settings.overlay_button_label != blank
-      %}
-        {% assign overlay_content_alignment = section.settings.overlay_content_alignment | default: 'auto' %}
-        <div class="hotspots-editorial hotspots-editorial--{{ section.settings.overlay_content_position }}">
-          <div class="hotspots-editorial__content hotspots-editorial__content--{{ overlay_content_alignment }}">
-            {% if section.settings.overlay_heading != blank %}
-              <h2 class="hotspots-editorial__heading">{{ section.settings.overlay_heading }}</h2>
-            {% endif %}
-            {% if section.settings.overlay_text != blank %}
-              <div class="hotspots-editorial__text rte">{{ section.settings.overlay_text }}</div>
-            {% endif %}
-            {% if section.settings.overlay_button_label != blank %}
-              <a
-                class="button"
-                {% if section.settings.overlay_button_link != blank %}
-                  href="{{ section.settings.overlay_button_link }}"
-                {% else %}
-                  role="link"
-                  aria-disabled="true"
-                {% endif %}
-              >
-                {{ section.settings.overlay_button_label }}
-              </a>
-            {% endif %}
-          </div>
+    {% if section.settings.content_above_image and editorial_text != blank %}
+      <div class="hotspots-editorial hotspots-editorial--outside hotspots-editorial--{{ section.settings.overlay_content_position }}">
+        <div class="hotspots-editorial__content hotspots-editorial__content--{{ overlay_content_alignment }}">
+          {{ editorial_text }}
         </div>
-      {% endif %}
-
-      <div class="hotspots-container">
-        {% content_for 'blocks' %}
       </div>
+    {% endif %}
+
+    <product-hotspots
+      class="section-product-hotspots__interactive"
+      data-mobile-preview-quick-buy="{{ section.settings.mobile_preview_quick_buy }}"
+    >
+      <div class="section-product-hotspots__content" id="HotspotsMedia-{{ section.id }}">
+        {% if section.settings.toggle_overlay %}
+          {% render 'overlay', settings: section.settings, layer: '1' %}
+        {% endif %}
+
+        {% if base_image != blank %}
+          <picture>
+            {% if section.settings.image != blank and section.settings.image_mobile != blank %}
+              <source
+                media="(max-width: 749px)"
+                srcset="{{ section.settings.image_mobile | image_url: width: 375 }} 375w, {{ section.settings.image_mobile | image_url: width: 750 }} 750w, {{ section.settings.image_mobile | image_url: width: 1100 }} 1100w, {{ section.settings.image_mobile | image_url: width: 1500 }} 1500w"
+                sizes="100vw"
+                width="{{ section.settings.image_mobile.width }}"
+                height="{{ section.settings.image_mobile.height }}"
+              >
+            {% endif %}
+            {{ base_image | image_url: width: 3000 | image_tag: class: 'hotspots__background-image hotspots__background-image--base', widths: '375, 750, 1100, 1500, 2000, 2500, 3000', sizes: '100vw', loading: image_loading, fetchpriority: image_priority, style: 'object-position: var(--hotspots-image-position);' }}
+          </picture>
+        {% else %}
+          {{ 'hero-apparel-1' | placeholder_svg_tag: 'hotspots__background-image hotspots__background-image--base' }}
+        {% endif %}
+
+        <img class="hotspots__background-image hotspots__background-image--hover" alt="" aria-hidden="true" width="2000" height="2000" data-hotspot-hover-image>
+
+        {% liquid
+          assign show_overlay_text = false
+          assign show_overlay_button = false
+          unless section.settings.content_above_image
+            if editorial_text != blank
+              assign show_overlay_text = true
+            endif
+          endunless
+          unless section.settings.button_below_image
+            if editorial_button != blank
+              assign show_overlay_button = true
+            endif
+          endunless
+        %}
+        {% if show_overlay_text or show_overlay_button %}
+          <div class="hotspots-editorial hotspots-editorial--{{ section.settings.overlay_content_position }}">
+            <div class="hotspots-editorial__content hotspots-editorial__content--{{ overlay_content_alignment }}">
+              {% if show_overlay_text %}
+                {{ editorial_text }}
+              {% endif %}
+              {% if show_overlay_button %}
+                {{ editorial_button }}
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="hotspots-container">
+          {% content_for 'blocks' %}
+        </div>
+        <div
+          id="HotspotsQuickBuy-{{ section.id }}"
+          class="hotspots-mobile-quick-buy"
+          data-hotspot-mobile-quick-buy-panel
+          aria-live="polite"
+          aria-hidden="true"
+          inert
+          hidden
+        ></div>
+      </div>
+
+      <div class="hotspots-mobile-buttons" data-hotspot-mobile-buttons hidden></div>
     </product-hotspots>
+
+    {% if section.settings.button_below_image and editorial_button != blank %}
+      <div class="hotspots-editorial hotspots-editorial--outside hotspots-editorial--{{ section.settings.overlay_content_position }}">
+        <div class="hotspots-editorial__content hotspots-editorial__content--{{ overlay_content_alignment }}">
+          {{ editorial_button }}
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 
@@ -106,6 +193,11 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+  }
+
+  .section-product-hotspots__interactive {
+    display: block;
+    min-width: 0;
   }
 
   /* Image container */
@@ -170,6 +262,115 @@
     margin-inline: auto 0;
   }
 
+  .hotspots-editorial--outside {
+    position: static;
+    padding: var(--padding-lg) 0;
+  }
+
+  .hotspots-editorial--outside .hotspots-editorial__content {
+    text-shadow: none;
+  }
+
+  .hotspots-mobile-buttons {
+    display: none;
+  }
+
+  .hotspots-mobile-quick-buy {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-product-hotspots__content {
+      --hotspots-image-position: var(--hotspots-image-position-mobile);
+      aspect-ratio: var(--ratio-mobile, var(--ratio, 21 / 9));
+    }
+
+    .section-product-hotspots--hide-hotspots-mobile .hotspot:not([data-editor-selected]) {
+      display: none;
+    }
+
+    .section-product-hotspots__interactive[data-mobile-preview-active] .hotspots-container {
+      visibility: hidden;
+    }
+
+    .hotspots-mobile-buttons:not([hidden]) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--gap-sm);
+      padding-block-start: var(--padding-lg);
+    }
+
+    .hotspots-mobile-buttons__button {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .hotspots-mobile-buttons__button[aria-pressed='true'] {
+      outline: 2px solid var(--color-foreground);
+      outline-offset: 2px;
+    }
+
+    .hotspots-mobile-quick-buy:not([hidden]) {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: block;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    .hotspots-mobile-quick-buy.is-active {
+      opacity: 1;
+    }
+
+    .hotspots-mobile-quick-buy__inner {
+      position: absolute;
+      left: var(--mobile-quick-buy-left, 50%);
+      top: var(--mobile-quick-buy-top, 85%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      max-width: calc(100% - 24px);
+      transform: translateY(calc(-50% + var(--mobile-quick-buy-enter-offset, -8px)));
+      transition: transform 200ms ease;
+    }
+
+    .hotspots-mobile-quick-buy.is-active .hotspots-mobile-quick-buy__inner {
+      transform: translateY(-50%);
+    }
+
+    .hotspots-mobile-quick-buy__inner > .button {
+      width: fit-content;
+      max-width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      pointer-events: auto;
+    }
+
+    .hotspots-mobile-quick-buy__inner > .hotspots-mobile-quick-buy__close {
+      display: inline-flex;
+      flex: 0 0 44px;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      padding: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hotspots-mobile-quick-buy:not([hidden]),
+    .hotspots-mobile-quick-buy__inner {
+      transition: none;
+    }
+  }
+
 {% endstylesheet %}
 
 {% schema %}
@@ -190,6 +391,11 @@
       "label": "t:settings.image"
     },
     {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "t:settings.hotspots_image_mobile"
+    },
+    {
       "type": "header",
       "content": "t:settings.text_on_images"
     },
@@ -204,6 +410,12 @@
       "label": "t:settings.text"
     },
     {
+      "type": "checkbox",
+      "id": "content_above_image",
+      "label": "t:settings.hotspots_content_above_image",
+      "default": false
+    },
+    {
       "type": "text",
       "id": "overlay_button_label",
       "label": "t:settings.button_label"
@@ -212,6 +424,12 @@
       "type": "url",
       "id": "overlay_button_link",
       "label": "t:settings.button_link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_below_image",
+      "label": "t:settings.hotspots_button_below_image",
+      "default": false
     },
     {
       "type": "select",
@@ -336,6 +554,25 @@
     {
       "type": "header",
       "content": "t:content.interaction"
+    },
+    {
+      "type": "checkbox",
+      "id": "animate_hotspots",
+      "label": "t:settings.hotspots_animate",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_hotspots_mobile",
+      "label": "t:settings.hotspots_hide_mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_preview_quick_buy",
+      "label": "t:settings.hotspots_mobile_preview_quick_buy",
+      "info": "t:info.hotspots_mobile_preview_quick_buy",
+      "default": false
     },
     {
       "type": "select",

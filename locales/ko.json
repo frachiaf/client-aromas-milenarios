@@ -29,6 +29,8 @@
     "slider_label": "슬라이더"
   },
   "accessibility": {
+    "hotspots_close_preview": "미리보기를 닫고 기본 이미지로 돌아가기",
+    "hotspots_select_product": "{{ product_name }} 선택",
     "play_model": "3D 모델 재생",
     "play_video": "동영상 재생",
     "unit_price": "단가",
@@ -85,6 +87,9 @@
     "price_filter_high": "높은 가격"
   },
   "actions": {
+    "hotspots_view_more": "더 보기",
+    "hotspots_quick_buy": "빠른 구매",
+    "hotspots_view_product": "상품 보기",
     "add_to_cart": "카트에 추가",
     "clear_all": "모두 지우기",
     "remove": "제거",

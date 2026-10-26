@@ -200,6 +200,22 @@
     "layered_slideshow": "Gelaagde diavoorstelling"
   },
   "settings": {
+    "hotspots_animate": "Pulserende hotspots",
+    "hotspots_quick_buy_x": "Horizontale positie van Meer bekijken op mobiel",
+    "hotspots_quick_buy_y": "Verticale positie van Meer bekijken op mobiel",
+    "hotspots_mobile_preview_quick_buy": "Mobiele voorvertoning en snel kopen",
+    "hotspots_use_mobile_position": "Andere positie op mobiel gebruiken",
+    "hotspots_x_position_mobile": "Horizontale positie op mobiel",
+    "hotspots_y_position_mobile": "Verticale positie op mobiel",
+    "hotspots_mobile_button_background_color": "Achtergrond van mobiele knop",
+    "hotspots_mobile_button_text_color": "Tekstkleur van mobiele knop",
+    "hotspots_image_mobile": "Mobiele afbeelding",
+    "hotspots_hover_image_mobile": "Alternatieve mobiele afbeelding",
+    "hotspots_content_above_image": "Kop en tekst boven de afbeelding tonen",
+    "hotspots_button_below_image": "Sectieknop helemaal onderaan tonen",
+    "hotspots_hide_mobile": "Hotspots op mobiel verbergen",
+    "hotspots_show_mobile_button": "Afbeeldingsknop op mobiel tonen",
+    "hotspots_mobile_button_label": "Tekst van mobiele knop",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Zweeftekst voor snel kopen",
     "button_label": "Knoplabel",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Nieuw binnen"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Tik op een hotspot of rasterknop om de afbeelding te wisselen en daaronder snel kopen te tonen. Schakel uit om de eerdere mobiele interactie te behouden.",
+    "hotspots_mobile_button": "Vereist een product en een alternatieve afbeelding. Knoppen verschijnen onder de afbeelding in twee kolommen. Tik om de afbeelding te wisselen en nogmaals om het origineel te herstellen.",
+    "hotspots_mobile_button_label": "Laat leeg om de producttitel te gebruiken.",
     "carousel_layout_on_mobile": "Op mobiel wordt altijd een carrousel gebruikt",
     "video_alt_text": "Beschrijf de video voor gebruikers van ondersteunende technologie",
     "video_autoplay": "Video's worden standaard gedempt",

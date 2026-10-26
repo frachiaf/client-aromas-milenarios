@@ -200,6 +200,22 @@
     "layered_slideshow": "Diaporama superposé"
   },
   "settings": {
+    "hotspots_animate": "Points interactifs pulsants",
+    "hotspots_quick_buy_x": "Position horizontale de Voir plus sur mobile",
+    "hotspots_quick_buy_y": "Position verticale de Voir plus sur mobile",
+    "hotspots_mobile_preview_quick_buy": "Aperçu mobile et achat rapide",
+    "hotspots_use_mobile_position": "Utiliser une autre position sur mobile",
+    "hotspots_x_position_mobile": "Position horizontale sur mobile",
+    "hotspots_y_position_mobile": "Position verticale sur mobile",
+    "hotspots_mobile_button_background_color": "Fond du bouton mobile",
+    "hotspots_mobile_button_text_color": "Couleur du texte du bouton mobile",
+    "hotspots_image_mobile": "Image mobile",
+    "hotspots_hover_image_mobile": "Image alternative mobile",
+    "hotspots_content_above_image": "Afficher le titre et le texte au-dessus de l’image",
+    "hotspots_button_below_image": "Afficher le bouton de section tout en bas",
+    "hotspots_hide_mobile": "Masquer les points interactifs sur mobile",
+    "hotspots_show_mobile_button": "Afficher le bouton d’image sur mobile",
+    "hotspots_mobile_button_label": "Texte du bouton mobile",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Texte au survol pour l’achat rapide",
     "button_label": "Libellé du bouton",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Nouveautés"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Touchez un point interactif ou son bouton dans la grille pour changer l’image et afficher l’achat rapide en dessous. Désactivez pour conserver l’interaction mobile précédente.",
+    "hotspots_mobile_button": "Nécessite un produit et une image alternative. Les boutons s’affichent sous l’image sur deux colonnes. Touchez pour changer l’image, puis à nouveau pour rétablir l’originale.",
+    "hotspots_mobile_button_label": "Laissez vide pour utiliser le titre du produit.",
     "carousel_layout_on_mobile": "Le carrousel est toujours utilisé sur mobile",
     "video_alt_text": "Décrivez la vidéo pour les utilisateurs de technologies d’assistance",
     "video_autoplay": "Les vidéos seront mises en sourdine par défaut",

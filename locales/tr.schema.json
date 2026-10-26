@@ -200,6 +200,22 @@
     "layered_slideshow": "Katmanlı slayt gösterisi"
   },
   "settings": {
+    "hotspots_animate": "Yanıp sönen etkin noktalar",
+    "hotspots_quick_buy_x": "Mobilde Daha fazla göster yatay konumu",
+    "hotspots_quick_buy_y": "Mobilde Daha fazla göster dikey konumu",
+    "hotspots_mobile_preview_quick_buy": "Mobil önizleme ve hızlı satın alma",
+    "hotspots_use_mobile_position": "Mobilde farklı konum kullan",
+    "hotspots_x_position_mobile": "Mobilde yatay konum",
+    "hotspots_y_position_mobile": "Mobilde dikey konum",
+    "hotspots_mobile_button_background_color": "Mobil düğme arka planı",
+    "hotspots_mobile_button_text_color": "Mobil düğme metin rengi",
+    "hotspots_image_mobile": "Mobil görsel",
+    "hotspots_hover_image_mobile": "Mobil alternatif görsel",
+    "hotspots_content_above_image": "Başlığı ve metni görselin üzerinde göster",
+    "hotspots_button_below_image": "Bölüm düğmesini en altta göster",
+    "hotspots_hide_mobile": "Mobilde etkin noktaları gizle",
+    "hotspots_show_mobile_button": "Mobilde görsel düğmesini göster",
+    "hotspots_mobile_button_label": "Mobil düğme metni",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Hızlı satın alma üzerine gelme metni",
     "button_label": "Düğme etiketi",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Yeni gelenler"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Görseli değiştirmek ve altında hızlı satın almayı göstermek için etkin noktaya veya ızgara düğmesine dokunun. Önceki mobil etkileşimi korumak için kapatın.",
+    "hotspots_mobile_button": "Bir ürün ve alternatif görsel gerektirir. Düğmeler görselin altında iki sütunda görünür. Görseli değiştirmek için dokunun; asıl görsele dönmek için yeniden dokunun.",
+    "hotspots_mobile_button_label": "Ürün başlığını kullanmak için boş bırakın.",
     "video_alt_text": "Yardımcı teknoloji kullanıcıları için videoyu açıklayın",
     "video_autoplay": "Videolar varsayılan olarak sessize alınır",
     "video_external": "Bir YouTube veya Vimeo URL'si kullanın",

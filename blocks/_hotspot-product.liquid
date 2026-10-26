@@ -3,7 +3,18 @@
   instance_id: block.id,
   x_position: block.settings.x-position,
   y_position: block.settings.y-position,
+  use_mobile_position: block.settings.use_mobile_position,
+  x_position_mobile: block.settings.x-position-mobile,
+  y_position_mobile: block.settings.y-position-mobile,
   hover_image: block.settings.hover_image,
+  hover_image_mobile: block.settings.hover_image_mobile,
+  show_mobile_button: block.settings.show_mobile_button,
+  mobile_button_label: block.settings.mobile_button_label,
+  mobile_button_background_color: block.settings.mobile_button_background_color,
+  mobile_button_text_color: block.settings.mobile_button_text_color,
+  mobile_preview_quick_buy: section.settings.mobile_preview_quick_buy,
+  mobile_quick_buy_x: block.settings.mobile_quick_buy_x,
+  mobile_quick_buy_y: block.settings.mobile_quick_buy_y,
   hotspot_color: section.settings.hotspot_color,
   bullseye_color: section.settings.bullseye_color,
   desktop_interaction_mode: section.settings.desktop_interaction_mode,
@@ -30,6 +41,59 @@
       "label": "t:settings.hover_image"
     },
     {
+      "type": "image_picker",
+      "id": "hover_image_mobile",
+      "label": "t:settings.hotspots_hover_image_mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mobile_button",
+      "label": "t:settings.hotspots_show_mobile_button",
+      "info": "t:info.hotspots_mobile_button",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "mobile_button_label",
+      "label": "t:settings.hotspots_mobile_button_label",
+      "info": "t:info.hotspots_mobile_button_label",
+      "visible_if": "{{ block.settings.show_mobile_button }}"
+    },
+    {
+      "type": "color",
+      "id": "mobile_button_background_color",
+      "label": "t:settings.hotspots_mobile_button_background_color",
+      "alpha": true,
+      "visible_if": "{{ block.settings.show_mobile_button }}"
+    },
+    {
+      "type": "color",
+      "id": "mobile_button_text_color",
+      "label": "t:settings.hotspots_mobile_button_text_color",
+      "alpha": true,
+      "visible_if": "{{ block.settings.show_mobile_button }}"
+    },
+    {
+      "type": "range",
+      "id": "mobile_quick_buy_x",
+      "label": "t:settings.hotspots_quick_buy_x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_quick_buy_y",
+      "label": "t:settings.hotspots_quick_buy_y",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 85
+    },
+    {
       "type": "range",
       "id": "x-position",
       "label": "t:settings.x_position",
@@ -46,6 +110,32 @@
       "max": 100,
       "step": 1,
       "default": 50
+    },
+    {
+      "type": "checkbox",
+      "id": "use_mobile_position",
+      "label": "t:settings.hotspots_use_mobile_position",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "x-position-mobile",
+      "label": "t:settings.hotspots_x_position_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "visible_if": "{{ block.settings.use_mobile_position }}"
+    },
+    {
+      "type": "range",
+      "id": "y-position-mobile",
+      "label": "t:settings.hotspots_y_position_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "visible_if": "{{ block.settings.use_mobile_position }}"
     }
   ],
   "presets": [

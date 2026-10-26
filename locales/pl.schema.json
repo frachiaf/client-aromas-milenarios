@@ -200,6 +200,22 @@
     "layered_slideshow": "Warstwowy pokaz slajdów"
   },
   "settings": {
+    "hotspots_animate": "Pulsujące hotspoty",
+    "hotspots_quick_buy_x": "Pozycja pozioma Zobacz więcej na urządzeniach mobilnych",
+    "hotspots_quick_buy_y": "Pozycja pionowa Zobacz więcej na urządzeniach mobilnych",
+    "hotspots_mobile_preview_quick_buy": "Podgląd mobilny i szybki zakup",
+    "hotspots_use_mobile_position": "Użyj innej pozycji na urządzeniach mobilnych",
+    "hotspots_x_position_mobile": "Pozycja pozioma na urządzeniach mobilnych",
+    "hotspots_y_position_mobile": "Pozycja pionowa na urządzeniach mobilnych",
+    "hotspots_mobile_button_background_color": "Tło przycisku mobilnego",
+    "hotspots_mobile_button_text_color": "Kolor tekstu przycisku mobilnego",
+    "hotspots_image_mobile": "Obraz na urządzenia mobilne",
+    "hotspots_hover_image_mobile": "Alternatywny obraz na urządzenia mobilne",
+    "hotspots_content_above_image": "Pokaż nagłówek i tekst nad obrazem",
+    "hotspots_button_below_image": "Pokaż przycisk sekcji na samym dole",
+    "hotspots_hide_mobile": "Ukryj hotspoty na urządzeniach mobilnych",
+    "hotspots_show_mobile_button": "Pokaż przycisk obrazu na urządzeniach mobilnych",
+    "hotspots_mobile_button_label": "Tekst przycisku mobilnego",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Tekst po najechaniu dla szybkiego zakupu",
     "button_label": "Etykieta przycisku",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Nowości"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Dotknij hotspotu lub przycisku w siatce, aby zmienić obraz i pokazać pod nim szybki zakup. Wyłącz, aby zachować wcześniejsze działanie na urządzeniach mobilnych.",
+    "hotspots_mobile_button": "Wymaga produktu i alternatywnego obrazu. Przyciski pojawiają się pod obrazem w dwóch kolumnach. Dotknij, aby zmienić obraz, i ponownie, aby przywrócić oryginalny.",
+    "hotspots_mobile_button_label": "Pozostaw puste, aby użyć tytułu produktu.",
     "video_alt_text": "Opisz wideo dla użytkowników technologii wspomagających",
     "video_autoplay": "Domyślnie filmy będą wyciszone",
     "video_external": "Użyj adresu URL z YouTube lub Vimeo",

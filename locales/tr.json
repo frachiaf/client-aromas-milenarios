@@ -29,6 +29,8 @@
     "slider_label": "Kaydırıcı"
   },
   "accessibility": {
+    "hotspots_close_preview": "Önizlemeyi kapat ve ana görseli geri yükle",
+    "hotspots_select_product": "{{ product_name }} seç",
     "play_model": "3B modeli oynat",
     "play_video": "Videoyu oynat",
     "unit_price": "Birim fiyatı",
@@ -85,6 +87,9 @@
     "price_filter_high": "Yüksek fiyat"
   },
   "actions": {
+    "hotspots_view_more": "Daha fazla göster",
+    "hotspots_quick_buy": "Hızlı satın al",
+    "hotspots_view_product": "Ürünü görüntüle",
     "add_to_cart": "Sepete ekle",
     "clear_all": "Tümünü temizle",
     "remove": "Kaldır",

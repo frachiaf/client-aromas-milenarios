@@ -29,6 +29,8 @@
     "slider_label": "แถบเลื่อน"
   },
   "accessibility": {
+    "hotspots_close_preview": "ปิดตัวอย่างและกลับไปยังรูปภาพหลัก",
+    "hotspots_select_product": "เลือก {{ product_name }}",
     "play_model": "เล่นโมเดล 3 มิติ",
     "play_video": "เล่นวิดีโอ",
     "unit_price": "ราคาต่อหน่วย",
@@ -85,6 +87,9 @@
     "price_filter_high": "ราคาแพง"
   },
   "actions": {
+    "hotspots_view_more": "ดูเพิ่มเติม",
+    "hotspots_quick_buy": "ซื้อด่วน",
+    "hotspots_view_product": "ดูสินค้า",
     "add_to_cart": "เพิ่มลงในตะกร้าสินค้า",
     "clear_all": "ล้างทั้งหมด",
     "remove": "ลบ",

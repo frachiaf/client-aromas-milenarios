@@ -29,6 +29,8 @@
     "slider_label": "Cursore"
   },
   "accessibility": {
+    "hotspots_close_preview": "Chiudi l’anteprima e ripristina l’immagine principale",
+    "hotspots_select_product": "Seleziona {{ product_name }}",
     "play_model": "Riproduci modello 3D",
     "play_video": "Riproduci video",
     "unit_price": "Prezzo unitario",
@@ -86,6 +88,9 @@
     "price_filter_high": "Prezzo alto"
   },
   "actions": {
+    "hotspots_view_more": "Mostra di più",
+    "hotspots_quick_buy": "Acquisto rapido",
+    "hotspots_view_product": "Visualizza prodotto",
     "add_to_cart": "Aggiungi al carrello",
     "clear_all": "Cancella tutto",
     "remove": "Rimuovi",

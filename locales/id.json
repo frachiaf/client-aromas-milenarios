@@ -29,6 +29,8 @@
     "slider_label": "Slider"
   },
   "accessibility": {
+    "hotspots_close_preview": "Tutup pratinjau dan pulihkan gambar utama",
+    "hotspots_select_product": "Pilih {{ product_name }}",
     "play_model": "Putar model 3D",
     "play_video": "Putar video",
     "unit_price": "Harga satuan",
@@ -85,6 +87,9 @@
     "price_filter_high": "Harga tinggi"
   },
   "actions": {
+    "hotspots_view_more": "Lihat selengkapnya",
+    "hotspots_quick_buy": "Beli cepat",
+    "hotspots_view_product": "Lihat produk",
     "add_to_cart": "Tambahkan ke keranjang",
     "clear_all": "Hapus semua",
     "remove": "Hapus",

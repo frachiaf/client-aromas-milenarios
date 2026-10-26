@@ -29,6 +29,8 @@
     "slider_label": "投影播放器"
   },
   "accessibility": {
+    "hotspots_close_preview": "關閉預覽並還原主圖",
+    "hotspots_select_product": "選擇 {{ product_name }}",
     "play_model": "播放 3D 模型",
     "play_video": "播放影片",
     "unit_price": "單價",
@@ -85,6 +87,9 @@
     "price_filter_high": "高價"
   },
   "actions": {
+    "hotspots_view_more": "查看更多",
+    "hotspots_quick_buy": "快速購買",
+    "hotspots_view_product": "查看商品",
     "add_to_cart": "加入購物車",
     "clear_all": "全部清除",
     "remove": "移除",

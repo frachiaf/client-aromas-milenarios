@@ -29,6 +29,8 @@
     "slider_label": "Kliznik"
   },
   "accessibility": {
+    "hotspots_close_preview": "Zatvori pregled i vrati glavnu sliku",
+    "hotspots_select_product": "Odaberi {{ product_name }}",
     "play_model": "Reproduciraj 3D model",
     "play_video": "Reproduciraj videozapis",
     "unit_price": "Jedinična cijena",
@@ -86,6 +88,9 @@
     "price_filter_high": "Visoka cijena"
   },
   "actions": {
+    "hotspots_view_more": "Prikaži više",
+    "hotspots_quick_buy": "Brza kupnja",
+    "hotspots_view_product": "Prikaži proizvod",
     "add_to_cart": "Dodaj u košaricu",
     "clear_all": "Očisti sve",
     "remove": "Ukloni",

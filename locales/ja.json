@@ -29,6 +29,8 @@
     "slider_label": "スライダー"
   },
   "accessibility": {
+    "hotspots_close_preview": "プレビューを閉じてメイン画像に戻す",
+    "hotspots_select_product": "{{ product_name }}を選択",
     "play_model": "3Dモデルを再生",
     "play_video": "ビデオを再生",
     "unit_price": "単価",
@@ -85,6 +87,9 @@
     "price_filter_high": "高価格"
   },
   "actions": {
+    "hotspots_view_more": "もっと見る",
+    "hotspots_quick_buy": "クイック購入",
+    "hotspots_view_product": "商品を見る",
     "add_to_cart": "カートに追加",
     "clear_all": "すべてクリア",
     "remove": "削除",

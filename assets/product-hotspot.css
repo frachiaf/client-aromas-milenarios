@@ -19,8 +19,11 @@
 
 .hotspots__background-image--hover {
   opacity: 0;
-  transition: opacity 0.15s ease;
   pointer-events: none;
+}
+
+.hotspots__background-image--hover[hidden] {
+  display: none;
 }
 
 .hotspots__background-image--hover.is-active {
@@ -29,6 +32,8 @@
 
 .hotspot {
   position: absolute;
+  left: calc(var(--hotspot-x, 50%) - var(--button-size) / 2);
+  top: calc(var(--hotspot-y, 50%) - var(--button-size) / 2);
   z-index: var(--layer-flat);
   display: flex;
   align-items: center;
@@ -47,6 +52,52 @@
 
 .hotspot:has(.hotspot-dialog[open]) {
   z-index: var(--layer-raised);
+}
+
+.section-product-hotspots--animate-hotspots .hotspot:not(.hotspot--editor-placeholder)::before,
+.am--numbered-slideshow__slide.am--is-active.am--animate-hotspots .hotspot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--hotspot-size, 36px);
+  height: var(--hotspot-size, 36px);
+  border: 2px solid var(--hotspot-bullseye, #fff);
+  border-radius: 50%;
+  opacity: 0.2;
+  transform: translate(-50%, -50%) scale(0.9);
+  pointer-events: none;
+  animation: am--hotspot-breathe 2s ease-in-out infinite;
+}
+
+.section-product-hotspots--animate-hotspots .hotspot:has(:focus-visible)::before,
+.section-product-hotspots--animate-hotspots .hotspot[data-mobile-selected]::before,
+.section-product-hotspots--animate-hotspots .hotspot:has(.hotspot-trigger[aria-pressed='true'], .hotspot-dialog[open])::before,
+.am--numbered-slideshow__slide.am--is-active.am--animate-hotspots .hotspot:has(:focus-visible)::before,
+.am--numbered-slideshow__slide.am--is-active.am--animate-hotspots .hotspot:has(.hotspot-dialog[open])::before {
+  visibility: hidden;
+  animation-play-state: paused;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .section-product-hotspots--animate-hotspots .hotspot:hover::before,
+  .am--numbered-slideshow__slide.am--is-active.am--animate-hotspots .hotspot:hover::before {
+    visibility: hidden;
+    animation-play-state: paused;
+  }
+}
+
+@keyframes am--hotspot-breathe {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  50% {
+    opacity: 0.75;
+    transform: translate(-50%, -50%) scale(1.45);
+  }
 }
 
 .hotspot--editor-placeholder {
@@ -407,6 +458,11 @@
 }
 
 @media screen and (max-width: 749px) {
+  .hotspot {
+    left: calc(var(--hotspot-x-mobile, var(--hotspot-x, 50%)) - var(--button-size) / 2);
+    top: calc(var(--hotspot-y-mobile, var(--hotspot-y, 50%)) - var(--button-size) / 2);
+  }
+
   .hotspot .hotspot-dialog {
     display: none;
   }
@@ -417,6 +473,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .section-product-hotspots--animate-hotspots .hotspot:not(.hotspot--editor-placeholder)::before,
+  .am--numbered-slideshow__slide.am--is-active.am--animate-hotspots .hotspot::before {
+    content: none;
+    animation: none;
+  }
+
   .hotspots__background-image--hover,
   .hotspot-trigger,
   .hotspot-trigger::after,

@@ -34,7 +34,7 @@
             "color_scheme": "",
             "background_media": "image",
             "video_position": "cover",
-            "background_image": "shopify://shop_images/Banner_navideno_con_flores_y_vela.png",
+            "background_image": "shopify://shop_images/ChatGPT_Image_2_sept_2026_01_00_33_a.m._2.png",
             "background_image_position": "cover",
             "background_image_mobile": "shopify://shop_images/WhatsApp_Image_2026-09-13_at_2.17.55_AM.jpg",
             "border": "none",
@@ -607,6 +607,203 @@
         "padding-block-end": 0
       }
     },
+    "product_hotspots_tydYgA": {
+      "type": "product-hotspots",
+      "blocks": {
+        "hotspot_product_DK7gg9": {
+          "type": "_hotspot-product",
+          "settings": {
+            "product": "vela-selene",
+            "hover_image": "shopify://shop_images/Vela_Selene_bajo_una_luna_llena-1.png",
+            "hover_image_mobile": "shopify://shop_images/Vela_Selene_bajo_la_luna_llena-2.png",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
+            "x-position": 29,
+            "y-position": 48,
+            "use_mobile_position": true,
+            "x-position-mobile": 15,
+            "y-position-mobile": 52
+          },
+          "blocks": {}
+        },
+        "hotspot_product_BjWR6C": {
+          "type": "_hotspot-product",
+          "settings": {
+            "product": "vela-celta",
+            "hover_image": "shopify://shop_images/Vela_CELTA_en_bosque_iluminado-3.png",
+            "hover_image_mobile": "shopify://shop_images/Vela_verde_entre_arboles_soleados-4.png",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
+            "x-position": 44,
+            "y-position": 48,
+            "use_mobile_position": true,
+            "x-position-mobile": 39,
+            "y-position-mobile": 52
+          },
+          "blocks": {}
+        },
+        "hotspot_product_3zTTtB": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "settings": {
+            "product": "vela-oceano",
+            "hover_image": "shopify://shop_images/Vela_OCEANO_frente_a_playa_realista-1.png",
+            "hover_image_mobile": "shopify://shop_images/Vela_OCEANO_junto_al_mar-2.png",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
+            "x-position": 59,
+            "y-position": 48,
+            "use_mobile_position": true,
+            "x-position-mobile": 62,
+            "y-position-mobile": 52
+          },
+          "blocks": {}
+        },
+        "hotspot_product_kXw7ED": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "settings": {
+            "product": "vela-magdalena",
+            "hover_image": "shopify://shop_images/Vela_MAGDALENA_entre_madera_y_rosas-1.png",
+            "hover_image_mobile": "shopify://shop_images/Vela_roja_entre_rosas_y_luz_nocturna-2.png",
+            "show_mobile_button": false,
+            "mobile_button_label": "Magdalena",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
+            "x-position": 73,
+            "y-position": 48,
+            "use_mobile_position": true,
+            "x-position-mobile": 86,
+            "y-position-mobile": 52
+          },
+          "blocks": {}
+        },
+        "hotspot_product_CbBWEX": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "disabled": true,
+          "settings": {
+            "product": "vela-oriente",
+            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.19_PM_1.jpg",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
+            "x-position": 73,
+            "y-position": 48,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
+          },
+          "blocks": {}
+        },
+        "hotspot_product_MY9HxG": {
+          "type": "_hotspot-product",
+          "name": "t:names.hotspot_product",
+          "disabled": true,
+          "settings": {
+            "product": "vela-jardin-del-alma",
+            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_4.jpg",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
+            "x-position": 88,
+            "y-position": 48,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
+          },
+          "blocks": {}
+        },
+        "heading": {
+          "type": "text",
+          "name": "t:names.heading",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "text": "<h2>Compra el look</h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h4",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "hotspot_product_DK7gg9",
+        "hotspot_product_BjWR6C",
+        "hotspot_product_3zTTtB",
+        "hotspot_product_kXw7ED",
+        "hotspot_product_CbBWEX",
+        "hotspot_product_MY9HxG"
+      ],
+      "name": "t:names.product_hotspots",
+      "settings": {
+        "image": "shopify://shop_images/Cuatro_velas_sobre_madera_natural-1.png",
+        "image_mobile": "shopify://shop_images/Cuatro_velas_premium_sobre_madera_calida-2.png",
+        "overlay_heading": "Experiencias Milenarias",
+        "overlay_text": "",
+        "content_above_image": true,
+        "overlay_button_label": "Elegí como sentirte",
+        "overlay_button_link": "shopify://collections",
+        "button_below_image": true,
+        "overlay_content_position": "bottom-center",
+        "overlay_content_alignment": "auto",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "section_width": "full-width",
+        "section_height": "auto",
+        "animate_hotspots": true,
+        "hide_hotspots_mobile": false,
+        "mobile_preview_quick_buy": true,
+        "desktop_interaction_mode": "click-quick-buy",
+        "quick_buy_hover_label": "VER MÁS",
+        "hotspot_color": "#ffffff57",
+        "bullseye_color": "#ffffff",
+        "color_scheme": "scheme-1",
+        "product_title_gap": 8,
+        "product_title_preset": "",
+        "product_price_preset": "",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "am_numbered_slideshow_zGrUpX": {
       "type": "am--numbered-slideshow",
       "blocks": {
@@ -766,139 +963,6 @@
         "image_aspect_ratio_mobile": "am--numbered-slideshow__image--auto"
       }
     },
-    "product_hotspots_bENwVW": {
-      "type": "product-hotspots",
-      "blocks": {
-        "hotspot_product_3P6GD4": {
-          "type": "_hotspot-product",
-          "name": "t:names.hotspot_product",
-          "settings": {
-            "product": "vela-magdalena",
-            "hover_image": "shopify://shop_images/Vela_MAGDALENA_entre_madera_y_rosas-1.png",
-            "x-position": 73,
-            "y-position": 48
-          },
-          "blocks": {}
-        },
-        "hotspot_product_GwbiQw": {
-          "type": "_hotspot-product",
-          "settings": {
-            "product": "vela-selene",
-            "hover_image": "shopify://shop_images/Vela_Selene_bajo_una_luna_llena-1.png",
-            "x-position": 29,
-            "y-position": 48
-          },
-          "blocks": {}
-        },
-        "hotspot_product_UNWyqA": {
-          "type": "_hotspot-product",
-          "settings": {
-            "product": "vela-celta",
-            "hover_image": "shopify://shop_images/Vela_CELTA_en_bosque_iluminado-3.png",
-            "x-position": 44,
-            "y-position": 48
-          },
-          "blocks": {}
-        },
-        "hotspot_product_FUiBY9": {
-          "type": "_hotspot-product",
-          "name": "t:names.hotspot_product",
-          "settings": {
-            "product": "vela-oceano",
-            "hover_image": "shopify://shop_images/Vela_OCEANO_frente_a_playa_realista-1.png",
-            "x-position": 59,
-            "y-position": 48
-          },
-          "blocks": {}
-        },
-        "hotspot_product_AGfVmV": {
-          "type": "_hotspot-product",
-          "name": "t:names.hotspot_product",
-          "disabled": true,
-          "settings": {
-            "product": "vela-oriente",
-            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.19_PM_1.jpg",
-            "x-position": 73,
-            "y-position": 48
-          },
-          "blocks": {}
-        },
-        "hotspot_product_V9Ed6W": {
-          "type": "_hotspot-product",
-          "name": "t:names.hotspot_product",
-          "disabled": true,
-          "settings": {
-            "product": "vela-jardin-del-alma",
-            "hover_image": "shopify://shop_images/WhatsApp_Image_2026-08-02_at_11.17.18_PM_4.jpg",
-            "x-position": 88,
-            "y-position": 48
-          },
-          "blocks": {}
-        },
-        "heading": {
-          "type": "text",
-          "name": "t:names.heading",
-          "disabled": true,
-          "static": true,
-          "settings": {
-            "text": "<h2>Compra el look</h2>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h4",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "hotspot_product_3P6GD4",
-        "hotspot_product_GwbiQw",
-        "hotspot_product_UNWyqA",
-        "hotspot_product_FUiBY9",
-        "hotspot_product_AGfVmV",
-        "hotspot_product_V9Ed6W"
-      ],
-      "name": "t:names.product_hotspots",
-      "settings": {
-        "image": "shopify://shop_images/Cuatro_velas_sobre_madera_natural-1.png",
-        "overlay_heading": "Experiencias Milenarias",
-        "overlay_text": "",
-        "overlay_button_label": "Elegí como sentirte",
-        "overlay_button_link": "shopify://collections",
-        "overlay_content_position": "bottom-center",
-        "overlay_content_alignment": "auto",
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "section_width": "full-width",
-        "section_height": "auto",
-        "desktop_interaction_mode": "click-quick-buy",
-        "quick_buy_hover_label": "VER MÁS",
-        "hotspot_color": "#ffffff57",
-        "bullseye_color": "#ffffff",
-        "color_scheme": "scheme-1",
-        "product_title_gap": 8,
-        "product_title_preset": "",
-        "product_price_preset": "",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
     "divider_phjVXD": {
       "type": "divider",
       "name": "t:names.divider_section",
@@ -1055,7 +1119,7 @@
         "width_percent": 100,
         "alignment_horizontal": "center",
         "padding-block-start": 16,
-        "padding-block-end": 16
+        "padding-block-end": 0
       }
     },
     "product_hotspots_bEbnA8": {
@@ -1066,8 +1130,17 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-oceano",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
             "x-position": 12,
-            "y-position": 48
+            "y-position": 48,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
           },
           "blocks": {}
         },
@@ -1075,8 +1148,17 @@
           "type": "_hotspot-product",
           "settings": {
             "product": "vela-magdalena",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
             "x-position": 24,
-            "y-position": 83
+            "y-position": 83,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
           },
           "blocks": {}
         },
@@ -1084,8 +1166,17 @@
           "type": "_hotspot-product",
           "settings": {
             "product": "",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
             "x-position": 42,
-            "y-position": 48
+            "y-position": 48,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
           },
           "blocks": {}
         },
@@ -1094,8 +1185,17 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-selene",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
             "x-position": 58,
-            "y-position": 48
+            "y-position": 48,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
           },
           "blocks": {}
         },
@@ -1104,8 +1204,17 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-oriente",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
             "x-position": 73,
-            "y-position": 48
+            "y-position": 48,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
           },
           "blocks": {}
         },
@@ -1114,8 +1223,17 @@
           "name": "t:names.hotspot_product",
           "settings": {
             "product": "vela-jardin-del-alma",
+            "show_mobile_button": false,
+            "mobile_button_label": "",
+            "mobile_button_background_color": "",
+            "mobile_button_text_color": "",
+            "mobile_quick_buy_x": 50,
+            "mobile_quick_buy_y": 85,
             "x-position": 88,
-            "y-position": 48
+            "y-position": 48,
+            "use_mobile_position": false,
+            "x-position-mobile": 50,
+            "y-position-mobile": 50
           },
           "blocks": {}
         },
@@ -1162,8 +1280,10 @@
         "image": "shopify://shop_images/FridayNightLights_shoppable_1296x_a35fbc6d-03b8-426a-801c-c4eca70d07c1.webp",
         "overlay_heading": "",
         "overlay_text": "",
+        "content_above_image": false,
         "overlay_button_label": "",
         "overlay_button_link": "",
+        "button_below_image": false,
         "overlay_content_position": "bottom-center",
         "overlay_content_alignment": "auto",
         "toggle_overlay": false,
@@ -1172,6 +1292,9 @@
         "gradient_direction": "to top",
         "section_width": "page-width",
         "section_height": "auto",
+        "animate_hotspots": false,
+        "hide_hotspots_mobile": false,
+        "mobile_preview_quick_buy": false,
         "desktop_interaction_mode": "hover-preview-click-quick-buy",
         "quick_buy_hover_label": "VER MÁS",
         "hotspot_color": "#ffffff57",
@@ -1182,261 +1305,6 @@
         "product_price_preset": "",
         "padding-block-start": 0,
         "padding-block-end": 40
-      }
-    },
-    "section_7aFhAa": {
-      "type": "section",
-      "blocks": {
-        "text_VgVUey": {
-          "type": "text",
-          "name": "t:names.heading",
-          "settings": {
-            "text": "<h2>VELAS</h2>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "text_jzEHLE": {
-          "type": "text",
-          "name": "t:names.text",
-          "settings": {
-            "text": "<p>Creamos cosas que funcionan mejor y duran más. Nuestros productos resuelven problemas reales con un diseño limpio y materiales honestos.</p>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "button_8Rg4p3": {
-          "type": "button",
-          "name": "t:names.button",
-          "settings": {
-            "label": "Comprar ahora",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_VgVUey",
-        "text_jzEHLE",
-        "button_8Rg4p3"
-      ],
-      "name": "t:names.rich_text_section",
-      "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 25,
-        "section_width": "page-width",
-        "section_height": "small",
-        "section_height_custom": 50,
-        "color_scheme": "",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 48
-      }
-    },
-    "am_color_divider_HPtyJK": {
-      "type": "am--color-divider",
-      "name": "AM Color Divider",
-      "settings": {
-        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
-        "separator_style": "wave",
-        "invert_colors": true,
-        "height_desktop": 180,
-        "height_mobile": 100
-      }
-    },
-    "media_with_content_E7M3aJ": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image": "shopify://shop_images/Perfume_Aromas_Milenarios_entre_manos.png",
-            "link": "",
-            "video_loop": true,
-            "video_autoplay": false,
-            "image_position": "contain",
-            "video_position": "cover"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "center",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 24
-          },
-          "blocks": {
-            "text_nHFkkm": {
-              "type": "text",
-              "name": "t:names.heading",
-              "settings": {
-                "text": "<h2>Uniserso Masculino</h2>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_BLWmUB": {
-              "type": "text",
-              "name": "t:text_defaults.heading",
-              "settings": {
-                "text": "<h4>Aromas con caracter</h4>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "center",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_8kEdFg": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Perfumes para la piel, la ropa y tus espacios. Y difusores para que tu aroma te acompañe también en el auto.</p>",
-                "width": "100%",
-                "max_width": "narrow",
-                "alignment": "center",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "button_xATxFb": {
-              "type": "button",
-              "name": "t:names.button",
-              "settings": {
-                "label": "Comprar ahora",
-                "link": "shopify://collections/all",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_nHFkkm",
-            "text_BLWmUB",
-            "text_8kEdFg",
-            "button_xATxFb"
-          ]
-        }
-      },
-      "name": "t:names.media_with_text",
-      "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "50svh",
-        "section_width": "full-width",
-        "extend_media": true,
-        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
-        "padding-block-start": 20,
-        "padding-block-end": 20
       }
     },
     "section_38NEeA": {
@@ -1470,245 +1338,6 @@
         "gradient_direction": "to top",
         "padding-block-start": 0,
         "padding-block-end": 0
-      }
-    },
-    "am_color_divider_HDngyH": {
-      "type": "am--color-divider",
-      "name": "AM Divisor de color",
-      "settings": {
-        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
-        "separator_style": "wave",
-        "invert_colors": false,
-        "height_desktop": 180,
-        "height_mobile": 100
-      }
-    },
-    "section_FNaLNP": {
-      "type": "section",
-      "blocks": {
-        "text_QMxCrh": {
-          "type": "text",
-          "name": "t:names.heading",
-          "settings": {
-            "text": "<h2>¿Qué de vos habita en lo que elegís?</h2><h4>Lo que tu alma reconoce, antes de que puedas explicarlo.</h4>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "text_9Ycc3U": {
-          "type": "text",
-          "name": "t:names.text",
-          "settings": {
-            "text": "<p>Un aroma en la piel, una vela encendida, un objeto que encuentra su lugar en casa. Cada elección dice algo de nosotros: lo que nos conmueve, lo que buscamos, lo que queremos tener cerca.</p><p>Observar esas elecciones es una forma de conocernos. Preguntarnos qué nos atrae y para qué lo elegimos nos ayuda a reconocer qué queremos sentir y con qué queremos rodearnos.</p><p>Aromas Milenarios nace para acompañar esa conexión: acercar la naturaleza a lo cotidiano y crear experiencias que te inviten a descubrir qué tiene sentido para vos.</p>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_QMxCrh",
-        "text_9Ycc3U"
-      ],
-      "name": "t:names.custom_section",
-      "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "small",
-        "section_height_custom": 50,
-        "color_scheme": "",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 36,
-        "padding-block-end": 35
-      }
-    },
-    "media_with_content_J4njzh": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image": "shopify://shop_images/Diseno_sin_titulo_12.png",
-            "link": "",
-            "video_loop": true,
-            "video_autoplay": false,
-            "image_position": "contain",
-            "video_position": "cover"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "center",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 24
-          },
-          "blocks": {
-            "text_N9bhxc": {
-              "type": "text",
-              "name": "t:names.heading",
-              "settings": {
-                "text": "<h2>Difusores para tu día a día</h2>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_jJeiRW": {
-              "type": "text",
-              "name": "t:text_defaults.heading",
-              "settings": {
-                "text": "<h4>En casa y en movimiento.</h4>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "center",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_wmYyJj": {
-              "type": "text",
-              "settings": {
-                "text": "<p>&nbsp;Nuestros difusores mantienen vivo ese aroma que tanto te gusta y le dan a cada lugar algo que la decoración sola no puede: <em><strong>una bienvenida que se siente.</strong></em></p>",
-                "width": "100%",
-                "max_width": "narrow",
-                "alignment": "center",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "button_CHCMpC": {
-              "type": "button",
-              "name": "t:names.button",
-              "settings": {
-                "label": "Descubrí el tuyo",
-                "link": "shopify://collections/all",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_N9bhxc",
-            "text_jJeiRW",
-            "text_wmYyJj",
-            "button_CHCMpC"
-          ]
-        }
-      },
-      "name": "t:names.media_with_text",
-      "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "50svh",
-        "section_width": "full-width",
-        "extend_media": true,
-        "color_scheme": "scheme-4",
-        "padding-block-start": 20,
-        "padding-block-end": 20
       }
     },
     "am_media_product_carousel_Up44th": {
@@ -1885,6 +1514,412 @@
         "infinite": false,
         "autoplay": false,
         "autoplay_speed": 5
+      }
+    },
+    "media_with_content_J4njzh": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/Diseno_sin_titulo_12.png",
+            "link": "",
+            "video_loop": true,
+            "video_autoplay": false,
+            "image_position": "contain",
+            "video_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 24
+          },
+          "blocks": {
+            "text_N9bhxc": {
+              "type": "text",
+              "name": "t:names.heading",
+              "settings": {
+                "text": "<h2>Difusores para tu día a día</h2>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_jJeiRW": {
+              "type": "text",
+              "name": "t:text_defaults.heading",
+              "settings": {
+                "text": "<h4>En casa y en movimiento.</h4>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "rte",
+                "font": "var(--font-primary--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_wmYyJj": {
+              "type": "text",
+              "settings": {
+                "text": "<p>&nbsp;Nuestros difusores mantienen vivo ese aroma que tanto te gusta y le dan a cada lugar algo que la decoración sola no puede: <em><strong>una bienvenida que se siente.</strong></em></p>",
+                "width": "100%",
+                "max_width": "narrow",
+                "alignment": "center",
+                "type_preset": "rte",
+                "font": "var(--font-primary--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "button_CHCMpC": {
+              "type": "button",
+              "name": "t:names.button",
+              "settings": {
+                "label": "Descubrí el tuyo",
+                "link": "shopify://collections/all",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_N9bhxc",
+            "text_jJeiRW",
+            "text_wmYyJj",
+            "button_CHCMpC"
+          ]
+        }
+      },
+      "name": "t:names.media_with_text",
+      "settings": {
+        "media_position": "right",
+        "media_width": "medium",
+        "media_height": "50svh",
+        "section_width": "full-width",
+        "extend_media": true,
+        "color_scheme": "scheme-4",
+        "padding-block-start": 20,
+        "padding-block-end": 20
+      }
+    },
+    "section_FNaLNP": {
+      "type": "section",
+      "blocks": {
+        "text_QMxCrh": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2>¿Qué de vos habita en lo que elegís?</h2><h4>Lo que tu alma reconoce, antes de que puedas explicarlo.</h4>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_9Ycc3U": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>Un aroma en la piel, una vela encendida, un objeto que encuentra su lugar en casa. Cada elección dice algo de nosotros: lo que nos conmueve, lo que buscamos, lo que queremos tener cerca.</p><p>Observar esas elecciones es una forma de conocernos. Preguntarnos qué nos atrae y para qué lo elegimos nos ayuda a reconocer qué queremos sentir y con qué queremos rodearnos.</p><p>Aromas Milenarios nace para acompañar esa conexión: acercar la naturaleza a lo cotidiano y crear experiencias que te inviten a descubrir qué tiene sentido para vos.</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "button_dKLeNc": {
+          "type": "button",
+          "name": "t:names.button",
+          "disabled": true,
+          "settings": {
+            "label": "Guía Sensorial",
+            "link": "shopify://pages/contact",
+            "open_in_new_tab": false,
+            "style_class": "button",
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_QMxCrh",
+        "text_9Ycc3U",
+        "button_dKLeNc"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 36,
+        "padding-block-end": 35
+      }
+    },
+    "am_color_divider_HPtyJK": {
+      "type": "am--color-divider",
+      "name": "AM Color Divider",
+      "settings": {
+        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
+        "separator_style": "wave",
+        "invert_colors": true,
+        "height_desktop": 180,
+        "height_mobile": 100
+      }
+    },
+    "media_with_content_E7M3aJ": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/Perfume_Aromas_Milenarios_entre_manos.png",
+            "link": "",
+            "video_loop": true,
+            "video_autoplay": false,
+            "image_position": "contain",
+            "video_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 24
+          },
+          "blocks": {
+            "text_nHFkkm": {
+              "type": "text",
+              "name": "t:names.heading",
+              "settings": {
+                "text": "<h2>Uniserso Masculino</h2>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_BLWmUB": {
+              "type": "text",
+              "name": "t:text_defaults.heading",
+              "settings": {
+                "text": "<h4>Aromas con caracter</h4>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "rte",
+                "font": "var(--font-primary--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_8kEdFg": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Perfumes para la piel, la ropa y tus espacios. Y difusores para que tu aroma te acompañe también en el auto.</p>",
+                "width": "100%",
+                "max_width": "narrow",
+                "alignment": "center",
+                "type_preset": "rte",
+                "font": "var(--font-primary--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "button_xATxFb": {
+              "type": "button",
+              "name": "t:names.button",
+              "settings": {
+                "label": "Comprar ahora",
+                "link": "shopify://collections/all",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_nHFkkm",
+            "text_BLWmUB",
+            "text_8kEdFg",
+            "button_xATxFb"
+          ]
+        }
+      },
+      "name": "t:names.media_with_text",
+      "settings": {
+        "media_position": "right",
+        "media_width": "medium",
+        "media_height": "50svh",
+        "section_width": "full-width",
+        "extend_media": true,
+        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
+        "padding-block-start": 0,
+        "padding-block-end": 20
+      }
+    },
+    "am_color_divider_HDngyH": {
+      "type": "am--color-divider",
+      "name": "AM Divisor de color",
+      "settings": {
+        "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
+        "separator_style": "wave",
+        "invert_colors": false,
+        "height_desktop": 180,
+        "height_mobile": 100
       }
     },
     "product_list_z7QLNk": {
@@ -2115,6 +2150,7 @@
           ]
         }
       },
+      "disabled": true,
       "name": "Featured collection",
       "settings": {
         "collection": "all",
@@ -2138,6 +2174,7 @@
     },
     "am_color_divider_hh8rRA": {
       "type": "am--color-divider",
+      "disabled": true,
       "name": "AM Divisor de color",
       "settings": {
         "color_scheme": "",
@@ -2345,6 +2382,7 @@
         "group_Kihafi",
         "group_hcRM3b"
       ],
+      "disabled": true,
       "name": "Collection highlights",
       "settings": {
         "content_direction": "row",
@@ -2372,17 +2410,6 @@
         "gradient_direction": "to top",
         "padding-block-start": 0,
         "padding-block-end": 0
-      }
-    },
-    "am_color_divider_AhjHnV": {
-      "type": "am--color-divider",
-      "name": "AM Divisor de color",
-      "settings": {
-        "color_scheme": "",
-        "separator_style": "wave",
-        "invert_colors": true,
-        "height_desktop": 180,
-        "height_mobile": 100
       }
     },
     "section_KCRfxt": {
@@ -2878,24 +2905,22 @@
     "hero_mqfmaA",
     "am_video_with_carousel_7TDfyg",
     "divider_aeM83j",
+    "product_hotspots_tydYgA",
     "am_numbered_slideshow_zGrUpX",
-    "product_hotspots_bENwVW",
     "divider_phjVXD",
     "marquee_t4nXej",
     "divider_raVfmY",
     "product_hotspots_bEbnA8",
-    "section_7aFhAa",
+    "section_38NEeA",
+    "am_media_product_carousel_Up44th",
+    "media_with_content_J4njzh",
+    "section_FNaLNP",
     "am_color_divider_HPtyJK",
     "media_with_content_E7M3aJ",
-    "section_38NEeA",
     "am_color_divider_HDngyH",
-    "section_FNaLNP",
-    "media_with_content_J4njzh",
-    "am_media_product_carousel_Up44th",
     "product_list_z7QLNk",
     "am_color_divider_hh8rRA",
     "section_eeFGpP",
-    "am_color_divider_AhjHnV",
     "section_KCRfxt",
     "product_list_UVeP3P"
   ]

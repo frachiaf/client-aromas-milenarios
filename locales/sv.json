@@ -29,6 +29,8 @@
     "slider_label": "Bild"
   },
   "accessibility": {
+    "hotspots_close_preview": "Stäng förhandsvisningen och återställ huvudbilden",
+    "hotspots_select_product": "Välj {{ product_name }}",
     "play_model": "Spela 3D-modell",
     "play_video": "Spela video",
     "unit_price": "Enhetspris",
@@ -85,6 +87,9 @@
     "price_filter_high": "Högt pris"
   },
   "actions": {
+    "hotspots_view_more": "Visa mer",
+    "hotspots_quick_buy": "Snabbköp",
+    "hotspots_view_product": "Visa produkt",
     "add_to_cart": "Lägg till i varukorgen",
     "clear_all": "Rensa alla",
     "remove": "Ta bort",

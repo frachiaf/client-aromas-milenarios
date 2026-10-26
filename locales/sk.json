@@ -29,6 +29,8 @@
     "slider_label": "Jazdec"
   },
   "accessibility": {
+    "hotspots_close_preview": "Zavrieť náhľad a obnoviť hlavný obrázok",
+    "hotspots_select_product": "Vybrať {{ product_name }}",
     "play_model": "Prehrať 3D model",
     "play_video": "Prehrať video",
     "unit_price": "Jednotková cena",
@@ -87,6 +89,9 @@
     "price_filter_high": "Vysoká cena"
   },
   "actions": {
+    "hotspots_view_more": "Zobraziť viac",
+    "hotspots_quick_buy": "Rýchly nákup",
+    "hotspots_view_product": "Zobraziť produkt",
     "add_to_cart": "Pridať do košíka",
     "clear_all": "Vymazať všetko",
     "remove": "Odstrániť",

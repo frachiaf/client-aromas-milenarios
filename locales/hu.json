@@ -29,6 +29,8 @@
     "slider_label": "Csúszka"
   },
   "accessibility": {
+    "hotspots_close_preview": "Előnézet bezárása és a fő kép visszaállítása",
+    "hotspots_select_product": "{{ product_name }} kiválasztása",
     "play_model": "3D-modell lejátszása",
     "play_video": "Videó lejátszása",
     "unit_price": "Egységár",
@@ -85,6 +87,9 @@
     "price_filter_high": "Ár szerint csökkenő"
   },
   "actions": {
+    "hotspots_view_more": "Továbbiak",
+    "hotspots_quick_buy": "Gyors vásárlás",
+    "hotspots_view_product": "Termék megtekintése",
     "add_to_cart": "Hozzáadás a kosárhoz",
     "clear_all": "Az összes törléses",
     "remove": "Eltávolítás",

@@ -29,6 +29,8 @@
     "slider_label": "滑块"
   },
   "accessibility": {
+    "hotspots_close_preview": "关闭预览并恢复主图",
+    "hotspots_select_product": "选择 {{ product_name }}",
     "play_model": "演示 3D 模型",
     "play_video": "播放视频",
     "unit_price": "单价",
@@ -85,6 +87,9 @@
     "price_filter_high": "高价"
   },
   "actions": {
+    "hotspots_view_more": "查看更多",
+    "hotspots_quick_buy": "快速购买",
+    "hotspots_view_product": "查看产品",
     "add_to_cart": "添加到购物车",
     "clear_all": "全部清除",
     "remove": "移除",

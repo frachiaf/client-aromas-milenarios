@@ -29,6 +29,8 @@
     "slider_label": "Thanh trượt"
   },
   "accessibility": {
+    "hotspots_close_preview": "Đóng bản xem trước và khôi phục ảnh chính",
+    "hotspots_select_product": "Chọn {{ product_name }}",
     "play_model": "Phát mô hình 3D",
     "play_video": "Phát video",
     "unit_price": "Đơn giá",
@@ -85,6 +87,9 @@
     "price_filter_high": "Giá cao"
   },
   "actions": {
+    "hotspots_view_more": "Xem thêm",
+    "hotspots_quick_buy": "Mua nhanh",
+    "hotspots_view_product": "Xem sản phẩm",
     "add_to_cart": "Thêm vào giỏ hàng",
     "clear_all": "Xóa tất cả",
     "remove": "Xóa",

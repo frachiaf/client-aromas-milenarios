@@ -29,6 +29,8 @@
     "slider_label": "Slider"
   },
   "accessibility": {
+    "hotspots_close_preview": "Vorschau schließen und Hauptbild wiederherstellen",
+    "hotspots_select_product": "{{ product_name }} auswählen",
     "play_model": "3D-Modell abspielen",
     "play_video": "Video abspielen",
     "unit_price": "Grundpreis",
@@ -85,6 +87,9 @@
     "price_filter_high": "Hoher Preis"
   },
   "actions": {
+    "hotspots_view_more": "Mehr anzeigen",
+    "hotspots_quick_buy": "Schnellkauf",
+    "hotspots_view_product": "Produkt ansehen",
     "add_to_cart": "In den Warenkorb legen",
     "clear_all": "Alles löschen",
     "remove": "Entfernen",

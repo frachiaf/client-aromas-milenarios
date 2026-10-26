@@ -200,6 +200,22 @@
     "layered_slideshow": "レイヤースライドショー"
   },
   "settings": {
+    "hotspots_animate": "点滅するホットスポット",
+    "hotspots_quick_buy_x": "モバイルの「もっと見る」の横位置",
+    "hotspots_quick_buy_y": "モバイルの「もっと見る」の縦位置",
+    "hotspots_mobile_preview_quick_buy": "モバイルプレビューとクイック購入",
+    "hotspots_use_mobile_position": "モバイルで別の位置を使用する",
+    "hotspots_x_position_mobile": "モバイルでの水平位置",
+    "hotspots_y_position_mobile": "モバイルでの垂直位置",
+    "hotspots_mobile_button_background_color": "モバイルボタンの背景色",
+    "hotspots_mobile_button_text_color": "モバイルボタンの文字色",
+    "hotspots_image_mobile": "モバイル用画像",
+    "hotspots_hover_image_mobile": "モバイル用の代替画像",
+    "hotspots_content_above_image": "画像の上に見出しとテキストを表示",
+    "hotspots_button_below_image": "セクションのボタンを一番下に表示",
+    "hotspots_hide_mobile": "モバイルでホットスポットを非表示",
+    "hotspots_show_mobile_button": "モバイルで画像切り替えボタンを表示",
+    "hotspots_mobile_button_label": "モバイルボタンのラベル",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "クイック購入のホバーテキスト",
     "button_label": "ボタンのラベル",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "新着商品"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "ホットスポットまたはグリッド内のボタンをタップすると、画像が切り替わり、その下にクイック購入が表示されます。オフにすると従来のモバイル操作が維持されます。",
+    "hotspots_mobile_button": "商品と代替画像が必要です。ボタンは画像の下に2列で表示されます。タップで画像を切り替え、もう一度タップすると元の画像に戻ります。",
+    "hotspots_mobile_button_label": "空欄の場合は商品名が使われます。",
     "video_alt_text": "支援技術のユーザーのために動画の説明を記述します",
     "video_autoplay": "動画はデフォルトでミュートになります",
     "video_external": "YouTubeまたはVimeoのURLを使用します",

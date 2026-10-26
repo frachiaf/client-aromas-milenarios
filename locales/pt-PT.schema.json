@@ -200,6 +200,22 @@
     "layered_slideshow": "Apresentação em camadas"
   },
   "settings": {
+    "hotspots_animate": "Hotspots pulsantes",
+    "hotspots_quick_buy_x": "Posição horizontal de Ver mais em dispositivos móveis",
+    "hotspots_quick_buy_y": "Posição vertical de Ver mais em dispositivos móveis",
+    "hotspots_mobile_preview_quick_buy": "Pré-visualização móvel e compra rápida",
+    "hotspots_use_mobile_position": "Usar posição diferente em dispositivos móveis",
+    "hotspots_x_position_mobile": "Posição horizontal em dispositivos móveis",
+    "hotspots_y_position_mobile": "Posição vertical em dispositivos móveis",
+    "hotspots_mobile_button_background_color": "Fundo do botão para dispositivos móveis",
+    "hotspots_mobile_button_text_color": "Cor do texto do botão para dispositivos móveis",
+    "hotspots_image_mobile": "Imagem para dispositivos móveis",
+    "hotspots_hover_image_mobile": "Imagem alternativa para dispositivos móveis",
+    "hotspots_content_above_image": "Mostrar título e texto acima da imagem",
+    "hotspots_button_below_image": "Mostrar botão da secção no final",
+    "hotspots_hide_mobile": "Ocultar hotspots em dispositivos móveis",
+    "hotspots_show_mobile_button": "Mostrar botão de imagem em dispositivos móveis",
+    "hotspots_mobile_button_label": "Texto do botão para dispositivos móveis",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Texto ao passar o rato para compra rápida",
     "button_label": "Etiqueta do botão",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Novidades"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Toque num hotspot ou botão da grelha para mudar a imagem e mostrar a compra rápida abaixo. Desative para manter a interação móvel anterior.",
+    "hotspots_mobile_button": "Requer um produto e uma imagem alternativa. Os botões aparecem abaixo da imagem em duas colunas. Toque para mudar a imagem e novamente para repor a original.",
+    "hotspots_mobile_button_label": "Deixe em branco para usar o título do produto.",
     "video_alt_text": "Descreva o vídeo para utilizadores de tecnologia de apoio",
     "video_autoplay": "Os vídeos serão silenciados por predefinição",
     "video_external": "Utilize um URL do YouTube ou do Vimeo",

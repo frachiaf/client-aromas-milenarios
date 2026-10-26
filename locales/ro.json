@@ -29,6 +29,8 @@
     "slider_label": "Cursor"
   },
   "accessibility": {
+    "hotspots_close_preview": "Închide previzualizarea și restabilește imaginea principală",
+    "hotspots_select_product": "Selectează {{ product_name }}",
     "play_model": "Redă modelul 3D",
     "play_video": "Redă videoclipul",
     "unit_price": "Preț unitar",
@@ -86,6 +88,9 @@
     "price_filter_high": "Preț mare"
   },
   "actions": {
+    "hotspots_view_more": "Vezi mai mult",
+    "hotspots_quick_buy": "Cumpărare rapidă",
+    "hotspots_view_product": "Vezi produsul",
     "add_to_cart": "Adaugă în coș",
     "clear_all": "Golește tot",
     "remove": "Eliminare",

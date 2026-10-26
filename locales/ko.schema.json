@@ -200,6 +200,22 @@
     "layered_slideshow": "레이어드 슬라이드 쇼"
   },
   "settings": {
+    "hotspots_animate": "맥동하는 핫스팟",
+    "hotspots_quick_buy_x": "모바일 더 보기 버튼의 가로 위치",
+    "hotspots_quick_buy_y": "모바일 더 보기 버튼의 세로 위치",
+    "hotspots_mobile_preview_quick_buy": "모바일 미리 보기 및 빠른 구매",
+    "hotspots_use_mobile_position": "모바일에서 다른 위치 사용",
+    "hotspots_x_position_mobile": "모바일 가로 위치",
+    "hotspots_y_position_mobile": "모바일 세로 위치",
+    "hotspots_mobile_button_background_color": "모바일 버튼 배경색",
+    "hotspots_mobile_button_text_color": "모바일 버튼 텍스트 색상",
+    "hotspots_image_mobile": "모바일 이미지",
+    "hotspots_hover_image_mobile": "모바일 대체 이미지",
+    "hotspots_content_above_image": "이미지 위에 제목 및 텍스트 표시",
+    "hotspots_button_below_image": "섹션 버튼을 맨 아래에 표시",
+    "hotspots_hide_mobile": "모바일에서 핫스팟 숨기기",
+    "hotspots_show_mobile_button": "모바일에서 이미지 버튼 표시",
+    "hotspots_mobile_button_label": "모바일 버튼 텍스트",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "빠른 구매 호버 텍스트",
     "button_label": "버튼 레이블",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "신상품"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "핫스팟 또는 그리드 버튼을 탭하면 이미지가 바뀌고 아래에 빠른 구매가 표시됩니다. 끄면 기존 모바일 동작이 유지됩니다.",
+    "hotspots_mobile_button": "상품 및 대체 이미지가 필요합니다. 버튼은 이미지 아래에 2열로 표시됩니다. 탭하여 이미지를 바꾸고 다시 탭하여 원래 이미지로 돌아갑니다.",
+    "hotspots_mobile_button_label": "비워 두면 상품 제목을 사용합니다.",
     "carousel_layout_on_mobile": "모바일에서는 항상 캐러셀이 사용됩니다.",
     "video_alt_text": "보조 기술 사용자를 위해 비디오를 설명하세요",
     "video_autoplay": "비디오는 기본적으로 음소거됩니다",

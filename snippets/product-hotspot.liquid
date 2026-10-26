@@ -5,6 +5,9 @@
   @param {string} instance_id - Unique ID for the hotspot and Quick Add form.
   @param {number} x_position - Horizontal position as a percentage.
   @param {number} y_position - Vertical position as a percentage.
+  @param {boolean} [use_mobile_position] - Whether to use separate mobile coordinates.
+  @param {number} [x_position_mobile] - Mobile horizontal position as a percentage.
+  @param {number} [y_position_mobile] - Mobile vertical position as a percentage.
   @param {string} hotspot_color - Background color of the hotspot trigger.
   @param {string} bullseye_color - Color of the hotspot bullseye.
   @param {string} desktop_interaction_mode - Desktop interaction behavior.
@@ -13,6 +16,14 @@
   @param {string} [title_override] - Optional title shown in the preview card.
   @param {string} [url_override] - Optional destination for the preview card.
   @param {image} [hover_image] - Optional image displayed while hovering.
+  @param {image} [hover_image_mobile] - Optional mobile alternative, falling back to the hover image.
+  @param {boolean} [show_mobile_button] - Whether to provide an image trigger for the mobile grid.
+  @param {string} [mobile_button_label] - Mobile button text, falling back to the product title.
+  @param {string} [mobile_button_background_color] - Optional mobile grid button background.
+  @param {string} [mobile_button_text_color] - Optional mobile grid button text color.
+  @param {boolean} [mobile_preview_quick_buy] - Whether mobile selection reveals a separate Quick Buy CTA.
+  @param {number} [mobile_quick_buy_x] - Horizontal center of the mobile CTA, as a percentage.
+  @param {number} [mobile_quick_buy_y] - Vertical center of the mobile CTA, as a percentage.
   @param {string} [product_title_preset] - Typography preset for the title.
   @param {string} [product_price_preset] - Typography preset for the price.
   @param {string} [shopify_attributes] - Theme Editor attributes for a standalone block.
@@ -23,20 +34,30 @@
   assign hotspot_product_title = title_override | default: product.title | default: placeholder_product_title
   assign hotspot_product_url = url_override | default: product.url
   assign hotspot_dialog_id = 'HotspotDialog-' | append: section.id | append: '-' | append: instance_id
+  assign mobile_hover_image = hover_image_mobile | default: hover_image
 %}
 
 {% if product != blank %}
   <product-hotspot-component
     class="hotspot"
     style="
-      left: calc({{ x_position }}% - var(--button-size) / 2);
-      top: calc({{ y_position }}% - var(--button-size) / 2);
+      --hotspot-x: {{ x_position }}%;
+      --hotspot-y: {{ y_position }}%;
+      {% if use_mobile_position %}
+        --hotspot-x-mobile: {{ x_position_mobile }}%;
+        --hotspot-y-mobile: {{ y_position_mobile }}%;
+      {% endif %}
       --hotspot-bg: {{ hotspot_color }};
       --hotspot-bullseye: {{ bullseye_color }};
     "
     data-product-url="{{ product.url }}"
     data-product-title="{{ hotspot_product_title | escape }}"
+    data-details-label="{{ 'accessibility.show_product_details' | t: product_name: hotspot_product_title | escape }}"
+    {% if mobile_preview_quick_buy %}
+      data-mobile-selection-label="{{ 'accessibility.hotspots_select_product' | t: product_name: hotspot_product_title | escape }}"
+    {% endif %}
     data-hover-image-url="{% if hover_image != blank %}{{ hover_image | image_url: width: 2000 }}{% endif %}"
+    data-mobile-hover-image-url="{% if mobile_hover_image != blank %}{{ mobile_hover_image | image_url: width: 1500 }}{% endif %}"
     data-desktop-interaction-mode="{{ desktop_interaction_mode | default: 'hover-preview-click-quick-buy' }}"
     data-id="{{ instance_id }}"
     {{ shopify_attributes }}
@@ -101,13 +122,75 @@
         </div>
       </div>
     </dialog>
+    {% if show_mobile_button %}
+      {% if mobile_hover_image != blank or mobile_preview_quick_buy %}
+        <template data-hotspot-mobile-button-template>
+          <button
+            type="button"
+            class="button hotspots-mobile-buttons__button"
+            data-hotspot-mobile-button="{{ instance_id }}"
+            aria-controls="HotspotsMedia-{{ section.id }}"
+            aria-pressed="false"
+            style="
+              {% if mobile_button_background_color != blank %}--button-background-color: {{ mobile_button_background_color }};{% endif %}
+              {% if mobile_button_text_color != blank %}--button-color: {{ mobile_button_text_color }};{% endif %}
+            "
+          >
+            {{ mobile_button_label | default: hotspot_product_title | escape }}
+          </button>
+        </template>
+      {% endif %}
+    {% endif %}
+    {% if mobile_preview_quick_buy %}
+      <template data-hotspot-mobile-quick-buy-template>
+        <div
+          class="hotspots-mobile-quick-buy__inner"
+          data-position-x="{{ mobile_quick_buy_x | default: 50 }}"
+          data-position-y="{{ mobile_quick_buy_y | default: 85 }}"
+        >
+          {% if product.available %}
+            <button
+              type="button"
+              class="button"
+              data-hotspot-mobile-quick-buy="{{ instance_id }}"
+              aria-haspopup="dialog"
+              aria-controls="quick-add-dialog"
+              aria-label="{{ 'actions.hotspots_view_more' | t | escape }}: {{ hotspot_product_title | escape }}"
+            >
+              {{ 'actions.hotspots_view_more' | t }}
+            </button>
+          {% endif %}
+          <a
+            class="button"
+            href="{{ product.url }}"
+            data-hotspot-mobile-product-link
+            aria-label="{{ 'actions.hotspots_view_product' | t | escape }}: {{ hotspot_product_title | escape }}"
+            {% if product.available %}hidden{% endif %}
+          >
+            {{ 'actions.hotspots_view_product' | t }}
+          </a>
+          <button
+            type="button"
+            class="button hotspots-mobile-quick-buy__close"
+            data-hotspot-mobile-close
+            aria-label="{{ 'accessibility.hotspots_close_preview' | t | escape }}"
+          >
+            {{ 'icon-close.svg' | inline_asset_content }}
+          </button>
+        </div>
+      </template>
+    {% endif %}
   </product-hotspot-component>
 {% elsif request.design_mode %}
   <div
     class="hotspot hotspot--editor-placeholder"
     style="
-      left: calc({{ x_position }}% - var(--button-size) / 2);
-      top: calc({{ y_position }}% - var(--button-size) / 2);
+      --hotspot-x: {{ x_position }}%;
+      --hotspot-y: {{ y_position }}%;
+      {% if use_mobile_position %}
+        --hotspot-x-mobile: {{ x_position_mobile }}%;
+        --hotspot-y-mobile: {{ y_position_mobile }}%;
+      {% endif %}
       --hotspot-bg: {{ hotspot_color }};
       --hotspot-bullseye: {{ bullseye_color }};
     "

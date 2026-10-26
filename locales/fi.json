@@ -29,6 +29,8 @@
     "slider_label": "Liukusäädin"
   },
   "accessibility": {
+    "hotspots_close_preview": "Sulje esikatselu ja palauta pääkuva",
+    "hotspots_select_product": "Valitse {{ product_name }}",
     "play_model": "Toista 3D-malli",
     "play_video": "Toista video",
     "unit_price": "Yksikköhinta",
@@ -85,6 +87,9 @@
     "price_filter_high": "Kallis hinta"
   },
   "actions": {
+    "hotspots_view_more": "Näytä lisää",
+    "hotspots_quick_buy": "Pikaosto",
+    "hotspots_view_product": "Näytä tuote",
     "add_to_cart": "Lisää ostoskoriin",
     "clear_all": "Tyhjennä kaikki",
     "remove": "Poista",

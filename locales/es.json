@@ -29,6 +29,8 @@
     "slider_label": "Carrusel"
   },
   "accessibility": {
+    "hotspots_close_preview": "Cerrar vista previa y restablecer imagen principal",
+    "hotspots_select_product": "Seleccionar {{ product_name }}",
     "play_model": "Reproducir el modelo 3D",
     "play_video": "Reproducir el video",
     "unit_price": "Precio unitario",
@@ -86,6 +88,9 @@
     "price_filter_high": "Precio alto"
   },
   "actions": {
+    "hotspots_view_more": "Ver más",
+    "hotspots_quick_buy": "Compra rápida",
+    "hotspots_view_product": "Ver producto",
     "add_to_cart": "Agregar al carrito",
     "clear_all": "Borrar todo",
     "remove": "Quitar",

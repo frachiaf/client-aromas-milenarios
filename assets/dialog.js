@@ -42,8 +42,9 @@ export class DialogComponent extends Component {
 
   /**
    * Shows the dialog.
+   * @param {(() => boolean) | Event} [shouldOpen] - Optional guard, or a declarative trigger event.
    */
-  showDialog() {
+  showDialog(shouldOpen) {
     const { dialog } = this.refs;
 
     if (dialog.open) return;
@@ -53,6 +54,7 @@ export class DialogComponent extends Component {
 
     // Prevent layout thrashing by separating DOM reads from DOM writes
     requestAnimationFrame(() => {
+      if (typeof shouldOpen === 'function' && !shouldOpen()) return;
       document.body.style.width = '100%';
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;

@@ -200,6 +200,22 @@
     "layered_slideshow": "Lagdelt lysbildefremvisning"
   },
   "settings": {
+    "hotspots_animate": "Pulserende hotspots",
+    "hotspots_quick_buy_x": "Vannrett plassering av Se mer på mobil",
+    "hotspots_quick_buy_y": "Loddrett plassering av Se mer på mobil",
+    "hotspots_mobile_preview_quick_buy": "Mobilforhåndsvisning og hurtigkjøp",
+    "hotspots_use_mobile_position": "Bruk en annen plassering på mobil",
+    "hotspots_x_position_mobile": "Vannrett plassering på mobil",
+    "hotspots_y_position_mobile": "Loddrett plassering på mobil",
+    "hotspots_mobile_button_background_color": "Bakgrunn på mobilknapp",
+    "hotspots_mobile_button_text_color": "Tekstfarge på mobilknapp",
+    "hotspots_image_mobile": "Mobilbilde",
+    "hotspots_hover_image_mobile": "Alternativt mobilbilde",
+    "hotspots_content_above_image": "Vis overskrift og tekst over bildet",
+    "hotspots_button_below_image": "Vis seksjonsknappen nederst",
+    "hotspots_hide_mobile": "Skjul hotspots på mobil",
+    "hotspots_show_mobile_button": "Vis bildeknapp på mobil",
+    "hotspots_mobile_button_label": "Tekst på mobilknapp",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Holdetekst for hurtigkjøp",
     "button_label": "Knappetekst",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Nyheter"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Trykk på et hotspot eller en knapp i rutenettet for å bytte bilde og vise hurtigkjøp under det. Slå av for å beholde den tidligere mobilfunksjonen.",
+    "hotspots_mobile_button": "Krever et produkt og et alternativt bilde. Knappene vises under bildet i to kolonner. Trykk for å bytte bilde, og trykk igjen for å gjenopprette originalen.",
+    "hotspots_mobile_button_label": "La stå tomt for å bruke produkttittelen.",
     "carousel_layout_on_mobile": "Karusell brukes alltid på mobil",
     "video_alt_text": "Beskriv videoen for brukere av hjelpeteknologi",
     "video_autoplay": "Videoer dempes som standard",

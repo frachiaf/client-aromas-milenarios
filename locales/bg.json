@@ -29,6 +29,8 @@
     "slider_label": "Плъзгач"
   },
   "accessibility": {
+    "hotspots_close_preview": "Затваряне на прегледа и възстановяване на основното изображение",
+    "hotspots_select_product": "Изберете {{ product_name }}",
     "play_model": "Възпроизвеждане на 3D модел",
     "play_video": "Възпроизвеждане на видеоклип",
     "unit_price": "Единична цена",
@@ -85,6 +87,9 @@
     "price_filter_high": "Висока цена"
   },
   "actions": {
+    "hotspots_view_more": "Вижте повече",
+    "hotspots_quick_buy": "Бърза покупка",
+    "hotspots_view_product": "Преглед на продукта",
     "add_to_cart": "Добавяне към количката",
     "clear_all": "Изчистване на всички",
     "remove": "Премахване",

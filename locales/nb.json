@@ -29,6 +29,8 @@
     "slider_label": "Glidefelt"
   },
   "accessibility": {
+    "hotspots_close_preview": "Lukk forhåndsvisning og gjenopprett hovedbildet",
+    "hotspots_select_product": "Velg {{ product_name }}",
     "play_model": "Spill av 3D-modell",
     "play_video": "Spill av video",
     "unit_price": "Enhetspris",
@@ -85,6 +87,9 @@
     "price_filter_high": "Høy pris"
   },
   "actions": {
+    "hotspots_view_more": "Se mer",
+    "hotspots_quick_buy": "Hurtigkjøp",
+    "hotspots_view_product": "Se produkt",
     "add_to_cart": "Legg i handlekurv",
     "clear_all": "Fjern alle",
     "remove": "Fjern",

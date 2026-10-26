@@ -29,6 +29,8 @@
     "slider_label": "Billedkarrusel"
   },
   "accessibility": {
+    "hotspots_close_preview": "Luk forhåndsvisning og gendan hovedbilledet",
+    "hotspots_select_product": "Vælg {{ product_name }}",
     "play_model": "Afspil 3D-model",
     "play_video": "Afspil video",
     "unit_price": "Stykpris",
@@ -85,6 +87,9 @@
     "price_filter_high": "Høj pris"
   },
   "actions": {
+    "hotspots_view_more": "Se mere",
+    "hotspots_quick_buy": "Hurtigkøb",
+    "hotspots_view_product": "Se produkt",
     "add_to_cart": "Læg i indkøbskurven",
     "clear_all": "Ryd alt",
     "remove": "Fjern",

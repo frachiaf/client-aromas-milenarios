@@ -29,6 +29,8 @@
     "slider_label": "Slankiklis"
   },
   "accessibility": {
+    "hotspots_close_preview": "Uždaryti peržiūrą ir atkurti pagrindinį vaizdą",
+    "hotspots_select_product": "Pasirinkti {{ product_name }}",
     "play_model": "Paleisti 3D modelį",
     "play_video": "Paleisti vaizdo įrašą",
     "unit_price": "Vieneto kaina",
@@ -87,6 +89,9 @@
     "price_filter_high": "Aukšta kaina"
   },
   "actions": {
+    "hotspots_view_more": "Žiūrėti daugiau",
+    "hotspots_quick_buy": "Greitas pirkimas",
+    "hotspots_view_product": "Peržiūrėti produktą",
     "add_to_cart": "Įdėti į krepšelį",
     "clear_all": "Išvalyti viską",
     "remove": "Pašalinti",

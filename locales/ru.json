@@ -29,6 +29,8 @@
     "slider_label": "Ползунок"
   },
   "accessibility": {
+    "hotspots_close_preview": "Закрыть предпросмотр и восстановить основное изображение",
+    "hotspots_select_product": "Выбрать {{ product_name }}",
     "play_model": "Открыть объемную модель",
     "play_video": "Воспроизвести видео",
     "unit_price": "Цена за единицу",
@@ -87,6 +89,9 @@
     "price_filter_high": "Высокая цена"
   },
   "actions": {
+    "hotspots_view_more": "Подробнее",
+    "hotspots_quick_buy": "Быстрая покупка",
+    "hotspots_view_product": "Посмотреть товар",
     "add_to_cart": "Добавить в корзину",
     "clear_all": "Удалить все",
     "remove": "Удалить",

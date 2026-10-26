@@ -29,6 +29,8 @@
     "slider_label": "Ρυθμιστικό"
   },
   "accessibility": {
+    "hotspots_close_preview": "Κλείσιμο προεπισκόπησης και επαναφορά κύριας εικόνας",
+    "hotspots_select_product": "Επιλογή {{ product_name }}",
     "play_model": "Αναπαραγωγή μοντέλου 3D",
     "play_video": "Αναπαραγωγή βίντεο",
     "unit_price": "Τιμή μονάδας",
@@ -85,6 +87,9 @@
     "price_filter_high": "Υψηλή τιμή"
   },
   "actions": {
+    "hotspots_view_more": "Δείτε περισσότερα",
+    "hotspots_quick_buy": "Γρήγορη αγορά",
+    "hotspots_view_product": "Προβολή προϊόντος",
     "add_to_cart": "Προσθήκη στο καλάθι",
     "clear_all": "Διαγραφή όλων",
     "remove": "Αφαίρεση",

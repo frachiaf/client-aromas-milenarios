@@ -200,6 +200,22 @@
     "layered_slideshow": "分层幻灯片"
   },
   "settings": {
+    "hotspots_animate": "脉动热点",
+    "hotspots_quick_buy_x": "移动端查看更多的水平位置",
+    "hotspots_quick_buy_y": "移动端查看更多的垂直位置",
+    "hotspots_mobile_preview_quick_buy": "移动端预览和快速购买",
+    "hotspots_use_mobile_position": "在移动端使用不同位置",
+    "hotspots_x_position_mobile": "移动端水平位置",
+    "hotspots_y_position_mobile": "移动端垂直位置",
+    "hotspots_mobile_button_background_color": "移动端按钮背景色",
+    "hotspots_mobile_button_text_color": "移动端按钮文字颜色",
+    "hotspots_image_mobile": "移动端图片",
+    "hotspots_hover_image_mobile": "移动端替代图片",
+    "hotspots_content_above_image": "在图片上方显示标题和文本",
+    "hotspots_button_below_image": "在所有内容下方显示分区按钮",
+    "hotspots_hide_mobile": "在移动端隐藏热点",
+    "hotspots_show_mobile_button": "在移动端显示图片切换按钮",
+    "hotspots_mobile_button_label": "移动端按钮文本",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "快速购买悬停文本",
     "button_label": "按钮标签",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "新品上架"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "点击热点或网格中的按钮可切换图片，并在下方显示快速购买。关闭后保留原来的移动端交互。",
+    "hotspots_mobile_button": "需要选择产品和替代图片。按钮在图片下方以两列显示。点击可切换图片，再次点击可恢复原图。",
+    "hotspots_mobile_button_label": "留空以使用产品标题。",
     "video_alt_text": "为使用辅助技术的用户描述视频",
     "video_autoplay": "视频将默认静音",
     "video_external": "使用 YouTube 或 Vimeo URL",

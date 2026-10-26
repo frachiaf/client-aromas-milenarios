@@ -200,6 +200,22 @@
     "layered_slideshow": "Vrstvená prezentace"
   },
   "settings": {
+    "hotspots_animate": "Pulzující aktivní body",
+    "hotspots_quick_buy_x": "Vodorovná pozice tlačítka Zobrazit více na mobilu",
+    "hotspots_quick_buy_y": "Svislá pozice tlačítka Zobrazit více na mobilu",
+    "hotspots_mobile_preview_quick_buy": "Mobilní náhled a rychlý nákup",
+    "hotspots_use_mobile_position": "Použít jinou pozici na mobilu",
+    "hotspots_x_position_mobile": "Vodorovná pozice na mobilu",
+    "hotspots_y_position_mobile": "Svislá pozice na mobilu",
+    "hotspots_mobile_button_background_color": "Pozadí mobilního tlačítka",
+    "hotspots_mobile_button_text_color": "Barva textu mobilního tlačítka",
+    "hotspots_image_mobile": "Obrázek pro mobil",
+    "hotspots_hover_image_mobile": "Alternativní obrázek pro mobil",
+    "hotspots_content_above_image": "Zobrazit nadpis a text nad obrázkem",
+    "hotspots_button_below_image": "Zobrazit tlačítko sekce na konci",
+    "hotspots_hide_mobile": "Skrýt aktivní body na mobilu",
+    "hotspots_show_mobile_button": "Zobrazit tlačítko obrázku na mobilu",
+    "hotspots_mobile_button_label": "Text mobilního tlačítka",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Text při najetí pro rychlý nákup",
     "button_label": "Popisek tlačítka",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Novinky"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Klepnutím na aktivní bod nebo tlačítko v mřížce změníte obrázek a zobrazíte pod ním rychlý nákup. Vypnutím zachováte původní mobilní interakci.",
+    "hotspots_mobile_button": "Vyžaduje produkt a alternativní obrázek. Tlačítka jsou pod obrázkem ve dvou sloupcích. Klepnutím změníte obrázek, dalším klepnutím obnovíte původní.",
+    "hotspots_mobile_button_label": "Ponechte prázdné pro použití názvu produktu.",
     "video_alt_text": "Popište video pro uživatele asistivních technologií",
     "video_autoplay": "Videa budou ve výchozím nastavení ztlumená",
     "video_external": "Použijte URL z YouTube nebo Vimeo",

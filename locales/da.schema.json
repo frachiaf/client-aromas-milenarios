@@ -200,6 +200,22 @@
     "layered_slideshow": "Diasshow i lag"
   },
   "settings": {
+    "hotspots_animate": "Pulserende hotspots",
+    "hotspots_quick_buy_x": "Vandret placering af Se mere på mobil",
+    "hotspots_quick_buy_y": "Lodret placering af Se mere på mobil",
+    "hotspots_mobile_preview_quick_buy": "Mobilvisning og hurtigkøb",
+    "hotspots_use_mobile_position": "Brug en anden placering på mobil",
+    "hotspots_x_position_mobile": "Vandret placering på mobil",
+    "hotspots_y_position_mobile": "Lodret placering på mobil",
+    "hotspots_mobile_button_background_color": "Baggrund på mobilknap",
+    "hotspots_mobile_button_text_color": "Tekstfarve på mobilknap",
+    "hotspots_image_mobile": "Mobilbillede",
+    "hotspots_hover_image_mobile": "Alternativt mobilbillede",
+    "hotspots_content_above_image": "Vis overskrift og tekst over billedet",
+    "hotspots_button_below_image": "Vis sektionens knap nederst",
+    "hotspots_hide_mobile": "Skjul hotspots på mobil",
+    "hotspots_show_mobile_button": "Vis billedknap på mobil",
+    "hotspots_mobile_button_label": "Tekst på mobilknap",
     "desktop_interaction_mode": "Desktop interaction",
     "quick_buy_hover_label": "Hovertekst til hurtigkøb",
     "button_label": "Knaptekst",
@@ -1085,6 +1101,9 @@
     "new_arrivals": "Nye varer"
   },
   "info": {
+    "hotspots_mobile_preview_quick_buy": "Tryk på et hotspot eller en knap i gitteret for at skifte billede og vise hurtigkøb nedenunder. Slå fra for at beholde den tidligere mobilfunktion.",
+    "hotspots_mobile_button": "Kræver et produkt og et alternativt billede. Knapper vises under billedet i to kolonner. Tryk for at skifte billede, og tryk igen for at gendanne originalen.",
+    "hotspots_mobile_button_label": "Lad feltet stå tomt for at bruge produktets titel.",
     "carousel_layout_on_mobile": "Karrusellen bruges altid på mobil",
     "video_alt_text": "Beskriv videoen for brugere af hjælpeteknologi",
     "video_autoplay": "Videoer vil som standard være uden lyd",

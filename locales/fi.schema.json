@@ -200,6 +200,7 @@
     "layered_slideshow": "Kerroksittainen diaesitys"
   },
   "settings": {
+    "custom_mobile_layout": "Mukauta mobiiliasettelua",
     "hotspots_animate": "Sykkivät hotspotit",
     "hotspots_quick_buy_x": "Näytä lisää -painikkeen vaakasijainti mobiilissa",
     "hotspots_quick_buy_y": "Näytä lisää -painikkeen pystysijainti mobiilissa",
@@ -889,6 +890,7 @@
     "icons": "Kuvakkeet"
   },
   "content": {
+    "desktop_layout": "Tietokoneen asettelu",
     "interaction": "Interaction",
     "advanced": "Lisäasetukset",
     "background_image": "Taustakuva",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "Uutuudet"
   },
   "info": {
+    "custom_mobile_layout": "Kun asetus on pois käytöstä, mobiilinäkymä käyttää tietokoneen asetuksia ja nykyistä responsiivista toimintaa.",
     "hotspots_mobile_preview_quick_buy": "Vaihda kuva ja näytä pikaosto sen alla napauttamalla hotspotia tai ruudukon painiketta. Poista käytöstä säilyttääksesi aiemman mobiilitoiminnon.",
     "hotspots_mobile_button": "Vaatii tuotteen ja vaihtoehtoisen kuvan. Painikkeet näkyvät kuvan alla kahdessa sarakkeessa. Napauta vaihtaaksesi kuvaa ja uudelleen palauttaaksesi alkuperäisen.",
     "hotspots_mobile_button_label": "Jätä tyhjäksi, jos haluat käyttää tuotteen nimeä.",

@@ -49,6 +49,12 @@ layout/theme.liquid
 - Un setting global pertenece a `config/settings_schema.json`; uno de contexto pertenece al schema de la sección o bloque. No usar settings globales para resolver un caso exclusivo de un componente.
 - CSS y JS del componente deben coexistir con él mediante etiquetas Liquid cuando sea posible. En CSS/JS dentro de esas etiquetas no se evalúa Liquid; pasar valores mediante variables CSS, atributos o clases.
 
+### Hero responsive
+
+- `sections/hero.liquid` conserva los IDs históricos de escritorio y permite personalizar padding, alineamiento, posición y altura hasta 749 px mediante `custom_mobile_layout`, desactivado por defecto. Sin activarlo, móvil conserva los ajustes heredados y el comportamiento responsive anterior. El selector de medios móviles sigue siendo independiente.
+- Los cuatro paddings usan propiedades lógicas y el escalado nativo de `spacing-style`: valores mayores a 20 px respetan `--spacing-scale`, con un mínimo de 20 px. Ancho, dirección y separación conservan sus controles compartidos; el layout móvil resuelve sus ejes según `content_direction` y `vertical_on_mobile`, con alineación de baseline opcional solo para filas.
+- `snippets/hero-height-style.liquid` recibe `device`, `height` y `custom_height` explícitamente y genera la variable de altura mínima de cada viewport. La altura personalizada usa `svh`; el contenido puede ampliar la sección y se conserva la compensación del header. Las clases de altura automática sin bloques se aplican únicamente en su breakpoint para mantener la proporción del medio activo.
+
 ### Quick Add compartido
 
 - `snippets/quick-add.liquid` renderiza el origen del flujo: un `quick-add-component`, el formulario de producto y sus datos de producto, variante y sección. Se puede usar en tarjetas y en hotspots; el parámetro opcional `instance_id` debe enviarse cuando un mismo bloque renderiza varios formularios para mantener IDs únicos.

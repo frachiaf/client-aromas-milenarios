@@ -200,6 +200,7 @@
     "layered_slideshow": "Bildspel med lager"
   },
   "settings": {
+    "custom_mobile_layout": "Anpassa mobillayout",
     "hotspots_animate": "Pulserande hotspots",
     "hotspots_quick_buy_x": "Vågrät placering av Visa mer på mobil",
     "hotspots_quick_buy_y": "Lodrät placering av Visa mer på mobil",
@@ -889,6 +890,7 @@
     "icons": "Ikoner"
   },
   "content": {
+    "desktop_layout": "Datorlayout",
     "interaction": "Interaction",
     "advanced": "Avancerat",
     "background_image": "Bakgrundsbild",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "Nyheter"
   },
   "info": {
+    "custom_mobile_layout": "När detta är inaktiverat använder mobilvyn datorinställningarna och det befintliga responsiva beteendet.",
     "hotspots_mobile_preview_quick_buy": "Tryck på en hotspot eller rutnätsknapp för att byta bild och visa snabbköp nedanför. Stäng av för att behålla den tidigare mobilfunktionen.",
     "hotspots_mobile_button": "Kräver en produkt och en alternativ bild. Knappar visas under bilden i två kolumner. Tryck för att byta bild och igen för att återställa originalet.",
     "hotspots_mobile_button_label": "Lämna tomt för att använda produktens titel.",

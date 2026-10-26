@@ -280,6 +280,26 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-26 — Controles responsive independientes de la hero
+
+### Añadido
+
+- Objetivo: configurar los cuatro paddings, el alineamiento horizontal, la posición vertical y la altura de la hero de forma independiente en escritorio y móvil.
+- Archivos: `sections/hero.liquid`, `snippets/hero-height-style.liquid`, los 20 archivos `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto en el editor: los IDs, valores, opciones y presets existentes se conservan. Se añaden paddings laterales de escritorio y el checkbox `custom_mobile_layout` («Personalizar diseño móvil»), desactivado por defecto. Los controles móviles aparecen según la dirección efectiva del contenido, con baseline opcional en filas, cuatro paddings de 0–100 px y las seis alturas nativas. Los valores móviles iniciales son padding 0, alineamiento izquierdo, posición centrada, altura mediana y altura personalizada de 50%.
+- Impacto en storefront: la personalización móvil se limita a 749 px; desde 750 px se usa escritorio. Al desactivarla se recupera el comportamiento anterior, incluido el escalado de padding. Se preservan la compensación del header, la selección de medios y los controles compartidos de dirección, ancho y separación. La altura personalizada usa `svh` como mínimo y el contenido largo puede ampliar la sección. La altura automática sin bloques se resuelve por breakpoint y respeta la proporción de la imagen activa. No se modificaron templates ni datos administrados por Shopify.
+
+### Validación
+
+- La comparación del schema confirmó IDs únicos, compatibilidad exacta de todos los settings previos y presets intactos. Los 20 locales JSONC y las claves nuevas validaron correctamente; las condiciones de visibilidad se evaluaron con Liquid para todas las combinaciones de checkbox, dirección y apilado móvil.
+- `shopify.cmd theme check --path . --output json` finalizó con cero errores y 30 advertencias: las 29 preexistentes y una nueva `ExcessiveSettingsCount` por los 50 settings de la hero. Se preservan los controles históricos para mantener compatibilidad y se agrupan los nuevos mediante encabezados y condiciones; el cálculo compartido de altura evita una advertencia adicional de complejidad Liquid.
+- Chrome local aprobó 108 casos a 390, 749, 750 y 1440 px usando LiquidJS, los snippets y el CSS reales del theme, con adaptadores de prueba para filtros de medios y `content_for`. Se verificaron la comparación con la presentación anterior al desactivar la personalización, los cuatro paddings y su escala, los ejes de fila/columna, las seis alturas, altura automática sin bloques por dispositivo, imágenes móviles de distinta proporción, reemplazo móvil por video, contenido largo, ausencia de overflow horizontal y offsets del header transparente.
+- No había storefront ni Theme Editor reales activos: guardado y selección/reordenación en Shopify siguen pendientes. La revisión automática rechazó el validador remoto por la exportación de código privado; se utilizó Shopify CLI local sin transmitir los archivos.
+
+### Reversión
+
+- Desactivar «Personalizar diseño móvil» restaura la herencia anterior. Revertir esta entrada y retirar el snippet de altura y las claves nuevas elimina los controles responsive sin migraciones; los paddings laterales nuevos parten de 0 y no se editaron configuraciones administradas.
+
 ## 2026-08-22 — Personalización visual de secciones AM
 
 ### Añadido

@@ -200,6 +200,7 @@
     "layered_slideshow": "分层幻灯片"
   },
   "settings": {
+    "custom_mobile_layout": "自定义移动端布局",
     "hotspots_animate": "脉动热点",
     "hotspots_quick_buy_x": "移动端查看更多的水平位置",
     "hotspots_quick_buy_y": "移动端查看更多的垂直位置",
@@ -889,6 +890,7 @@
     "icons": "图标"
   },
   "content": {
+    "desktop_layout": "桌面布局",
     "interaction": "Interaction",
     "advanced": "高级",
     "background_image": "背景图片",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "新品上架"
   },
   "info": {
+    "custom_mobile_layout": "禁用时，移动端使用桌面设置及现有的响应式行为。",
     "hotspots_mobile_preview_quick_buy": "点击热点或网格中的按钮可切换图片，并在下方显示快速购买。关闭后保留原来的移动端交互。",
     "hotspots_mobile_button": "需要选择产品和替代图片。按钮在图片下方以两列显示。点击可切换图片，再次点击可恢复原图。",
     "hotspots_mobile_button_label": "留空以使用产品标题。",

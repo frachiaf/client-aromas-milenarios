@@ -200,6 +200,7 @@
     "layered_slideshow": "Lagdelt lysbildefremvisning"
   },
   "settings": {
+    "custom_mobile_layout": "Tilpass mobiloppsett",
     "hotspots_animate": "Pulserende hotspots",
     "hotspots_quick_buy_x": "Vannrett plassering av Se mer på mobil",
     "hotspots_quick_buy_y": "Loddrett plassering av Se mer på mobil",
@@ -889,6 +890,7 @@
     "icons": "Ikoner"
   },
   "content": {
+    "desktop_layout": "Oppsett for datamaskin",
     "interaction": "Interaction",
     "advanced": "Avansert",
     "background_image": "Bakgrunnsbilde",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "Nyheter"
   },
   "info": {
+    "custom_mobile_layout": "Når dette er deaktivert, bruker mobilvisningen innstillingene for datamaskin og eksisterende responsiv visning.",
     "hotspots_mobile_preview_quick_buy": "Trykk på et hotspot eller en knapp i rutenettet for å bytte bilde og vise hurtigkjøp under det. Slå av for å beholde den tidligere mobilfunksjonen.",
     "hotspots_mobile_button": "Krever et produkt og et alternativt bilde. Knappene vises under bildet i to kolonner. Trykk for å bytte bilde, og trykk igjen for å gjenopprette originalen.",
     "hotspots_mobile_button_label": "La stå tomt for å bruke produkttittelen.",

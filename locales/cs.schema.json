@@ -200,6 +200,7 @@
     "layered_slideshow": "Vrstvená prezentace"
   },
   "settings": {
+    "custom_mobile_layout": "Přizpůsobit rozvržení pro mobilní zařízení",
     "hotspots_animate": "Pulzující aktivní body",
     "hotspots_quick_buy_x": "Vodorovná pozice tlačítka Zobrazit více na mobilu",
     "hotspots_quick_buy_y": "Svislá pozice tlačítka Zobrazit více na mobilu",
@@ -889,6 +890,7 @@
     "icons": "Ikony"
   },
   "content": {
+    "desktop_layout": "Rozvržení pro počítače",
     "interaction": "Interaction",
     "advanced": "Pokročilé",
     "background_image": "Obrázek na pozadí",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "Novinky"
   },
   "info": {
+    "custom_mobile_layout": "Bez přizpůsobení používá mobilní zobrazení nastavení pro počítače a stávající responzivní chování.",
     "hotspots_mobile_preview_quick_buy": "Klepnutím na aktivní bod nebo tlačítko v mřížce změníte obrázek a zobrazíte pod ním rychlý nákup. Vypnutím zachováte původní mobilní interakci.",
     "hotspots_mobile_button": "Vyžaduje produkt a alternativní obrázek. Tlačítka jsou pod obrázkem ve dvou sloupcích. Klepnutím změníte obrázek, dalším klepnutím obnovíte původní.",
     "hotspots_mobile_button_label": "Ponechte prázdné pro použití názvu produktu.",

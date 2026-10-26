@@ -200,6 +200,7 @@
     "layered_slideshow": "Katmanlı slayt gösterisi"
   },
   "settings": {
+    "custom_mobile_layout": "Mobil düzeni özelleştir",
     "hotspots_animate": "Yanıp sönen etkin noktalar",
     "hotspots_quick_buy_x": "Mobilde Daha fazla göster yatay konumu",
     "hotspots_quick_buy_y": "Mobilde Daha fazla göster dikey konumu",
@@ -889,6 +890,7 @@
     "icons": "Simgeler"
   },
   "content": {
+    "desktop_layout": "Masaüstü düzeni",
     "interaction": "Interaction",
     "background_video": "Arka plan videosu",
     "describe_the_video_for": "Ekran okuyucu kullanan müşteriler için videoyu açıklayın. [Daha fazla bilgi edinin](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "Yeni gelenler"
   },
   "info": {
+    "custom_mobile_layout": "Devre dışıyken mobil görünüm, masaüstü ayarlarını ve mevcut duyarlı davranışı kullanır.",
     "hotspots_mobile_preview_quick_buy": "Görseli değiştirmek ve altında hızlı satın almayı göstermek için etkin noktaya veya ızgara düğmesine dokunun. Önceki mobil etkileşimi korumak için kapatın.",
     "hotspots_mobile_button": "Bir ürün ve alternatif görsel gerektirir. Düğmeler görselin altında iki sütunda görünür. Görseli değiştirmek için dokunun; asıl görsele dönmek için yeniden dokunun.",
     "hotspots_mobile_button_label": "Ürün başlığını kullanmak için boş bırakın.",

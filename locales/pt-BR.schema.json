@@ -200,6 +200,7 @@
     "layered_slideshow": "Apresentação de slides em camadas"
   },
   "settings": {
+    "custom_mobile_layout": "Personalizar layout para dispositivos móveis",
     "hotspots_animate": "Hotspots pulsantes",
     "hotspots_quick_buy_x": "Posição horizontal de Ver mais em dispositivos móveis",
     "hotspots_quick_buy_y": "Posição vertical de Ver mais em dispositivos móveis",
@@ -889,6 +890,7 @@
     "icons": "Ícones"
   },
   "content": {
+    "desktop_layout": "Layout para desktop",
     "interaction": "Interaction",
     "advanced": "Avançado",
     "background_image": "Imagem de fundo",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "Novidades"
   },
   "info": {
+    "custom_mobile_layout": "Quando desativado, a versão móvel usa as configurações de desktop e o comportamento responsivo atual.",
     "hotspots_mobile_preview_quick_buy": "Toque em um hotspot ou botão da grade para trocar a imagem e mostrar a compra rápida abaixo. Desative para manter a interação móvel anterior.",
     "hotspots_mobile_button": "Requer um produto e uma imagem alternativa. Os botões aparecem abaixo da imagem em duas colunas. Toque para trocar a imagem e novamente para restaurar a original.",
     "hotspots_mobile_button_label": "Deixe em branco para usar o título do produto.",

@@ -1,0 +1,22 @@
+{% doc %}
+  Renders a hero minimum-height variable for a viewport.
+
+  @param {string} device - Variable suffix: desktop or mobile
+  @param {string} height - Hero height mode
+  @param {number} custom_height - Custom height in small viewport units
+
+  @example
+  {% render 'hero-height-style', device: 'desktop', height: section.settings.section_height, custom_height: section.settings.section_height_custom %}
+{% enddoc %}
+
+--hero-min-height-{{ device }}:
+{%- case height -%}
+  {%- when 'custom' -%}
+    {{- custom_height -}}svh
+  {%- when 'full-screen' -%}
+    100svh
+  {%- when 'auto' -%}
+    auto
+  {%- else -%}
+    var(--section-height-{{ height }})
+{%- endcase -%};

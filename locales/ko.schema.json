@@ -200,6 +200,7 @@
     "layered_slideshow": "레이어드 슬라이드 쇼"
   },
   "settings": {
+    "custom_mobile_layout": "모바일 레이아웃 사용자 지정",
     "hotspots_animate": "맥동하는 핫스팟",
     "hotspots_quick_buy_x": "모바일 더 보기 버튼의 가로 위치",
     "hotspots_quick_buy_y": "모바일 더 보기 버튼의 세로 위치",
@@ -889,6 +890,7 @@
     "icons": "아이콘"
   },
   "content": {
+    "desktop_layout": "데스크톱 레이아웃",
     "interaction": "Interaction",
     "background_video": "배경 비디오",
     "describe_the_video_for": "스크린리더를 사용하는 고객에게 슬라이드 쇼를 설명합니다. [자세히 알아보기](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "신상품"
   },
   "info": {
+    "custom_mobile_layout": "비활성화하면 모바일에서 데스크톱 설정과 기존 반응형 동작을 사용합니다.",
     "hotspots_mobile_preview_quick_buy": "핫스팟 또는 그리드 버튼을 탭하면 이미지가 바뀌고 아래에 빠른 구매가 표시됩니다. 끄면 기존 모바일 동작이 유지됩니다.",
     "hotspots_mobile_button": "상품 및 대체 이미지가 필요합니다. 버튼은 이미지 아래에 2열로 표시됩니다. 탭하여 이미지를 바꾸고 다시 탭하여 원래 이미지로 돌아갑니다.",
     "hotspots_mobile_button_label": "비워 두면 상품 제목을 사용합니다.",

@@ -200,6 +200,7 @@
     "layered_slideshow": "分層輪播"
   },
   "settings": {
+    "custom_mobile_layout": "自訂行動版配置",
     "hotspots_animate": "脈動熱點",
     "hotspots_quick_buy_x": "行動版查看更多的水平位置",
     "hotspots_quick_buy_y": "行動版查看更多的垂直位置",
@@ -889,6 +890,7 @@
     "icons": "圖示"
   },
   "content": {
+    "desktop_layout": "桌面版配置",
     "interaction": "Interaction",
     "advanced": "進階",
     "background_image": "背景圖片",
@@ -1101,6 +1103,7 @@
     "new_arrivals": "新品上市"
   },
   "info": {
+    "custom_mobile_layout": "停用時，行動版會使用桌面版設定及現有的回應式行為。",
     "hotspots_mobile_preview_quick_buy": "點選熱點或網格中的按鈕可切換圖片，並在下方顯示快速購買。關閉後保留原有的行動版互動。",
     "hotspots_mobile_button": "需選擇商品和替代圖片。按鈕在圖片下方以兩欄顯示。點選可切換圖片，再次點選可還原原圖。",
     "hotspots_mobile_button_label": "留空以使用商品標題。",

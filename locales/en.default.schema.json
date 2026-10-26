@@ -32,6 +32,7 @@
     "text": "Text"
   },
   "content": {
+    "desktop_layout": "Desktop layout",
     "visible_if_collection_has_more_products": "Visible if collection has more products than shown",
     "advanced": "Advanced",
     "appearance": "Appearance",
@@ -212,6 +213,7 @@
     "work_quickly_to_ship": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>"
   },
   "info": {
+    "custom_mobile_layout": "When disabled, mobile uses the desktop settings and existing responsive behavior.",
     "hotspots_mobile_preview_quick_buy": "Tap a hotspot or grid button to change the image and reveal Quick Buy below it. Turn off to keep the previous mobile interaction.",
     "hotspots_mobile_button": "Requires a product and a hover image. Mobile buttons appear below the image in two columns. Tap to switch images; tap again to restore the base image.",
     "hotspots_mobile_button_label": "Leave blank to use the product title.",
@@ -756,6 +758,7 @@
     "below_media": "Below media"
   },
   "settings": {
+    "custom_mobile_layout": "Customize mobile layout",
     "hotspots_animate": "Pulsing hotspots",
     "hotspots_quick_buy_x": "Mobile View more horizontal position",
     "hotspots_quick_buy_y": "Mobile View more vertical position",

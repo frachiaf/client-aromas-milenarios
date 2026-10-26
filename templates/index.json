@@ -1880,8 +1880,8 @@
         "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
         "separator_style": "wave",
         "invert_colors": true,
-        "height_desktop": 180,
-        "height_mobile": 100
+        "height_desktop": 70,
+        "height_mobile": 60
       }
     },
     "media_with_content_E7M3aJ": {
@@ -2020,7 +2020,7 @@
         "extend_media": true,
         "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
         "padding-block-start": 0,
-        "padding-block-end": 20
+        "padding-block-end": 0
       }
     },
     "am_color_divider_HDngyH": {
@@ -2030,8 +2030,8 @@
         "color_scheme": "scheme-423e9457-60bf-468e-a122-bb41a2224662",
         "separator_style": "wave",
         "invert_colors": false,
-        "height_desktop": 180,
-        "height_mobile": 100
+        "height_desktop": 90,
+        "height_mobile": 60
       }
     },
     "product_list_z7QLNk": {

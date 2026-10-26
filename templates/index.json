@@ -2183,7 +2183,7 @@
         "section_width": "page-width",
         "section_height": "small",
         "section_height_custom": 50,
-        "color_scheme": "",
+        "color_scheme": "scheme-4",
         "background_media": "none",
         "video_position": "cover",
         "background_image_position": "cover",
@@ -2197,6 +2197,17 @@
         "gradient_direction": "to top",
         "padding-block-start": 40,
         "padding-block-end": 40
+      }
+    },
+    "am_color_divider_d3T936": {
+      "type": "am--color-divider",
+      "name": "AM Divisor de color",
+      "settings": {
+        "color_scheme": "",
+        "separator_style": "wave",
+        "invert_colors": true,
+        "height_desktop": 180,
+        "height_mobile": 100
       }
     },
     "slideshow_83f8yE": {
@@ -2378,7 +2389,7 @@
         "corner_radius": 20,
         "slide_height": "medium",
         "content_position": "below-media",
-        "color_scheme": "scheme-4",
+        "color_scheme": "scheme-1",
         "icons_style": "arrows_large",
         "icons_shape": "none",
         "slideshow_controls_style": "none",
@@ -2418,6 +2429,7 @@
     "section_FNaLNP",
     "hero_nUxq4d",
     "section_KCRfxt",
+    "am_color_divider_d3T936",
     "slideshow_83f8yE",
     "am_color_divider_yCqnNJ"
   ]

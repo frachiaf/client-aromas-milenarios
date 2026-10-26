@@ -1692,7 +1692,7 @@
           "static": true,
           "settings": {
             "media_type": "image",
-            "image": "shopify://shop_images/Diseno_sin_titulo_12.png",
+            "image": "shopify://shop_images/preview_image_256_1.jpg",
             "link": "",
             "video_loop": true,
             "video_autoplay": false,

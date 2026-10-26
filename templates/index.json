@@ -916,6 +916,20 @@
         "padding-block-end": 28
       }
     },
+    "divider_36kRMg": {
+      "type": "divider",
+      "name": "t:names.divider_section",
+      "settings": {
+        "color_scheme": "",
+        "section_width": "full-width",
+        "thickness": 1,
+        "corner_radius": "square",
+        "width_percent": 100,
+        "alignment_horizontal": "center",
+        "padding-block-start": 16,
+        "padding-block-end": 16
+      }
+    },
     "am_numbered_slideshow_zGrUpX": {
       "type": "am--numbered-slideshow",
       "blocks": {
@@ -2204,6 +2218,7 @@
     "am_video_with_carousel_7TDfyg",
     "divider_aeM83j",
     "product_hotspots_tydYgA",
+    "divider_36kRMg",
     "am_numbered_slideshow_zGrUpX",
     "divider_phjVXD",
     "marquee_t4nXej",

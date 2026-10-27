@@ -10,6 +10,7 @@ const HOVER_IMAGE_DURATION = 400;
  * @typedef {object} HotspotHoverImageDetail
  * @property {ProductHotspotComponent} source
  * @property {string} url
+ * @property {HTMLTemplateElement | null} [videoTemplate]
  */
 
 /**
@@ -18,10 +19,17 @@ const HOVER_IMAGE_DURATION = 400;
  */
 
 class ProductHotspots extends HTMLElement {
-  /** @type {HTMLImageElement[]} */
-  #hoverImages = [];
-  /** @type {HTMLImageElement | null} */
-  #currentHoverImage = null;
+  /** @type {(HTMLImageElement | HTMLVideoElement)[]} */
+  #hoverMedia = [];
+  /** @type {HTMLImageElement | HTMLVideoElement | null} */
+  #currentHoverMedia = null;
+  /** @type {HotspotHoverImageDetail | null} */
+  #activeMediaDetail = null;
+  /** @type {HTMLVideoElement | null} */
+  #pendingHoverVideo = null;
+  /** @type {AbortController | null} */
+  #hoverVideoController = null;
+  #resumeHoverVideo = false;
   /** @type {ProductHotspotComponent | null} */
   #activeSource = null;
   /** @type {number | null} */
@@ -55,21 +63,21 @@ class ProductHotspots extends HTMLElement {
   #hotspotsContainer = null;
 
   connectedCallback() {
-    this.#hoverImages = Array.from(this.querySelectorAll('[data-hotspot-hover-image]')).filter(
+    this.#hoverMedia = Array.from(this.querySelectorAll('[data-hotspot-hover-image]')).filter(
       (image) => image instanceof HTMLImageElement
     ).slice(0, 2);
-    if (this.#hoverImages.length === 1) {
-      const firstImage = this.#hoverImages[0];
+    if (this.#hoverMedia.length === 1) {
+      const firstImage = this.#hoverMedia[0];
       if (firstImage) {
         const buffer = /** @type {HTMLImageElement} */ (firstImage.cloneNode(false));
         buffer.removeAttribute('src');
         buffer.removeAttribute('srcset');
         delete buffer.dataset.src;
         firstImage.after(buffer);
-        this.#hoverImages.push(buffer);
+        this.#hoverMedia.push(buffer);
       }
     }
-    this.#restoreBaseImage(false);
+    this.#restoreBaseMedia(false);
     const quickBuyPanel = this.querySelector('[data-hotspot-mobile-quick-buy-panel]');
     this.#mobileQuickBuyPanel = quickBuyPanel instanceof HTMLElement ? quickBuyPanel : null;
     const mediaContainer = this.querySelector('.section-product-hotspots__content');
@@ -90,6 +98,9 @@ class ProductHotspots extends HTMLElement {
     this.addEventListener('shopify:block:select', this.#handleBlockSelect);
     this.addEventListener('shopify:block:deselect', this.#handleBlockDeselect);
     document.addEventListener('click', this.#handleOutsideClick);
+    document.addEventListener('visibilitychange', this.#handleVisibilityChange);
+    window.addEventListener('pagehide', this.#handlePageHide);
+    window.addEventListener('pageshow', this.#handleVisibilityChange);
     mediaQueryLarge.addEventListener('change', this.#handleBreakpointChange);
     mediaQueryReducedMotion.addEventListener('change', this.#handleReducedMotionChange);
 
@@ -112,6 +123,9 @@ class ProductHotspots extends HTMLElement {
     this.removeEventListener('shopify:block:select', this.#handleBlockSelect);
     this.removeEventListener('shopify:block:deselect', this.#handleBlockDeselect);
     document.removeEventListener('click', this.#handleOutsideClick);
+    document.removeEventListener('visibilitychange', this.#handleVisibilityChange);
+    window.removeEventListener('pagehide', this.#handlePageHide);
+    window.removeEventListener('pageshow', this.#handleVisibilityChange);
     mediaQueryLarge.removeEventListener('change', this.#handleBreakpointChange);
     mediaQueryReducedMotion.removeEventListener('change', this.#handleReducedMotionChange);
     this.#mobileButtonObserver?.disconnect();
@@ -126,8 +140,11 @@ class ProductHotspots extends HTMLElement {
     this.#hoverImageRequestId += 1;
     this.#cancelPendingImageReset();
     this.#activeSource = null;
-    this.#restoreBaseImage(false);
-    this.#hoverImages = [];
+    this.#activeMediaDetail = null;
+    this.#resumeHoverVideo = false;
+    this.#cancelPendingHoverVideo();
+    this.#restoreBaseMedia(false);
+    this.#hoverMedia = [];
     this.#hoverImageLoads.clear();
   }
 
@@ -185,10 +202,11 @@ class ProductHotspots extends HTMLElement {
 
     this.#activeMobileSource = source;
     this.#syncMobileSelection();
-    if (source.dataset.mobileHoverImageUrl) {
+    const media = source.getHoverMedia(true);
+    if (media.url || media.videoTemplate) {
       void this.#handleHoverImage(
         new CustomEvent('product-hotspot-hover-image', {
-          detail: { source, url: source.dataset.mobileHoverImageUrl },
+          detail: media,
         })
       );
     } else {
@@ -386,66 +404,228 @@ class ProductHotspots extends HTMLElement {
   #handleHoverImage = async (event) => {
     if (!(event instanceof CustomEvent)) return;
 
-    const { source, url } = /** @type {HotspotHoverImageDetail} */ (event.detail);
-    if (!(source instanceof ProductHotspotComponent) || this.#hoverImages.length < 2 || typeof url !== 'string' || !url) return;
+    const { source, url, videoTemplate } = /** @type {HotspotHoverImageDetail} */ (event.detail);
+    if (!(source instanceof ProductHotspotComponent) || !this.contains(source) || this.#hoverMedia.length < 2) return;
+    if (typeof url !== 'string' || (!url && !(videoTemplate instanceof HTMLTemplateElement))) return;
 
     this.#cancelPendingImageReset();
     const requestId = ++this.#hoverImageRequestId;
     this.#activeSource = source;
-    const isCurrent = () => this.isConnected && requestId === this.#hoverImageRequestId && this.#activeSource === source;
-
-    try {
-      await this.#preloadHoverImage(url);
-    } catch {
-      if (isCurrent()) this.#resetImageState(true);
+    this.#activeMediaDetail = { source, url, videoTemplate };
+    this.#resumeHoverVideo = false;
+    this.#cancelPendingHoverVideo();
+    this.#pauseHoverVideos();
+    if (document.hidden && videoTemplate instanceof HTMLTemplateElement) {
+      this.#resumeHoverVideo = true;
       return;
     }
+    const isCurrent = () => this.isConnected && requestId === this.#hoverImageRequestId && this.#activeSource === source;
 
-    // Loads run in parallel; only the latest request may enter the next free buffer.
-    let transition;
-    do {
-      transition = this.#hoverImageTransition;
-      await transition;
-    } while (isCurrent() && transition !== this.#hoverImageTransition);
-    if (!isCurrent() || this.#currentHoverImage?.dataset.src === url) return;
+    /** @type {HTMLImageElement | HTMLVideoElement | null} */
+    let incoming = null;
+    if (videoTemplate instanceof HTMLTemplateElement) {
+      const controller = new AbortController();
+      this.#hoverVideoController = controller;
+      try {
+        const video = videoTemplate.content.querySelector('video')?.cloneNode(true);
+        if (!(video instanceof HTMLVideoElement)) throw new Error('Missing hotspot video');
+        this.#pendingHoverVideo = video;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.loop = true;
+        video.controls = false;
+        video.autoplay = false;
+        video.playsInline = true;
+        video.preload = 'auto';
+        video.hidden = false;
+        video.style.opacity = '0';
+        video.setAttribute('data-hotspot-hover-video', '');
+        this.#hoverMedia[0]?.parentElement?.append(video);
+        await this.#waitForHoverVideo(video, controller.signal);
+        await this.#waitForHoverTransition(isCurrent);
+        if (!isCurrent()) return;
+        await this.#waitForHoverVideo(video, controller.signal, true);
+        if (!isCurrent()) {
+          video.pause();
+          return;
+        }
+        incoming = video;
+        this.#pendingHoverVideo = null;
+        this.#hoverMedia.push(video);
+        video.addEventListener('error', () => {
+          if (!isCurrent()) return;
+          if (url) void this.#handleHoverImage(new CustomEvent('product-hotspot-hover-image', { detail: { source, url } }));
+          else this.#resetImageState(true);
+        }, { once: true, signal: controller.signal });
+      } catch {
+        if (!isCurrent()) return;
+        this.#cancelPendingHoverVideo();
+      }
+    }
 
-    const incoming = this.#hoverImages.find((image) => image !== this.#currentHoverImage);
-    if (!incoming) return;
-    incoming.src = url;
-    incoming.dataset.src = url;
-    try {
-      await incoming.decode();
-    } catch {
-      if (!incoming.complete || incoming.naturalWidth === 0) {
+    if (!incoming) {
+      if (!url) {
         if (isCurrent()) this.#resetImageState(true);
         return;
       }
+      try {
+        await this.#preloadHoverImage(url);
+      } catch {
+        if (isCurrent()) this.#resetImageState(true);
+        return;
+      }
+      await this.#waitForHoverTransition(isCurrent);
+      if (!isCurrent() || this.#currentHoverMedia?.dataset.src === url) return;
+
+      const image = this.#hoverMedia.find((media) => media instanceof HTMLImageElement && media !== this.#currentHoverMedia);
+      if (!(image instanceof HTMLImageElement)) return;
+      image.src = url;
+      image.dataset.src = url;
+      try {
+        await image.decode();
+      } catch {
+        if (!image.complete || image.naturalWidth === 0) {
+          if (isCurrent()) this.#resetImageState(true);
+          return;
+        }
+      }
+      if (!isCurrent() || image.dataset.src !== url) return;
+      incoming = image;
     }
-    if (!isCurrent() || incoming.dataset.src !== url) return;
 
     const transitionId = ++this.#hoverImageTransitionId;
     incoming.hidden = false;
     incoming.classList.add('is-active');
     incoming.parentElement?.append(incoming);
-    // Keep the outgoing bitmap opaque until the incoming bitmap fully covers it.
     this.#hoverImageTransition = this.#animateHoverOpacity(incoming, 0, 1).then(() => {
       if (transitionId !== this.#hoverImageTransitionId) return;
-      this.#currentHoverImage = incoming;
-      for (const image of this.#hoverImages) {
-        if (image !== incoming) this.#retireHoverImage(image);
+      this.#currentHoverMedia = incoming;
+      for (const image of this.#hoverMedia) {
+        if (image !== incoming) this.#retireHoverMedia(image);
       }
     });
   };
 
-  /** @param {HTMLImageElement} image */
-  #retireHoverImage(image) {
+  /** @param {() => boolean} isCurrent */
+  async #waitForHoverTransition(isCurrent) {
+    let transition;
+    do {
+      transition = this.#hoverImageTransition;
+      await transition;
+    } while (isCurrent() && transition !== this.#hoverImageTransition);
+  }
+
+  /**
+   * @param {HTMLVideoElement} video
+   * @param {AbortSignal} signal
+   * @param {boolean} [play]
+   * @returns {Promise<void>}
+   */
+  #waitForHoverVideo(video, signal, play = false) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const sources = Array.from(video.querySelectorAll('source')).filter((source) => !source.type || video.canPlayType(source.type));
+      const failedSources = new Set();
+      const finish = (error = /** @type {Error | null} */ (null)) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        video.removeEventListener('loadeddata', ready);
+        video.removeEventListener('error', failed);
+        for (const source of sources) source.removeEventListener('error', sourceFailed);
+        signal.removeEventListener('abort', aborted);
+        if (error) reject(error);
+        else resolve();
+      };
+      const ready = () => finish();
+      const failed = () => finish(new Error('Unable to play hotspot video'));
+      /** @param {Event} event */
+      const sourceFailed = (event) => {
+        failedSources.add(event.currentTarget);
+        if (failedSources.size === sources.length) failed();
+      };
+      const aborted = () => finish(new DOMException('Hotspot video cancelled', 'AbortError'));
+      const timeout = setTimeout(failed, 10000);
+      signal.addEventListener('abort', aborted, { once: true });
+      video.addEventListener('error', failed, { once: true });
+      for (const source of sources) source.addEventListener('error', sourceFailed, { once: true });
+      if (signal.aborted) {
+        aborted();
+      } else if (play) {
+        void video.play().then(() => {
+          if (signal.aborted || document.hidden) {
+            video.pause();
+            aborted();
+          } else ready();
+        }, failed);
+      } else if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        ready();
+      } else {
+        video.addEventListener('loadeddata', ready, { once: true });
+        video.load();
+      }
+    });
+  }
+
+  #cancelPendingHoverVideo() {
+    this.#hoverVideoController?.abort();
+    this.#hoverVideoController = null;
+    if (this.#pendingHoverVideo) this.#retireHoverMedia(this.#pendingHoverVideo);
+    this.#pendingHoverVideo = null;
+  }
+
+  #pauseHoverVideos() {
+    this.#pendingHoverVideo?.pause();
+    for (const media of this.#hoverMedia) {
+      if (media instanceof HTMLVideoElement) media.pause();
+    }
+  }
+
+  #handlePageHide = () => {
+    if (!this.#activeMediaDetail?.videoTemplate) return;
+    this.#resumeHoverVideo = true;
+    this.#hoverImageRequestId += 1;
+    this.#cancelPendingHoverVideo();
+    this.#restoreBaseMedia(false);
+  };
+
+  #handleVisibilityChange = () => {
+    if (document.hidden) {
+      this.#handlePageHide();
+      return;
+    }
+    if (!this.#resumeHoverVideo) return;
+    this.#resumeHoverVideo = false;
+    const detail = this.#activeMediaDetail;
+    if (!detail || !detail.source.isConnected || !this.contains(detail.source)) return;
+    const selected = isMobileBreakpoint()
+      ? this.#activeMobileSource === detail.source
+      : mediaQueryFinePointer.matches && !isTouchDevice() && detail.source.matches(':hover');
+    if (selected) void this.#handleHoverImage(new CustomEvent('product-hotspot-hover-image', { detail }));
+    else this.#resetImageState(false);
+  };
+
+  /** @param {HTMLImageElement | HTMLVideoElement} image */
+  #retireHoverMedia(image) {
+    if (image instanceof HTMLVideoElement) {
+      image.pause();
+      try {
+        image.currentTime = 0;
+      } catch {}
+      image.remove();
+      image.removeAttribute('src');
+      for (const source of image.querySelectorAll('source')) source.remove();
+      image.load();
+      this.#hoverMedia = this.#hoverMedia.filter((media) => media !== image);
+      return;
+    }
     image.hidden = true;
     image.classList.remove('is-active');
     image.style.removeProperty('opacity');
   }
 
   /**
-   * @param {HTMLImageElement} image
+   * @param {HTMLImageElement | HTMLVideoElement} image
    * @param {number} from
    * @param {number} to
    * @returns {Promise<void>}
@@ -464,8 +644,9 @@ class ProductHotspots extends HTMLElement {
   }
 
   /** @param {boolean} animate */
-  #restoreBaseImage(animate) {
-    const visible = this.#hoverImages.filter((image) => !image.hidden).map((image) => ({
+  #restoreBaseMedia(animate) {
+    this.#pauseHoverVideos();
+    const visible = this.#hoverMedia.filter((image) => !image.hidden).map((image) => ({
       image,
       opacity: Number.parseFloat(getComputedStyle(image).opacity),
     }));
@@ -473,9 +654,9 @@ class ProductHotspots extends HTMLElement {
     const animations = [...this.#hoverImageAnimations];
     this.#hoverImageAnimations.clear();
     for (const animation of animations) animation.cancel();
-    this.#currentHoverImage = null;
+    this.#currentHoverMedia = null;
     if (!animate || mediaQueryReducedMotion.matches || !visible.length) {
-      for (const image of this.#hoverImages) this.#retireHoverImage(image);
+      for (const image of this.#hoverMedia) this.#retireHoverMedia(image);
       this.#hoverImageTransition = Promise.resolve();
       return;
     }
@@ -484,7 +665,7 @@ class ProductHotspots extends HTMLElement {
       return this.#animateHoverOpacity(image, opacity, 0);
     })).then(() => {
       if (transitionId !== this.#hoverImageTransitionId) return;
-      for (const image of this.#hoverImages) this.#retireHoverImage(image);
+      for (const image of this.#hoverMedia) this.#retireHoverMedia(image);
     });
   }
 
@@ -492,8 +673,11 @@ class ProductHotspots extends HTMLElement {
   #resetImageState(animate) {
     this.#hoverImageRequestId += 1;
     this.#cancelPendingImageReset();
+    this.#cancelPendingHoverVideo();
     this.#activeSource = null;
-    this.#restoreBaseImage(animate);
+    this.#activeMediaDetail = null;
+    this.#resumeHoverVideo = false;
+    this.#restoreBaseMedia(animate);
   }
 
   #handleReducedMotionChange = () => {
@@ -537,8 +721,11 @@ class ProductHotspots extends HTMLElement {
     if (!(event instanceof CustomEvent)) return;
 
     const { source } = /** @type {HotspotResetImageDetail} */ (event.detail);
-    if (!(source instanceof ProductHotspotComponent)) return;
+    if (!(source instanceof ProductHotspotComponent) || source !== this.#activeSource) return;
 
+    this.#hoverImageRequestId += 1;
+    this.#cancelPendingHoverVideo();
+    this.#pauseHoverVideos();
     this.#cancelPendingImageReset();
     this.#hoverImageResetFrame = requestAnimationFrame(() => {
       this.#hoverImageResetFrame = null;
@@ -721,6 +908,19 @@ export class ProductHotspotComponent extends Component {
   }
 
   /**
+   * @param {boolean} [mobile]
+   * @returns {HotspotHoverImageDetail}
+   */
+  getHoverMedia(mobile = false) {
+    const template = this.querySelector(`[data-hotspot-hover-video-template="${mobile ? 'mobile' : 'desktop'}"]`);
+    return {
+      source: this,
+      url: (mobile ? this.dataset.mobileHoverImageUrl : this.dataset.hoverImageUrl) || '',
+      videoTemplate: template instanceof HTMLTemplateElement ? template : null,
+    };
+  }
+
+  /**
    * Set up desktop event listeners (hover)
    * @returns {void}
    */
@@ -740,12 +940,13 @@ export class ProductHotspotComponent extends Component {
       trigger.addEventListener('focus', showPreview);
     }
 
-    if (this.dataset.hoverImageUrl) {
+    const media = this.getHoverMedia();
+    if (media.url || media.videoTemplate) {
       this.#hoverImageEnterHandler = () => {
         this.dispatchEvent(
           new CustomEvent('product-hotspot-hover-image', {
             bubbles: true,
-            detail: { source: this, url: this.dataset.hoverImageUrl },
+            detail: this.getHoverMedia(),
           })
         );
       };

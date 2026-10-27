@@ -17,7 +17,9 @@
   @param {string} [url_override] - Optional destination for the preview card.
   @param {image} [hover_image] - Optional image displayed while hovering.
   @param {image} [hover_image_mobile] - Optional mobile alternative, falling back to the hover image.
-  @param {boolean} [show_mobile_button] - Whether to provide an image trigger for the mobile grid.
+  @param {video} [hover_video] - Optional desktop video, taking precedence over the hover image.
+  @param {video} [hover_video_mobile] - Optional mobile video, taking precedence over mobile images.
+  @param {boolean} [show_mobile_button] - Whether to provide a media trigger for the mobile grid.
   @param {string} [mobile_button_label] - Mobile button text, falling back to the product title.
   @param {string} [mobile_button_background_color] - Optional mobile grid button background.
   @param {string} [mobile_button_text_color] - Optional mobile grid button text color.
@@ -35,6 +37,10 @@
   assign hotspot_product_url = url_override | default: product.url
   assign hotspot_dialog_id = 'HotspotDialog-' | append: section.id | append: '-' | append: instance_id
   assign mobile_hover_image = hover_image_mobile | default: hover_image
+  assign mobile_hover_video = hover_video_mobile
+  if mobile_hover_video == blank and hover_image_mobile == blank
+    assign mobile_hover_video = hover_video
+  endif
 %}
 
 {% if product != blank %}
@@ -62,6 +68,16 @@
     data-id="{{ instance_id }}"
     {{ shopify_attributes }}
   >
+    {% if hover_video != blank %}
+      <template data-hotspot-hover-video-template="desktop">
+        {{ hover_video | video_tag: image_size: '2000x', autoplay: false, loop: true, muted: true, controls: false, playsinline: true, preload: 'none', class: 'hotspots__background-image hotspots__background-image--hover', aria-hidden: 'true', tabindex: '-1' }}
+      </template>
+    {% endif %}
+    {% if mobile_hover_video != blank %}
+      <template data-hotspot-hover-video-template="mobile">
+        {{ mobile_hover_video | video_tag: image_size: '1500x', autoplay: false, loop: true, muted: true, controls: false, playsinline: true, preload: 'none', class: 'hotspots__background-image hotspots__background-image--hover', aria-hidden: 'true', tabindex: '-1' }}
+      </template>
+    {% endif %}
     <button
       class="hotspot-trigger"
       type="button"
@@ -123,7 +139,7 @@
       </div>
     </dialog>
     {% if show_mobile_button %}
-      {% if mobile_hover_image != blank or mobile_preview_quick_buy %}
+      {% if mobile_hover_image != blank or mobile_hover_video != blank or mobile_preview_quick_buy %}
         <template data-hotspot-mobile-button-template>
           <button
             type="button"

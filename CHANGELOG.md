@@ -280,6 +280,27 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-27 — Videos alternativos en Product Hotspots
+
+### Añadido
+
+- Objetivo: permitir videos alternativos por hotspot en hover de escritorio o selección móvil, en loop, muteados, sin controles y desde cero en cada activación.
+- Archivos: `blocks/_hotspot-product.liquid`, `snippets/product-hotspot.liquid`, `assets/product-hotspot.js`, los 20 archivos `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto en el editor: cada bloque incorpora `hover_video` y `hover_video_mobile`, ambos de tipo video Shopify y vacíos por defecto, con etiquetas y ayudas traducidas. Se conservan los IDs, presets e imágenes guardadas. La grilla admite también hotspots configurados únicamente con video; no se modificaron templates ni datos administrados por Shopify.
+- Impacto en storefront: escritorio prioriza video sobre imagen; móvil prioriza video móvil, imagen móvil y medio de escritorio. Los videos se cargan bajo demanda desde templates inertes, usan `playsinline` y comparten los fundidos de 400 ms. Salir del hover, cerrar o cambiar selección pausa inmediatamente; la capa conserva el último fotograma durante su salida y libera/reinicia la fuente al retirarse. Los errores de fuente/reproducción usan la imagen de respaldo o la principal conservando los controles. Se descartan cargas y reproducciones tardías, se limpia al desmontar o cambiar breakpoint, y la pestaña oculta pausa/libera el video; al volver solo reinicia una selección o hover vigente. Quick Buy mantiene la selección y el slideshow conserva sus opciones de imagen. Movimiento reducido evita fundidos y mantiene el video.
+
+### Validación
+
+- Los schemas de bloque/sección y las traducciones JSONC validaron IDs y claves únicos, ambos settings de tipo video y compatibilidad de todos los settings/presets previos. `node --check` y `checkJs` estricto aprobaron el JavaScript.
+- Chrome local con LiquidJS, el snippet y la sección reales, adaptadores para los filtros de medios y un clip WebM real con audio aprobó 46 comprobaciones: carga bajo demanda, prioridad por dispositivo, loop, silencio, reproducción inline sin controles, reinicio, errores y rechazo de `play()`, cierre durante carga y resolución tardía de reproducción, selección rápida, cierres desde punto/grilla, los tres modos desktop, Quick Buy/foco, editor, desmontaje/remontaje, pestaña oculta y restauración, breakpoint, movimiento reducido y geometría sin overflow a 320/390/749/750/1440 px.
+- Las suites de regresión vigentes de fundidos, carreras de carga, controles de cierre y slideshow compartido aprobaron la selección móvil, Quick Buy, retorno del foco, halo, posiciones extremas/textos largos, fallbacks, lifecycle y los cinco anchos anteriores, sin excepciones de navegador.
+- `shopify.cmd theme check --path . --output json` finalizó con cero errores y las 30 advertencias preexistentes, sin incidencias en los archivos de hotspots. El validador de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; se utilizó Shopify CLI local sin transmitir código.
+- No había storefront ni Theme Editor reales activos. El guardado de los selectores de video en Shopify y la reproducción en Safari/iOS físicos quedan pendientes; el contenido y las respuestas de producto del QA fueron locales.
+
+### Reversión
+
+- Vaciar los selectores de video recupera el uso de imágenes. Revertir los cambios de esta entrada retira la capacidad sin migrar datos ni modificar IDs editoriales.
+
 ## 2026-10-26 — Controles responsive independientes de la hero
 
 ### Añadido

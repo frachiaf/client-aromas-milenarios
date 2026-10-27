@@ -1007,6 +1007,7 @@
             "product": "vela-celta",
             "hover_image": "shopify://shop_images/grok-image-52e3cbda-1294-43ef-b361-3bba9ef41b9b.jpg",
             "hover_image_mobile": "shopify://shop_images/grok-image-f476e4fc-9198-46e5-9cb5-20853be66a73.jpg",
+            "hover_video_mobile": "shopify://files/videos/grok-video-b16845ff-0209-4227-aecb-effdd49d2659.mp4",
             "show_mobile_button": false,
             "mobile_button_label": "",
             "mobile_button_background_color": "",

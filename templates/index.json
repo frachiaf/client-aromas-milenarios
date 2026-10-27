@@ -1028,6 +1028,7 @@
             "product": "vela-oceano",
             "hover_image": "shopify://shop_images/grok-image-9e4641d9-a644-42ce-9c5b-ff9f0456be16.jpg",
             "hover_image_mobile": "shopify://shop_images/Vela_OCEANO_junto_al_mar-2.png",
+            "hover_video_mobile": "shopify://files/videos/grok-video-84a5a764-78e4-4b83-bef8-74d042e2f77d.mp4",
             "show_mobile_button": false,
             "mobile_button_label": "",
             "mobile_button_background_color": "",

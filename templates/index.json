@@ -1050,6 +1050,7 @@
             "product": "vela-magdalena",
             "hover_image": "shopify://shop_images/Vela_MAGDALENA_entre_madera_y_rosas-1.png",
             "hover_image_mobile": "shopify://shop_images/Vela_roja_entre_rosas_y_luz_nocturna-2.png",
+            "hover_video_mobile": "shopify://files/videos/grok-video-d2a15ff0-20c8-4f3f-8edb-2be1345f595f.mp4",
             "show_mobile_button": false,
             "mobile_button_label": "Magdalena",
             "mobile_button_background_color": "",

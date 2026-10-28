@@ -1696,7 +1696,7 @@
           "static": true,
           "settings": {
             "media_type": "image",
-            "image": "shopify://shop_images/preview_image_256_1.jpg",
+            "image": "shopify://shop_images/grok-image-c0f9940a-4ae9-408f-aebb-82e98f779cea.png",
             "link": "",
             "video_loop": true,
             "video_autoplay": false,
@@ -1823,7 +1823,7 @@
         "section_width": "full-width",
         "extend_media": true,
         "color_scheme": "scheme-4",
-        "padding-block-start": 20,
+        "padding-block-start": 100,
         "padding-block-end": 20
       }
     },

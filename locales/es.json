@@ -8,6 +8,15 @@
  * ------------------------------------------------------------
  */
 {
+  "am_pdp": {
+    "connect_summary": "Conectá el metafield de resumen de producto.",
+    "connect_highlights": "Conectá el metafield de aspectos de producto.",
+    "add_benefits": "Agregá ítems de beneficios a este bloque.",
+    "add_benefit_text": "Escribí el texto del beneficio.",
+    "rating": "{{ rating }} de 5 estrellas",
+    "add_review_text": "Escribí la reseña de un cliente.",
+    "add_reviews": "Agregá bloques de reseña para configurar esta sección."
+  },
   "blocks": {
     "load_video": "Cargar video: {{ description }}",
     "sold_out": "Agotado",

@@ -280,6 +280,28 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-29 — Beneficios, total de compra y reseñas manuales en PDP
+
+### Añadido
+
+- Objetivo: ofrecer dos bloques independientes de producto conectables a metafields, una lista de beneficios compartidos por template, el total de compra opcional en el ATC principal y una sección de reseñas manuales responsive según las referencias.
+- Archivos: `blocks/am--product-summary.liquid`, `blocks/am--product-highlights.liquid`, `blocks/am--shared-benefits.liquid`, `blocks/_am--benefit-item.liquid`, `snippets/am--highlight-items.liquid`, `snippets/am--benefits-styles.liquid`, `sections/am--manual-reviews.liquid` y `assets/am--atc-total.js`.
+- Integración: `blocks/_product-details.liquid`, `blocks/add-to-cart.liquid`, `snippets/add-to-cart-button.liquid`, `snippets/product-information-content.liquid`, `sections/product-information.liquid`, `assets/product-form.js`, `snippets/scripts.liquid` y los 51 archivos `locales/*.json`. Se actualizan también `AGENTS.md`, `docs/theme-architecture.md` y este changelog.
+- Impacto en el editor: los bloques son agregables y reordenables; cada metafield vacío oculta solo su propio bloque en storefront y mantiene una ayuda seleccionable en el editor. La lista de producto usa checks circulares, borde y separadores; la compartida contiene ítems de texto e icono nativo. Permiten heredar o elegir un esquema y ajustar el espaciado vertical. El merchant crea/carga los metafields y conecta las fuentes dinámicas; no se fijan namespaces ni se modifican templates, settings guardados o datos de tienda.
+- Impacto en la compra: «Mostrar total en el botón» queda desactivado por defecto. Al activarlo muestra precio de venta de variante × cantidad válida y responde a cambios de variante, cantidad y límites del carrito. Conserva formato y código de moneda del theme, excluye descuentos de carrito y selling plans, y se oculta mientras la selección está pendiente o el botón está deshabilitado. Su contexto externo no se copia a Quick Buy; compra rápida, cards, productos destacados y barra fija conservan su presentación.
+- Impacto en reseñas: sección agregable con imagen desktop/móvil, esquemas independientes de sección/tarjetas y reseñas con texto, nombre, dato adicional, puntuación 1–5 y distintivo opcional. Desktop muestra imagen izquierda y carrusel derecha; móvil muestra título, cards, flechas e imagen. Usa navegación nativa manual con límites, cards que crecen con el texto y tres ejemplos editables identificados como tales, sin verificación inicial. Sin imagen se omite el marco; sin reseñas con texto se oculta la sección en storefront.
+- Gobernanza y traducciones: `AGENTS.md` exige preguntar dudas o ambigüedades relevantes y no asumir requisitos, contenido ni preferencias. Se añaden claves equivalentes a todos los locales sin reformatear los existentes; español e inglés tienen textos propios y el resto dispone de respaldo en inglés para las nuevas capacidades.
+
+### Validación
+
+- Chrome local con LiquidJS, los componentes Liquid/CSS/JavaScript reales y adaptadores para filtros de Shopify aprobó 70 comprobaciones de metafields independientes, saltos/HTML, entidades, variantes, cantidad, reglas, agotados, carrito, formatos ARS/USD/JPY/KWD, aislamiento de compra rápida/producto destacado, remontaje y reseñas responsive. Se probaron flechas con límites, swipe táctil real, activación por teclado, movimiento reducido, selección y reordenación simuladas en el editor, texto largo, imagen móvil/fallback y una sola reseña, sin excepciones de navegador ni overflow a 320/390/749/750/1440 px.
+- Theme Check: cero errores y las 30 advertencias preexistentes. Los schemas, rangos, contratos, JSONC de locales, import map y sintaxis JavaScript se verificaron localmente; `git diff --check` aprobado.
+- El validador adicional de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; se utilizó Shopify CLI local. No había storefront ni Theme Editor reales activos: el guardado de fuentes dinámicas, selección/reordenación y configuración con datos de tienda siguen pendientes de prueba en Shopify; los productos y las respuestas de carrito del QA fueron locales.
+
+### Reversión
+
+- Desactivar el total y retirar los nuevos bloques/sección desde el editor permite dejar de usarlos. Revertir los archivos de esta entrada elimina la capacidad; no hay migraciones, cambios de precios ni modificaciones de templates o configuración administrada.
+
 ## 2026-10-27 — Videos alternativos en Product Hotspots
 
 ### Añadido

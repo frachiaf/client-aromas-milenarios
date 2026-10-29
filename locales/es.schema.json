@@ -8,6 +8,29 @@
  * ------------------------------------------------------------
  */
 {
+  "am_pdp": {
+    "product_summary": "AM Resumen de producto",
+    "product_highlights": "AM Aspectos de producto",
+    "shared_benefits": "AM Beneficios compartidos",
+    "benefit_item": "Beneficio",
+    "summary_help": "Conectá un metafield de producto de texto de una línea mediante el botón de fuente dinámica.",
+    "highlights_help": "Conectá un metafield de producto multilínea. Cada línea no vacía se convierte en un aspecto.",
+    "show_total_price": "Mostrar total en el botón",
+    "total_price_help": "Solo en la PDP principal. Precio de venta de la variante × cantidad elegida, antes de descuentos del carrito.",
+    "manual_reviews": "AM Reseñas manuales",
+    "reviews_heading": "Lo que dicen nuestros clientes",
+    "mobile_image": "Imagen móvil",
+    "verified_label": "Texto del distintivo de verificado",
+    "verified_default": "Cliente verificado",
+    "card_color_scheme": "Esquema de las tarjetas",
+    "review": "Reseña",
+    "author": "Autor",
+    "author_detail": "Dato adicional (opcional)",
+    "rating": "Puntuación",
+    "verified": "Mostrar distintivo de verificado",
+    "example_review": "Reseña de ejemplo: reemplazá este texto por la reseña real de un cliente antes de publicar.",
+    "example_author": "Autor de ejemplo"
+  },
   "names": {
     "404": "404",
     "borders": "Bordes",

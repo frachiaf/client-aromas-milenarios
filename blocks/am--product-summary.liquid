@@ -1,0 +1,34 @@
+{% liquid
+  assign content = block.settings.text | strip
+%}
+
+{% if content != blank or request.design_mode %}
+  <div
+    class="am-pdp-copy spacing-style{% unless block.settings.inherit_color_scheme %} color-{{ block.settings.color_scheme }}{% endunless %}"
+    style="{% render 'spacing-style', settings: block.settings %}"
+    {{ block.shopify_attributes }}
+  >
+    {% if content != blank %}
+      <p>{{ content | escape }}</p>
+    {% else %}
+      <p>{{ 'am_pdp.connect_summary' | t }}</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% render 'am--benefits-styles' %}
+
+{% schema %}
+{
+  "name": "t:am_pdp.product_summary",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "text", "label": "t:settings.text", "info": "t:am_pdp.summary_help" },
+    { "type": "checkbox", "id": "inherit_color_scheme", "label": "t:settings.inherit_color_scheme", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ block.settings.inherit_color_scheme == false }}" },
+    { "type": "range", "id": "padding-block-start", "label": "t:settings.padding_top", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding-block-end", "label": "t:settings.padding_bottom", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0 }
+  ],
+  "presets": [{ "name": "t:am_pdp.product_summary", "category": "t:categories.product" }]
+}
+{% endschema %}

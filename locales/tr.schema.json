@@ -8,6 +8,29 @@
  * ------------------------------------------------------------
  */
 {
+  "am_pdp": {
+    "product_summary": "AM Product summary",
+    "product_highlights": "AM Product highlights",
+    "shared_benefits": "AM Shared benefits",
+    "benefit_item": "Benefit",
+    "summary_help": "Connect a single-line product metafield using the dynamic source button.",
+    "highlights_help": "Connect a multiline product metafield. Each non-empty line becomes a highlight.",
+    "show_total_price": "Show total in button",
+    "total_price_help": "Main product page only. Variant sale price multiplied by selected quantity, before cart discounts.",
+    "manual_reviews": "AM Manual reviews",
+    "reviews_heading": "What our customers say",
+    "mobile_image": "Mobile image",
+    "verified_label": "Verified badge label",
+    "verified_default": "Verified customer",
+    "card_color_scheme": "Card color scheme",
+    "review": "Review",
+    "author": "Author",
+    "author_detail": "Additional detail (optional)",
+    "rating": "Rating",
+    "verified": "Show verified badge",
+    "example_review": "Example review: replace this text with a real customer review before publishing.",
+    "example_author": "Example author"
+  },
   "names": {
     "404": "404",
     "borders": "Kenarlıklar",

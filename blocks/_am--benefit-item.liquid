@@ -1,0 +1,33 @@
+{% assign text = block.settings.text | strip %}
+{% if text != blank or request.design_mode %}
+  <li class="am-pdp-benefits__item" {{ block.shopify_attributes }}>
+    {% if block.settings.icon != 'none' %}
+      <svg class="am-pdp-benefits__icon icon-default" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        {% render 'icon', icon: block.settings.icon %}
+      </svg>
+    {% endif %}
+    <span>{% if text != blank %}{{ text | escape }}{% else %}{{ 'am_pdp.add_benefit_text' | t }}{% endif %}</span>
+  </li>
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:am_pdp.benefit_item",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "text", "label": "t:settings.text" },
+    { "type": "select", "id": "icon", "label": "t:settings.icon", "default": "check_box", "options": [
+      { "value": "none", "label": "t:options.none" },
+      { "value": "check_box", "label": "t:options.check_box" },
+      { "value": "return", "label": "t:options.return" },
+      { "value": "truck", "label": "t:options.truck" },
+      { "value": "leaf", "label": "t:options.leaf" },
+      { "value": "heart", "label": "t:options.heart" },
+      { "value": "star", "label": "t:options.star" },
+      { "value": "box", "label": "t:options.box" },
+      { "value": "bottle", "label": "t:options.bottle" }
+    ] }
+  ],
+  "presets": [{ "name": "t:am_pdp.benefit_item" }]
+}
+{% endschema %}

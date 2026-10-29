@@ -14,6 +14,8 @@ Si una tarea modifica un área documentada, actualizar el changelog al finalizar
 
 ## Protocolo de trabajo
 
+Preguntar toda duda o ambigüedad relevante antes de implementar; no asumir requisitos, contenido ni preferencias no confirmados.
+
 1. Definir el comportamiento esperado y la superficie afectada antes de editar.
 2. Rastrear el flujo completo: template o section group, sección, bloques, snippets, assets, schema, locales y configuración relacionados.
 3. Preferir los componentes y patrones existentes. Crear una sección para módulos de página configurables, un bloque para contenido reusable y anidable, y un snippet para presentación o lógica reutilizable sin entidad propia en el editor.

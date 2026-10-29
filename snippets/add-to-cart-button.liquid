@@ -8,6 +8,7 @@
   @param {string} [class] - Additional CSS classes to apply to the button.
   @param {string} [id] - The ID attribute for the button.
   @param {string} [data_testid] - The data-testid attribute for testing.
+  @param {boolean} [show_total_price] - Show quantity total inside the main PDP only.
 {%- enddoc -%}
 
 {%- liquid
@@ -54,6 +55,25 @@
         <span>
           <span>
             {{- add_to_cart_text | default: default_add_to_cart_text -}}
+            {% if show_total_price and can_add_to_cart %}
+              {% liquid
+                assign total_variant = product.selected_or_first_available_variant
+                assign initial_quantity = total_variant.quantity_rule.min | default: 1
+                assign initial_total = total_variant.price | times: initial_quantity
+                assign total_money_format = shop.money_format
+                if settings.currency_code_enabled_product_pages
+                  assign total_money_format = shop.money_with_currency_format
+                endif
+              %}
+              <am-atc-total
+                class="am-atc-total"
+                data-unit-price="{{ total_variant.price }}"
+                data-money-format="{{ total_money_format | escape }}"
+                data-currency="{{ cart.currency.iso_code }}"
+              >
+                <span aria-hidden="true"> — </span><span data-total-price>{% if settings.currency_code_enabled_product_pages %}{{ initial_total | money_with_currency }}{% else %}{{ initial_total | money }}{% endif %}</span>
+              </am-atc-total>
+            {% endif %}
           </span>
         </span>
       </span>
@@ -66,3 +86,13 @@
     </span>
   </button>
 </add-to-cart-component>
+
+{% stylesheet %}
+  .am-atc-total {
+    display: none;
+  }
+
+  [data-am-main-product] .am-atc-total:not([hidden]) {
+    display: inline;
+  }
+{% endstylesheet %}

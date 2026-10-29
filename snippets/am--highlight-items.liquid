@@ -1,0 +1,22 @@
+{%- doc -%}
+  Converts plain multiline text or dynamic-source rich text into product highlights.
+  @param {string} content - One highlight per line, paragraph, or list item.
+{%- enddoc -%}
+{%- capture line_break %}
+{% endcapture -%}
+{%- liquid
+  assign normalized = content | replace: '<br />', line_break | replace: '<br/>', line_break | replace: '<br>', line_break
+  assign normalized = normalized | replace: '</p>', line_break | replace: '</li>', line_break | strip_html
+  assign normalized = normalized | replace: '&nbsp;', ' ' | replace: '&#160;', ' ' | replace: '&#xA0;', ' '
+  assign normalized = normalized | newline_to_br | replace: '<br />', line_break
+  assign lines = normalized | split: line_break
+-%}
+{%- for line in lines -%}
+  {%- assign text = line | strip -%}
+  {%- if text != blank -%}
+    <li class="am-pdp-highlights__item">
+      <span class="am-pdp-highlights__check" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>
+      <span>{{ text | escape_once }}</span>
+    </li>
+  {%- endif -%}
+{%- endfor -%}

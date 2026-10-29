@@ -23,6 +23,7 @@
     can_add_to_cart: can_add_to_cart,
     product: closest.product,
     add_to_cart_text: add_to_cart_text,
+    show_total_price: block.settings.show_total_price,
     data_testid: 'standalone-add-to-cart'
   %}
 </span>
@@ -32,6 +33,13 @@
   "name": "t:names.add_to_cart",
   "tag": null,
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_total_price",
+      "label": "t:am_pdp.show_total_price",
+      "info": "t:am_pdp.total_price_help",
+      "default": false
+    },
     {
       "type": "select",
       "id": "style_class",

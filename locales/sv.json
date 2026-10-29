@@ -8,6 +8,15 @@
  * ------------------------------------------------------------
  */
 {
+  "am_pdp": {
+    "connect_summary": "Connect the product summary metafield.",
+    "connect_highlights": "Connect the product highlights metafield.",
+    "add_benefits": "Add benefit items to this block.",
+    "add_benefit_text": "Enter the benefit text.",
+    "rating": "{{ rating }} out of 5 stars",
+    "add_review_text": "Enter a customer review.",
+    "add_reviews": "Add review blocks to configure this section."
+  },
   "blocks": {
     "load_video": "Ladda video: {{ description }}",
     "sold_out": "Slutsåld",

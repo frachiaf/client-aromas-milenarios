@@ -3,6 +3,7 @@ import { fetchConfig, preloadImage, onAnimationEnd, yieldToMainThread } from '@t
 import { ThemeEvents, CartAddEvent, CartErrorEvent, CartUpdateEvent, VariantUpdateEvent } from '@theme/events';
 import { cartPerformance } from '@theme/performance';
 import { morph } from '@theme/morph';
+import '@theme/am-atc-total';
 
 // Error message display duration - gives users time to read the message
 const ERROR_MESSAGE_DISPLAY_DURATION = 10000;
@@ -239,6 +240,9 @@ class ProductFormComponent extends Component {
 
     // Update quantity label if it exists
     this.#updateQuantityLabel(cartQty);
+
+    /** @type {import('./am--atc-total').AddToCartTotal | null} */
+    (this.querySelector('am-atc-total'))?.update();
 
     return cartQty;
   }
@@ -760,6 +764,9 @@ class ProductFormComponent extends Component {
     const currentVolumePricing = this.refs.volumePricing;
     const newVolumePricing = event.detail.data.html.querySelector('volume-pricing');
     this.#morphOrUpdateElement(currentVolumePricing, newVolumePricing, this.refs.productFormButtons);
+
+    /** @type {import('./am--atc-total').AddToCartTotal | null} */
+    (this.querySelector('am-atc-total'))?.update();
 
     const hasB2BFeatures =
       quantityRules || newQuantityRules || pricePerItem || newPricePerItem || currentVolumePricing || newVolumePricing;

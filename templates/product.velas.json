@@ -30,7 +30,7 @@
             "constrain_to_viewport": false,
             "media_fit": "cover",
             "media_radius": 0,
-            "extend_media": true,
+            "extend_media": false,
             "zoom": true,
             "video_loop": false,
             "hide_variants": false,
@@ -245,6 +245,7 @@
                 "text_gA4fAL": {
                   "type": "text",
                   "name": "t:names.text",
+                  "disabled": true,
                   "settings": {
                     "text": "{{ closest.product.description }}",
                     "width": "fit-content",
@@ -265,6 +266,18 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "am_product_highlights_3jRMDJ": {
+                  "type": "am--product-highlights",
+                  "name": "t:am_pdp.product_highlights",
+                  "settings": {
+                    "text": "<ul><li>Cera ecológica</li><li>Producto Artesanal</li><li>Elaboración consciente, cuidando cada detalle.</li></ul>",
+                    "inherit_color_scheme": false,
+                    "color_scheme": "scheme-1",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0
                   },
                   "blocks": {}
                 },
@@ -303,24 +316,215 @@
                       "type": "add-to-cart",
                       "static": true,
                       "settings": {
-                        "style_class": "button-secondary"
+                        "show_total_price": true,
+                        "style_class": "button"
                       },
                       "blocks": {}
                     },
                     "accelerated-checkout": {
                       "type": "accelerated-checkout",
+                      "disabled": true,
                       "static": true,
                       "settings": {},
                       "blocks": {}
                     }
                   },
                   "block_order": []
+                },
+                "accordion_WNYMan": {
+                  "type": "accordion",
+                  "name": "t:names.accordion",
+                  "settings": {
+                    "icon": "caret",
+                    "dividers": true,
+                    "type_preset": "h6",
+                    "inherit_color_scheme": true,
+                    "color_scheme": "",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {
+                    "accordion_row_yhMhia": {
+                      "type": "_accordion-row",
+                      "name": "t:names.accordion_row",
+                      "settings": {
+                        "heading": "Descripción",
+                        "open_by_default": true,
+                        "icon": "clipboard",
+                        "width": 20
+                      },
+                      "blocks": {
+                        "text_tTzWWJ": {
+                          "type": "text",
+                          "settings": {
+                            "text": "{{ closest.product.description }}",
+                            "width": "100%",
+                            "max_width": "normal",
+                            "alignment": "left",
+                            "type_preset": "rte",
+                            "font": "var(--font-body--family)",
+                            "font_size": "1rem",
+                            "line_height": "normal",
+                            "letter_spacing": "normal",
+                            "case": "none",
+                            "wrap": "pretty",
+                            "color": "var(--color-foreground)",
+                            "background": false,
+                            "background_color": "#00000026",
+                            "corner_radius": 0,
+                            "padding-block-start": 0,
+                            "padding-block-end": 0,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0
+                          },
+                          "blocks": {}
+                        }
+                      },
+                      "block_order": [
+                        "text_tTzWWJ"
+                      ]
+                    },
+                    "accordion_row_GWbndU": {
+                      "type": "_accordion-row",
+                      "disabled": true,
+                      "settings": {
+                        "heading": "Política de devoluciones",
+                        "open_by_default": true,
+                        "icon": "none",
+                        "width": 20
+                      },
+                      "blocks": {
+                        "text_YqdXW6": {
+                          "type": "text",
+                          "settings": {
+                            "text": "<p>Nuestro objetivo es que cada cliente quede totalmente satisfecho con su compra. Si no es así, cuéntanoslo y haremos todo lo posible para solucionarlo.</p>",
+                            "width": "100%",
+                            "max_width": "normal",
+                            "alignment": "left",
+                            "type_preset": "rte",
+                            "font": "var(--font-body--family)",
+                            "font_size": "1rem",
+                            "line_height": "normal",
+                            "letter_spacing": "normal",
+                            "case": "none",
+                            "wrap": "pretty",
+                            "color": "var(--color-foreground)",
+                            "background": false,
+                            "background_color": "#00000026",
+                            "corner_radius": 0,
+                            "padding-block-start": 0,
+                            "padding-block-end": 0,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0
+                          },
+                          "blocks": {}
+                        }
+                      },
+                      "block_order": [
+                        "text_YqdXW6"
+                      ]
+                    },
+                    "accordion_row_MNme3M": {
+                      "type": "_accordion-row",
+                      "disabled": true,
+                      "settings": {
+                        "heading": "Envío",
+                        "open_by_default": false,
+                        "icon": "none",
+                        "width": 20
+                      },
+                      "blocks": {
+                        "text_6YBMrJ": {
+                          "type": "text",
+                          "settings": {
+                            "text": "<p>Trabajaremos para enviar tu pedido lo antes posible. Cuando se envíe, recibirás un correo electrónico con más información. Los tiempos de entrega varían según tu ubicación.</p>",
+                            "width": "100%",
+                            "max_width": "normal",
+                            "alignment": "left",
+                            "type_preset": "rte",
+                            "font": "var(--font-body--family)",
+                            "font_size": "1rem",
+                            "line_height": "normal",
+                            "letter_spacing": "normal",
+                            "case": "none",
+                            "wrap": "pretty",
+                            "color": "var(--color-foreground)",
+                            "background": false,
+                            "background_color": "#00000026",
+                            "corner_radius": 0,
+                            "padding-block-start": 0,
+                            "padding-block-end": 0,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0
+                          },
+                          "blocks": {}
+                        }
+                      },
+                      "block_order": [
+                        "text_6YBMrJ"
+                      ]
+                    },
+                    "accordion_row_3grAUi": {
+                      "type": "_accordion-row",
+                      "disabled": true,
+                      "settings": {
+                        "heading": "Fabricación",
+                        "open_by_default": false,
+                        "icon": "none",
+                        "width": 20
+                      },
+                      "blocks": {
+                        "text_HkQ8yL": {
+                          "type": "text",
+                          "settings": {
+                            "text": "<p>Nuestros productos se fabrican tanto localmente como globalmente. Seleccionamos cuidadosamente a nuestros socios de fabricación para garantizar alta calidad y un precio justo.</p>",
+                            "width": "100%",
+                            "max_width": "normal",
+                            "alignment": "left",
+                            "type_preset": "rte",
+                            "font": "var(--font-body--family)",
+                            "font_size": "1rem",
+                            "line_height": "normal",
+                            "letter_spacing": "normal",
+                            "case": "none",
+                            "wrap": "pretty",
+                            "color": "var(--color-foreground)",
+                            "background": false,
+                            "background_color": "#00000026",
+                            "corner_radius": 0,
+                            "padding-block-start": 0,
+                            "padding-block-end": 0,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0
+                          },
+                          "blocks": {}
+                        }
+                      },
+                      "block_order": [
+                        "text_HkQ8yL"
+                      ]
+                    }
+                  },
+                  "block_order": [
+                    "accordion_row_yhMhia",
+                    "accordion_row_GWbndU",
+                    "accordion_row_MNme3M",
+                    "accordion_row_3grAUi"
+                  ]
                 }
               },
               "block_order": [
                 "text_gA4fAL",
+                "am_product_highlights_3jRMDJ",
                 "variant_picker_KePPVa",
-                "buy_buttons_6p8c63"
+                "buy_buttons_6p8c63",
+                "accordion_WNYMan"
               ]
             },
             "text_LbbLqQ": {
@@ -447,7 +651,7 @@
         }
       },
       "settings": {
-        "content_width": "content-full-width",
+        "content_width": "content-center-aligned",
         "desktop_media_position": "left",
         "equal_columns": true,
         "limit_details_width": false,
@@ -794,6 +998,7 @@
         "image_8ky3Ee",
         "group_niwHBF"
       ],
+      "disabled": true,
       "name": "Formula details",
       "settings": {
         "content_direction": "row",
@@ -856,6 +1061,7 @@
       "block_order": [
         "text_mjKjVW"
       ],
+      "disabled": true,
       "name": "Image banner",
       "settings": {
         "content_direction": "column",
@@ -883,6 +1089,359 @@
         "gradient_direction": "to top",
         "padding-block-start": 10,
         "padding-block-end": 0
+      }
+    },
+    "section_C7ahBG": {
+      "type": "section",
+      "blocks": {
+        "text_nAEL76": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2>Preguntas frecuentes</h2>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "accordion_ayXN7E": {
+          "type": "accordion",
+          "name": "t:names.accordion",
+          "settings": {
+            "icon": "caret",
+            "dividers": true,
+            "type_preset": "h5",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "accordion_row_NVxkrq": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "¿Cuál es la política de devoluciones?",
+                "open_by_default": true,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_wtUrgW": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Nuestro objetivo es que cada cliente quede totalmente satisfecho con su compra. Si no es así, cuéntanoslo y haremos todo lo posible para solucionarlo.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_wtUrgW"
+              ]
+            },
+            "accordion_row_zEyGNb": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "¿Alguna compra es final y no tiene devolución?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_6YNDFc": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>No podemos aceptar devoluciones de ciertos artículos. Se marcarán claramente antes de la compra.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_6YNDFc"
+              ]
+            },
+            "accordion_row_6h7e77": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "settings": {
+                "heading": "¿Cuándo recibiré mi pedido?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_cwTAre": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Trabajaremos para enviar tu pedido lo antes posible. Cuando se envíe, recibirás un correo electrónico con más información. Los tiempos de entrega varían según tu ubicación.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_cwTAre"
+              ]
+            },
+            "accordion_row_c6UQiR": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "settings": {
+                "heading": "¿Dónde se fabrican tus productos?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_Q9CFJ4": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Nuestros productos se fabrican tanto localmente como globalmente. Seleccionamos cuidadosamente a nuestros socios de fabricación para garantizar alta calidad y un precio justo.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_Q9CFJ4"
+              ]
+            },
+            "accordion_row_JjxkV3": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "settings": {
+                "heading": "¿Cuánto cuesta el envío?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_AVbtX8": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>El envío se calcula según tu ubicación y los artículos de tu pedido. Siempre conocerás el precio del envío antes de realizar la compra.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_AVbtX8"
+              ]
+            }
+          },
+          "block_order": [
+            "accordion_row_NVxkrq",
+            "accordion_row_zEyGNb",
+            "accordion_row_6h7e77",
+            "accordion_row_c6UQiR",
+            "accordion_row_JjxkV3"
+          ]
+        }
+      },
+      "block_order": [
+        "text_nAEL76",
+        "accordion_ayXN7E"
+      ],
+      "name": "t:names.faq_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 32,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-4",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "am_color_divider_3ViKUG": {
+      "type": "am--color-divider",
+      "name": "AM Divisor de color",
+      "settings": {
+        "color_scheme": "",
+        "separator_style": "wave",
+        "invert_colors": true,
+        "height_desktop": 180,
+        "height_mobile": 100
+      }
+    },
+    "am_manual_reviews_dcifNY": {
+      "type": "am--manual-reviews",
+      "blocks": {
+        "review_H9PWCX": {
+          "type": "review",
+          "settings": {
+            "text": "Reseña de ejemplo: reemplazá este texto por la reseña real de un cliente antes de publicar.",
+            "author": "Autor de ejemplo",
+            "detail": "",
+            "rating": 5,
+            "verified": false
+          }
+        },
+        "review_QTzrHa": {
+          "type": "review",
+          "settings": {
+            "text": "Reseña de ejemplo: reemplazá este texto por la reseña real de un cliente antes de publicar.",
+            "author": "Autor de ejemplo",
+            "detail": "",
+            "rating": 5,
+            "verified": false
+          }
+        },
+        "review_b8hr7R": {
+          "type": "review",
+          "settings": {
+            "text": "Reseña de ejemplo: reemplazá este texto por la reseña real de un cliente antes de publicar.",
+            "author": "Autor de ejemplo",
+            "detail": "",
+            "rating": 5,
+            "verified": false
+          }
+        }
+      },
+      "block_order": [
+        "review_H9PWCX",
+        "review_QTzrHa",
+        "review_b8hr7R"
+      ],
+      "name": "t:am_pdp.manual_reviews",
+      "settings": {
+        "heading": "Lo que dicen nuestros clientes",
+        "verified_label": "Cliente verificado",
+        "section_width": "page-width",
+        "color_scheme": "",
+        "card_color_scheme": "scheme-4",
+        "padding-block-start": 48,
+        "padding-block-end": 48
       }
     },
     "product_recommendations_dDfQTx": {
@@ -1089,6 +1648,9 @@
     "marquee_r8WyKj",
     "section_dEGUdG",
     "section_UhNgJN",
+    "section_C7ahBG",
+    "am_color_divider_3ViKUG",
+    "am_manual_reviews_dcifNY",
     "product_recommendations_dDfQTx"
   ]
 }

@@ -1,0 +1,114 @@
+{% doc %}
+  Renders up to three informational milestones using discounted cart totals.
+{% enddoc %}
+{% if settings.am_progress_enabled %}
+  {% liquid
+    assign slots = '1,2,3' | split: ','
+    assign previous_threshold = 0
+    assign count = 0
+    assign valid = true
+    assign next_slot = ''
+    assign reached_slot = ''
+    assign completed = 0
+    assign segment_start = 0
+    assign segment_end = 0
+    for slot in slots
+      assign prefix = 'am_progress_' | append: slot
+      assign enabled_key = prefix | append: '_enabled'
+      if settings[enabled_key]
+        assign amount_key = prefix | append: '_threshold'
+        assign label_key = prefix | append: '_label'
+        assign threshold = settings[amount_key] | times: 100 | round
+        if threshold <= previous_threshold or settings[label_key] == blank
+          assign valid = false
+        endif
+        assign count = count | plus: 1
+        if cart.total_price >= threshold
+          assign reached_slot = slot
+          assign completed = completed | plus: 1
+        elsif next_slot == ''
+          assign next_slot = slot
+          assign segment_start = previous_threshold
+          assign segment_end = threshold
+        endif
+        assign previous_threshold = threshold
+      endif
+    endfor
+    if count == 0
+      assign valid = false
+    endif
+  %}
+  {% if valid and cart.currency.iso_code == shop.currency and cart.item_count > 0 %}
+    {% liquid
+      assign progress = 100
+      if completed < count
+        assign segment_amount = segment_end | minus: segment_start
+        assign progress = cart.total_price | minus: segment_start | times: 1.0 | divided_by: segment_amount | plus: completed | times: 100.0 | divided_by: count | at_most: 100 | at_least: 0
+      endif
+      assign zero_amount = 0 | money | strip_html | escape
+      if reached_slot != ''
+        assign prefix = 'am_progress_' | append: reached_slot
+        assign reached_key = prefix | append: '_reached'
+        assign label_key = prefix | append: '_label'
+        assign reached_message = settings[reached_key]
+        if reached_message == blank
+          assign reached_message = 'am_commerce.reached' | t
+        endif
+        assign benefit = settings[label_key] | escape
+        assign reached_message = reached_message | escape | replace: '{benefit}', benefit | replace: '{amount}', zero_amount
+      endif
+      if next_slot != ''
+        assign prefix = 'am_progress_' | append: next_slot
+        assign pending_key = prefix | append: '_pending'
+        assign label_key = prefix | append: '_label'
+        assign amount_key = prefix | append: '_threshold'
+        assign remaining = settings[amount_key] | times: 100 | round | minus: cart.total_price | money | strip_html | escape
+        assign pending_message = settings[pending_key]
+        if pending_message == blank
+          assign pending_message = 'am_commerce.pending' | t
+        endif
+        assign benefit = settings[label_key] | escape
+        assign pending_message = pending_message | escape | replace: '{amount}', remaining | replace: '{benefit}', benefit
+      else
+        assign final_message = settings.am_progress_complete
+        if final_message == blank
+          assign final_message = 'am_commerce.complete' | t
+        endif
+        assign final_message = final_message | escape | replace: '{benefit}', benefit | replace: '{amount}', zero_amount
+      endif
+    %}
+    <div class="am-cart-progress">
+      <div class="am-cart-progress__visual" style="--am-tier-count: {{ count }}">
+      <ol class="am-cart-progress__steps">
+        {% assign active_step = 0 %}
+        {% for slot in slots %}
+          {% liquid
+            assign prefix = 'am_progress_' | append: slot
+            assign enabled_key = prefix | append: '_enabled'
+            assign amount_key = prefix | append: '_threshold'
+            assign label_key = prefix | append: '_label'
+            assign threshold = settings[amount_key] | times: 100 | round
+          %}
+          {% if settings[enabled_key] %}
+            {% assign active_step = active_step | plus: 1 %}
+            <li data-am-tier="{{ active_step }}" {% if cart.total_price >= threshold %}data-complete{% endif %}>
+              <span class="am-cart-progress__check" aria-hidden="true">{% if cart.total_price >= threshold %}✓{% else %}{{ active_step }}{% endif %}</span>
+              <span class="am-cart-progress__label">{{ settings[label_key] | escape }}</span>
+              {% if cart.total_price >= threshold %}<span class="visually-hidden">{{ 'am_commerce.milestone_complete' | t }}</span>{% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ol>
+      <div class="am-cart-progress__track" role="progressbar" aria-label="{{ 'am_commerce.progress' | t }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress }}">
+        <span style="--am-progress: {{ progress }}%"></span>
+      </div>
+      </div>
+      <div class="am-cart-progress__messages" role="status" aria-live="polite" aria-atomic="true">
+        {% if reached_message != blank %}<p>{{ reached_message }}</p>{% endif %}
+        {% if next_slot != '' %}<p>{{ pending_message }}</p>{% else %}<p>{{ final_message }}</p>{% endif %}
+      </div>
+    </div>
+  {% elsif request.design_mode and valid == false %}
+    <p class="am-cart-help">{{ 'am_commerce.progress_help' | t }}</p>
+  {% endif %}
+{% endif %}

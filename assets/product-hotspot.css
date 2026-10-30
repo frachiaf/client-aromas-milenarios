@@ -54,6 +54,18 @@
   z-index: var(--layer-raised);
 }
 
+@media (min-width: 750px) and (hover: hover) and (pointer: fine) {
+  product-hotspots[data-hide-inactive-desktop][data-desktop-preview-active] .hotspot:not([data-desktop-active]):not([data-editor-selected]):not(:focus-within) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  product-hotspots[data-hide-inactive-desktop] .hotspot:focus-within {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 .section-product-hotspots--animate-hotspots .hotspot:not(.hotspot--editor-placeholder)::before,
 .am--numbered-slideshow__slide.am--is-active.am--animate-hotspots .hotspot::before {
   content: '';

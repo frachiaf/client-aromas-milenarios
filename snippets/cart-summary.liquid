@@ -5,6 +5,9 @@
   @param {string} [section_id] - The section ID for cart discount component.
 {%- enddoc -%}
 
+{% capture gift_actions %}{% render 'am--cart-gifts', section_id: section_id %}{% endcapture %}
+{% assign gift_actions = gift_actions | strip %}
+
 <div class="cart-totals">
   {% # We need to keep this node in place to allow morphing to work properly # %}
   <div class="cart-totals__original-container cart-primary-typography">
@@ -38,8 +41,9 @@
     {%- endif -%}
   </div>
 
-  {% if settings.show_cart_note or settings.show_add_discount_code %}
+  {% if settings.show_cart_note or settings.show_add_discount_code or gift_actions != blank %}
     <div class="cart-actions">
+      {{ gift_actions }}
       {% if settings.show_cart_note %}
         <script
           type="module"
@@ -89,9 +93,6 @@
           %}
         </cart-note>
       {% endif %}
-      {% if settings.show_cart_note and settings.show_add_discount_code %}
-        <div class="cart-actions__divider"></div>
-      {% endif %}
       {% if settings.show_add_discount_code %}
         {% liquid
           assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
@@ -120,10 +121,10 @@
               open
             {% endif %}
           >
-            <summary class="cart-discount__summary">
-              <span class="cart-discount__label cart-primary-typography">{{ 'content.discount' | t }}</span>
+            <summary class="cart-discount__summary cart-action__summary">
+              <span class="cart-discount__label cart-action__label cart-primary-typography">{{ 'content.discount' | t }}</span>
 
-              <span class="cart-totals__icon">
+              <span class="cart-totals__icon icon-plus" aria-hidden="true">
                 {{- 'icon-plus.svg' | inline_asset_content -}}
               </span>
             </summary>
@@ -295,8 +296,15 @@
     margin-block-start: var(--margin-3xs);
   }
 
-  .cart-actions__divider {
+  .cart-actions > :is(am-cart-gifts, cart-note, accordion-custom) ~ :is(am-cart-gifts, cart-note, accordion-custom) {
     border-block-start: 1px solid var(--color-border);
+  }
+
+  .cart-actions summary {
+    padding-inline: 0;
+    padding-block: var(--padding-sm);
+    line-height: 1.2;
+    min-height: var(--minimum-touch-target);
   }
 
   .cart-totals:not(:has(.cart-actions)) {
@@ -473,11 +481,6 @@
     padding-inline: var(--padding-4xl);
   }
 
-  .cart-drawer__summary .cart-totals:not(:has(.cart-totals__original-container:empty)) {
-    border-block-start: var(--style-border-width) solid var(--color-border);
-    padding-block-start: var(--padding-2xl);
-  }
-
   .cart-drawer__summary .cart-note {
     @media screen and (min-width: 750px) {
       margin-block-start: var(--margin-3xs);
@@ -582,17 +585,17 @@
     margin-block-start: var(--margin-3xs);
   }
 
-  .cart-discount__summary {
+  .cart-action__summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  .cart-discount__summary:hover {
+  .cart-action__summary:hover {
     color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
   }
 
-  .cart-discount__label {
+  .cart-action__label {
     display: flex;
     align-items: flex-start;
     gap: var(--gap-2xs);

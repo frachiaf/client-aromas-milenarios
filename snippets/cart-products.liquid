@@ -129,6 +129,7 @@
                 ref="cartItemRows[]"
                 data-parent-key="{{ item.parent_relationship.parent.key }}"
                 data-key="{{ item.key }}"
+                data-am-gift-service="{{ item.properties._am_gift_service | escape }}"
               >
                 <td
                   class="cart-items__media"
@@ -227,11 +228,22 @@
                           endif
                         endfor
                       -%}
+                      {% if item.properties._am_gift_service == 'note' %}
+                        {% render 'am--gift-line-details', item: item %}
+                      {% endif %}
                       {%- if has_visible_properties -%}
                         <dl class="cart-items__properties">
                           {%- for property in item.properties -%}
                             {%- assign property_first_char = property.first | slice: 0 -%}
-                            {%- if property.last != blank and property_first_char != '_' -%}
+                            {% liquid
+                              assign is_gift_field = false
+                              if item.properties._am_gift_service == 'note'
+                                if property.first == 'From' or property.first == 'To' or property.first == 'Message'
+                                  assign is_gift_field = true
+                                endif
+                              endif
+                            %}
+                            {%- if property.last != blank and property_first_char != '_' and is_gift_field == false -%}
                               <div class="cart-items__property">
                                 <dt>{{ property.first }}:</dt>
                                 <dd>
@@ -304,6 +316,7 @@
                     | default: true, allow_false: true
                   %}
                   <div class="cart-items__quantity-controls">
+                    {% if item.properties._am_gift_service != 'wrapping' and item.properties._am_gift_service != 'note' %}
                     {% render 'volume-pricing-info',
                       variant: item.variant,
                       unique_id: item.index,
@@ -318,6 +331,9 @@
                       class: 'cart-primary-typography',
                       can_update_quantity: can_update_quantity
                     %}
+                    {% else %}
+                      <span class="visually-hidden">{{ 'content.quantity' | t }}: {{ item.quantity }}</span>
+                    {% endif %}
 
                     <button
                       class="button cart-items__remove"

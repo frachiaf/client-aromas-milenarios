@@ -67,9 +67,14 @@ class CartDrawerComponent extends DialogComponent {
 
   /**
    * Handles cart add events - opens drawer if auto-open and announces count when open.
-   * @param {CustomEvent<{ resource?: { item_count?: number } }>} event
+   * @param {CustomEvent<{ resource?: { item_count?: number }, data?: { source?: string } }>} event
    */
   #handleCartAdd = (event) => {
+    if (event.detail?.data?.source === 'am-cart-gifts') {
+      this.#announceCartCount(event.detail.resource?.item_count);
+      this.#updateStickyState();
+      return;
+    }
     if (this.hasAttribute('auto-open')) {
       this.showDialog();
     }

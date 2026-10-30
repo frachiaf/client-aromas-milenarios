@@ -16,6 +16,7 @@ import {
   DiscountUpdateEvent,
 } from '@theme/events';
 import { cartPerformance } from '@theme/performance';
+import { runCartMutation, removeGiftCartLine, isCartMutationBusy } from '@theme/am-cart-gifts';
 
 /** @typedef {import('./utilities').TextComponent} TextComponent */
 
@@ -53,6 +54,7 @@ class CartItemsComponent extends Component {
    * @param {QuantitySelectorUpdateEvent} event - The event.
    */
   #onQuantityChange(event) {
+    if (isCartMutationBusy()) return;
     if (!(event.target instanceof Node) || !this.contains(event.target)) return;
 
     const { quantity, cartLine: line } = event.detail;
@@ -82,6 +84,8 @@ class CartItemsComponent extends Component {
    * @param {number} line - The line item index.
    */
   onLineItemRemove(line) {
+    if (isCartMutationBusy()) return;
+    if (removeGiftCartLine(this, line)) return;
     this.updateQuantity({
       line,
       quantity: 0,
@@ -134,6 +138,13 @@ class CartItemsComponent extends Component {
    * @param {string} config.action - The action.
    */
   updateQuantity(config) {
+    if (isCartMutationBusy()) return;
+    const key = this.refs.cartItemRows[config.line - 1]?.dataset.key;
+    return runCartMutation(() => this.performQuantityUpdate({ ...config, key }));
+  }
+
+  /** @param {{ line: number, quantity: number, action: string, key?: string }} config */
+  performQuantityUpdate(config) {
     const cartPerformaceUpdateMarker = cartPerformance.createStartingMarker(`${config.action}:user-action`);
 
     this.#disableCartItems();
@@ -150,7 +161,7 @@ class CartItemsComponent extends Component {
     });
 
     const body = JSON.stringify({
-      line: line,
+      ...(config.key ? { id: config.key } : { line }),
       quantity: quantity,
       sections: Array.from(sectionsToUpdate).join(','),
       sections_url: window.location.pathname,
@@ -158,7 +169,7 @@ class CartItemsComponent extends Component {
 
     cartTotal?.shimmer();
 
-    fetch(`${Theme.routes.cart_change_url}`, fetchConfig('json', { body }))
+    return fetch(`${Theme.routes.cart_change_url}`, fetchConfig('json', { body }))
       .then((response) => {
         return response.text();
       })
@@ -220,7 +231,7 @@ class CartItemsComponent extends Component {
    * @param {string} parsedResponseText.errors - The errors.
    */
   #handleCartError = (line, parsedResponseText) => {
-    const quantitySelector = this.refs.quantitySelectors[line - 1];
+    const quantitySelector = this.refs.cartItemRows[line - 1]?.querySelector('cart-quantity-selector-component, quantity-selector-component');
     const quantityInput = quantitySelector?.querySelector('input');
 
     if (!quantityInput) throw new Error('Quantity input not found');

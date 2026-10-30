@@ -280,6 +280,67 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-30 — Alineación de niveles y carga de regalos
+
+### Corregido
+
+- Objetivo: centrar los números/checks sobre sus etiquetas y eliminar la animación que aparecía debajo de «Convertir en regalo» al actualizar el carrito.
+- Archivos: `assets/am--cart.css`, `assets/am--cart-gifts.js`, `snippets/am--cart-progress.liquid`, `tests/am-commerce.test.mjs`, `docs/theme-architecture.md` y este changelog.
+- Impacto: indicadores y etiquetas comparten el mismo centro, con espacio reservado para la última etiqueta y soporte RTL. Los hitos conservan su posición al final de cada tramo y el relleno mantiene la escala monetaria existente, tanto en drawer como en página.
+- Carga: se retira el pseudo-elemento del contenedor de regalos que reaccionaba a cualquier operación del carrito. Las altas, ediciones y bajas desde las opciones de regalo muestran carga sobre el checkbox correspondiente; guardar la tarjeta mantiene su indicador en el botón. Este estado se libera también después de errores y reconciliaciones, sin añadir altura al acordeón. Las demás operaciones conservan los estados de carga nativos.
+- Compatibilidad: sin cambios en settings, textos, productos, datos administrados ni promociones.
+
+### Validación
+
+- La suite local `node tests/am-commerce.test.mjs` aprobó 172 comprobaciones en Chromium sin excepciones: centrado y geometría con uno/dos/tres niveles, importes de frontera, etiquetas largas, RTL, anchos de 320/390/749/750/1440 px, solicitudes demoradas de cantidad/envoltorio/tarjeta, altura estable y limpieza del estado tras éxito/error. Se revisó una captura móvil generada por la suite.
+- Theme Check local: cero errores y 30 advertencias preexistentes. Las pruebas usan respuestas de tienda locales; no se publicó ni se comprobó una tienda remota.
+
+## 2026-10-30 — Drawer compacto y progreso por tramos
+
+### Corregido
+
+- Objetivo: unificar «Convertir en regalo» con «Descuentos», aumentar el espacio útil para productos y hacer coincidir el relleno de beneficios con sus marcadores.
+- Archivos: `snippets/cart-summary.liquid`, `snippets/am--cart-gifts.liquid`, `snippets/am--cart-progress.liquid`, `snippets/header-actions.liquid`, `snippets/am--cart-features.liquid`, `assets/am--cart.css`, `tests/am-commerce.test.mjs` y guía de arquitectura.
+- Impacto en ambas vistas: regalos y descuentos comparten el acordeón nativo, tipografía, hover e icono +/−; un único contenedor de acciones administra bordes y separadores, incluida la nota general opcional. Conservan labels configurables y estado tras cambios AJAX. La barra interpola el importe dentro de tramos iguales de los niveles activos; marcadores, checks y valor accesible coinciden al alcanzar cada umbral.
+- Impacto exclusivo del drawer: gutters de 16/20 px, header con padding vertical de 8 px, barra más baja, 12 px antes del primer producto y entre filas, gaps del footer de 8 px y opciones de regalo más juntas. El listado y el contenido auxiliar conservan scroll independiente; el footer se limita al 55% del área restante y mantiene checkout accesible. Se respetan controles táctiles de 44 px, el ancho actual y la densidad de la página de carrito.
+- Compatibilidad: sin nuevos settings, cambios en datos administrados ni modificaciones de la lógica de regalos. Se preservaron los cambios previos de ancho del sidebar y fondo del slideshow.
+
+### Validación
+
+- `node tests/am-commerce.test.mjs` aprobó 141 comprobaciones en Chromium sin excepciones: acordeones equivalentes, separadores, nota general, estados AJAX, uno/dos/tres niveles con umbrales desiguales, valores un centavo antes/después, geometría de marcadores, regresión por cantidad y descuento, labels largos y responsive a 320/390/749/750/1440 px, incluido viewport bajo.
+- Comparación con una copia previa del código y descuentos habilitados: en el fixture de 390×900 px se ganaron aproximadamente 84 px para productos con los acordeones cerrados y 100 px con ambos abiertos. Las capturas y métricas se generaron en el directorio temporal.
+- Theme Check local terminó con cero errores y las 30 advertencias preexistentes; `git diff --check` aprobado. La revisión automática rechazó el validador remoto porque enviaría código privado fuera del entorno; se completó la validación de forma local. No se publicó ni se probó un storefront remoto; las pruebas utilizan respuestas de tienda locales.
+
+### Reversión
+
+- Restaurar los archivos de presentación de esta entrada devuelve la densidad y la escala anteriores. No hay migración de settings ni datos de carrito.
+
+## 2026-10-29 — Regalos y beneficios del carrito, cards circulares y hotspots
+
+### Añadido
+
+- Objetivo: ofrecer envoltorio y tarjeta pagos por pedido en drawer y página de carrito, una barra informativa de hasta tres beneficios y un estilo circular de product card configurable por sección.
+- Archivos: nuevos `snippets/am--cart-gifts.liquid`, `snippets/am--cart-features.liquid`, `snippets/am--gift-line-details.liquid`, `snippets/am--cart-progress.liquid`, `assets/am--cart-gifts.js`, `assets/am--cart.css` y `tests/am-commerce.test.mjs`; integración en layout, import map, resumen/productos del carrito, header y página de carrito; settings globales, 23 schemas de sección y los 51 locales; documentación de arquitectura.
+- Impacto en el editor: los dos grupos globales permiten elegir productos, imagen, labels, placeholders, textos del modal, umbrales y comunicación por nivel. Los servicios y la barra quedan desactivados; las cards mantienen Original por defecto. Las selecciones y configuraciones existentes no se migran ni se modifican templates, section groups, mercados o datos guardados.
+- Impacto en storefront: cada servicio administra una unidad identificada mediante `_am_gift_service`. La tarjeta conserva De/Para/Mensaje en propiedades de línea, con edición, eliminación y límite de 400 caracteres. El modal único conserva el scroll del drawer y el foco; los borradores viven solo en memoria. Los cambios muestran carga, se serializan con cantidades y consultan el estado confirmado ante errores. Eliminar el último producto normal retira también servicios; quitar una línea sincroniza su checkbox. La nota general del pedido se conserva.
+- Impacto en la barra: usa el total con descuentos, incluidos servicios, con mensajes pendientes/alcanzados, tokens `{amount}` y `{benefit}`, regresión de niveles y estado final. Solo se muestra en la moneda de la tienda; no aplica promociones. El footer conserva checkout accesible y ofrece scroll independiente en espacios reducidos.
+- Impacto en cards: Circular muestra medios 1:1 y habilita Quick Add al hover/foco o de forma visible en táctil, preservando variantes, badges y controles. Se comparte entre grillas, carruseles, recomendaciones y bloques anidados; conserva el layout del carrusel 60/40 y las galerías principales.
+
+### Corregido
+
+- Archivos: `sections/product-hotspots.liquid`, `assets/product-hotspot.js` y `assets/product-hotspot.css`.
+- Product Hotspots oculta en desktop los puntos no activos al mostrar un medio alternativo y los restaura al volver a la base. Coordina foco, salida del puntero, fundidos, errores y selección del editor. La corrección se activa exclusivamente en la sección independiente; el slideshow y el modo móvil mantienen sus contratos.
+
+### Validación
+
+- Theme Check completo terminó con cero errores y 30 advertencias; una copia temporal del HEAD confirmó las mismas categorías y cantidades preexistentes. El validador de Shopify aprobó los 96 archivos de theme modificados o nuevos. Sintaxis de los cuatro módulos afectados y la suite, claves JSON únicas, conservación de los 51 locales anteriores, compatibilidad de los 23 schemas y `git diff --check` aprobados. Sin cambios en datos administrados.
+- `node tests/am-commerce.test.mjs` aprobó 73 comprobaciones en Chromium, sin excepciones de navegador, usando Liquid y assets reales con respuestas de carrito locales. Incluye altas/edición/cancelación/borrados, límites de mensaje, claves cambiantes, doble click, respuesta perdida, actualización externa concurrente, fallback de render, progreso ascendente/descendente, moneda distinta y ayuda de editor. Comprueba footer/modal/cards a 320, 390, 749, 750 y 1440 px, viewport bajo de 500 px, los tres modos desktop de hotspots, foco, reinicio, selección simulada de editor, movimiento reducido, consumidor sin opt-in y puntero táctil.
+- La consulta no interactiva `shopify theme info --json` falló al acceder al almacenamiento local de la CLI y no permitió identificar un preview autenticado. No se inició un preview remoto ni se publicó el theme. Queda pendiente verificar en Shopify real los productos elegidos, precios/inventario de tienda, persistencia del pedido y cambios/reordenación desde Theme Editor; las respuestas de carrito y las imágenes de QA son fixtures locales.
+
+### Reversión
+
+- Desactivar servicios/barra y seleccionar Original retira las capacidades visuales opcionales. Retirar el código no migra datos: las líneas ya agregadas mantienen sus propiedades en Shopify y dejarían de gestionarse automáticamente. Revertir los cambios de hotspots restaura la visibilidad anterior sin modificar coordenadas ni bloques.
+
 ## 2026-10-29 — Beneficios, total de compra y reseñas manuales en PDP
 
 ### Añadido

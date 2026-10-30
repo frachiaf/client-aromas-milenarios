@@ -40,6 +40,7 @@
         {%- content_for 'block', id: 'cart-page-title', type: '_cart-title' %}
       </div>
 
+      {% render 'am--cart-progress' %}
       <div class="cart-page__items">
         {%- content_for 'block', id: 'cart-page-items', type: '_cart-products' %}
       </div>
@@ -167,6 +168,22 @@
     }
   ],
   "settings": [
+    {
+      "type": "select",
+      "id": "am_product_card_style",
+      "label": "t:am_commerce.card_style",
+      "options": [
+        {
+          "value": "original",
+          "label": "t:am_commerce.original"
+        },
+        {
+          "value": "circular",
+          "label": "t:am_commerce.circular"
+        }
+      ],
+      "default": "original"
+    },
     {
       "type": "select",
       "id": "section_width",

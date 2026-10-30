@@ -1,0 +1,71 @@
+{% doc %}
+  Mounts the unique gift-note dialog outside cart section morphs.
+{% enddoc %}
+{% liquid
+  assign has_gifts = false
+  for item in cart.items
+    if item.properties._am_gift_service == 'wrapping' or item.properties._am_gift_service == 'note'
+      assign has_gifts = true
+    endif
+  endfor
+%}
+{% if settings.cart_type == 'drawer' or settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or settings.am_progress_enabled or has_gifts or request.design_mode %}
+  {{ 'am--cart.css' | asset_url | stylesheet_tag }}
+{% endif %}
+{% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or has_gifts or request.design_mode %}
+  <script type="module" src="{{ 'am--cart-gifts.js' | asset_url }}" fetchpriority="low"></script>
+  {% liquid
+    assign wrapping_variant = settings.am_gift_wrapping_product.variants | where: 'available', true | first
+    assign note_variant = settings.am_gift_note_product.variants | where: 'available', true | first
+  %}
+  <am-gift-note-modal id="AMGiftNoteModal"
+    data-wrapping-id="{% if settings.am_gift_wrapping_enabled %}{{ wrapping_variant.id }}{% endif %}"
+    data-note-id="{% if settings.am_gift_note_enabled %}{{ note_variant.id }}{% endif %}"
+    data-error="{{ 'am_commerce.error' | t }}" data-success="{{ 'am_commerce.updated' | t }}">
+    <dialog class="am-gift-modal color-{{ settings.drawer_color_scheme }}" aria-labelledby="AMGiftTitle">
+      <div class="am-gift-modal__layout{% if settings.am_gift_modal_image == blank %} am-gift-modal__layout--no-image{% endif %}">
+        {% if settings.am_gift_modal_image != blank %}
+          {{ settings.am_gift_modal_image | image_url: width: 1000 | image_tag: class: 'am-gift-modal__image', loading: 'lazy', sizes: '(min-width: 750px) 40vw, 100vw', widths: '320, 480, 750, 1000' }}
+        {% endif %}
+        <form class="am-gift-modal__form">
+          <button type="button" class="button-unstyled am-gift-modal__close" data-am-gift-close aria-label="{{ 'actions.close_dialog' | t }}">{{ 'icon-close.svg' | inline_asset_content }}</button>
+          <h2 id="AMGiftTitle" class="h3">{% if settings.am_gift_modal_title != blank %}{{ settings.am_gift_modal_title | escape }}{% else %}{{ 'am_commerce.modal_title' | t }}{% endif %}</h2>
+          <p class="am-gift-modal__price">{{ note_variant.price | money }}</p>
+          <p>{% if settings.am_gift_modal_description != blank %}{{ settings.am_gift_modal_description | escape | newline_to_br }}{% else %}{{ 'am_commerce.modal_description' | t }}{% endif %}</p>
+          <fieldset>
+            <div class="am-gift-modal__names">
+              {% assign names = 'From,To' | split: ',' %}
+              {% for name in names %}
+                {% liquid
+                  assign field = name | downcase
+                  assign label_key = 'am_gift_' | append: field | append: '_label'
+                  assign placeholder_key = 'am_gift_' | append: field | append: '_placeholder'
+                  assign translation_key = 'am_commerce.' | append: field
+                  assign label = settings[label_key]
+                  if label == blank
+                    assign label = translation_key | t
+                  endif
+                  assign placeholder = settings[placeholder_key]
+                  if placeholder == blank
+                    assign translation_key = 'am_commerce.' | append: field | append: '_placeholder'
+                    assign placeholder = translation_key | t
+                  endif
+                %}
+                <label for="AMGift{{ name }}">{{ label | escape }}<input id="AMGift{{ name }}" name="{{ name }}" type="text" autocomplete="off" placeholder="{{ placeholder | escape }}"></label>
+              {% endfor %}
+            </div>
+            <label for="AMGiftMessage">{% if settings.am_gift_message_label != blank %}{{ settings.am_gift_message_label | escape }}{% else %}{{ 'am_commerce.message' | t }}{% endif %}</label>
+            {% assign message_placeholder = settings.am_gift_message_placeholder %}
+            {% if message_placeholder == blank %}{% assign message_placeholder = 'am_commerce.message_placeholder' | t %}{% endif %}
+            <textarea id="AMGiftMessage" name="Message" maxlength="400" required rows="5" aria-describedby="AMGiftCount" placeholder="{{ message_placeholder | escape }}"></textarea>
+            <span id="AMGiftCount" class="am-gift-modal__count">0 / 400</span>
+            <p data-am-gift-modal-error class="am-cart-error" role="alert" hidden></p>
+            <button type="submit" class="button am-gift-modal__save">{% if settings.am_gift_save_label != blank %}{{ settings.am_gift_save_label | escape }}{% else %}{{ 'am_commerce.save' | t }}{% endif %}</button>
+            <button type="button" class="button-unstyled am-gift-modal__remove" data-am-gift-remove hidden>{% if settings.am_gift_remove_label != blank %}{{ settings.am_gift_remove_label | escape }}{% else %}{{ 'am_commerce.remove' | t }}{% endif %}</button>
+          </fieldset>
+        </form>
+      </div>
+    </dialog>
+    <div class="am-cart-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </am-gift-note-modal>
+{% endif %}

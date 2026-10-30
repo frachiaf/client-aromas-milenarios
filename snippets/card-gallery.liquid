@@ -6,6 +6,7 @@
   @param [children] - Additional content rendered below the card gallery
   @param [section] - The section object the snippet is rendered in
   @param [block] - The block object the snippet is rendered in
+  @param {string} [card_style] - Section card style: original or circular.
 {%- enddoc -%}
 
 {% liquid
@@ -60,6 +61,11 @@
       assign constrain_to_viewport = true
       assign media_fit = block_settings.constrain_to_viewport
     endif
+  endif
+  if card_style == 'circular'
+    assign ratio = '1'
+    assign constrain_to_viewport = false
+    assign media_fit = 'cover'
   endif
 %}
 

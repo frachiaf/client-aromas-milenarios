@@ -7,6 +7,7 @@
   @param {object} children - The children of the product card
   @param {object} [block] - The block object
   @param {number} [product_card_gap] - The gap between the product card children (overrides block settings)
+  @param {string} [card_style] - Section card style: original or circular.
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
@@ -21,6 +22,7 @@
 {% endstyle %}
 
 {% liquid
+  assign card_style = card_style | default: 'original'
   assign has_quick_add = false
   if settings.quick_add and product.available
     assign has_quick_add = true
@@ -28,6 +30,10 @@
 
   assign has_mobile_quick_add = false
   if has_quick_add and settings.mobile_quick_add
+    assign has_mobile_quick_add = true
+  endif
+  if card_style == 'circular' and product.available
+    assign has_quick_add = true
     assign has_mobile_quick_add = true
   endif
 
@@ -56,6 +62,7 @@
 
 <product-card
   class="product-card size-style"
+  data-card-style="{{ card_style }}"
   style="{% render 'size-style', settings: block_settings %}"
   data-product-id="{{ product.id }}"
   id="product-card-{{ block.id }}"
@@ -111,6 +118,54 @@
 </product-card>
 
 {% stylesheet %}
+  product-card[data-card-style='circular'] .product-card__content > .card-gallery {
+    overflow: visible;
+    border-radius: 0;
+    padding: 0;
+    aspect-ratio: 1;
+    flex: 0 0 auto;
+    height: auto;
+    --gallery-aspect-ratio: 1;
+  }
+
+  product-card[data-card-style='circular'] .product-card__content > .card-gallery slideshow-component {
+    aspect-ratio: 1;
+    height: auto;
+    border-radius: 0;
+    overflow: visible;
+    isolation: isolate;
+  }
+
+  product-card[data-card-style='circular'] .product-card__content > .card-gallery slideshow-slides {
+    border-radius: 50%;
+    clip-path: circle(50%);
+    aspect-ratio: 1;
+  }
+
+  product-card[data-card-style='circular'] .product-card__content > .card-gallery .product-media-container,
+  product-card[data-card-style='circular'] .product-card__content > .card-gallery .product-media {
+    aspect-ratio: 1;
+    height: 100%;
+  }
+
+  product-card[data-card-style='circular'] .product-card__content > .card-gallery .product-media__image {
+    object-fit: cover;
+  }
+
+  product-card[data-card-style='circular'] .card-gallery .quick-add__button {
+    right: 50%;
+    bottom: 12%;
+    transform: translateX(50%);
+    max-width: calc(100% - 24px);
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    product-card[data-card-style='circular'] .quick-add__button {
+      display: flex;
+      opacity: 1;
+    }
+  }
+
   .product-card__placeholder-image svg {
     height: 100%;
   }

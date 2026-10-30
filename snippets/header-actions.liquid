@@ -217,6 +217,7 @@
                 </button>
               </div>
 
+              {% render 'am--cart-progress' %}
               <scroll-hint
                 class="cart-drawer__content"
                 aria-label="{{ 'accessibility.cart' | t }}"
@@ -448,13 +449,6 @@
 
   .cart-drawer__dialog[cart-summary-sticky='false'] .cart-drawer__items {
     overflow: unset;
-  }
-
-  .cart-actions summary {
-    padding-inline: 0;
-    padding-block: var(--padding-sm);
-    line-height: 1.2;
-    min-height: var(--minimum-touch-target);
   }
 
   .cart-drawer__summary .cart__summary-totals:not(:has(.cart__subtotal-container:empty)) {

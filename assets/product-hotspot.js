@@ -63,6 +63,7 @@ class ProductHotspots extends HTMLElement {
   #hotspotsContainer = null;
 
   connectedCallback() {
+    this.#syncDesktopVisibility(null);
     this.#hoverMedia = Array.from(this.querySelectorAll('[data-hotspot-hover-image]')).filter(
       (image) => image instanceof HTMLImageElement
     ).slice(0, 2);
@@ -140,6 +141,7 @@ class ProductHotspots extends HTMLElement {
     this.#hoverImageRequestId += 1;
     this.#cancelPendingImageReset();
     this.#activeSource = null;
+    this.#syncDesktopVisibility(null);
     this.#activeMediaDetail = null;
     this.#resumeHoverVideo = false;
     this.#cancelPendingHoverVideo();
@@ -390,6 +392,7 @@ class ProductHotspots extends HTMLElement {
   /** @param {Event} event */
   #handleBlockSelect = (event) => {
     if (!(event.target instanceof Element)) return;
+    if (this.hasAttribute('data-hide-inactive-desktop')) this.resetState();
     if (this.mobilePreviewQuickBuyEnabled && this.#activeMobileSource) this.resetState();
     event.target.closest('.hotspot')?.setAttribute('data-editor-selected', '');
   };
@@ -494,6 +497,7 @@ class ProductHotspots extends HTMLElement {
     }
 
     const transitionId = ++this.#hoverImageTransitionId;
+    this.#syncDesktopVisibility(source);
     incoming.hidden = false;
     incoming.classList.add('is-active');
     incoming.parentElement?.append(incoming);
@@ -678,6 +682,19 @@ class ProductHotspots extends HTMLElement {
     this.#activeMediaDetail = null;
     this.#resumeHoverVideo = false;
     this.#restoreBaseMedia(animate);
+    const requestId = this.#hoverImageRequestId;
+    void this.#hoverImageTransition.then(() => {
+      if (requestId === this.#hoverImageRequestId) this.#syncDesktopVisibility(null);
+    });
+  }
+
+  /** @param {ProductHotspotComponent | null} source */
+  #syncDesktopVisibility(source) {
+    const enabled = this.hasAttribute('data-hide-inactive-desktop') && !isMobileBreakpoint() && mediaQueryFinePointer.matches;
+    this.toggleAttribute('data-desktop-preview-active', enabled && source !== null);
+    for (const hotspot of this.querySelectorAll('product-hotspot-component')) {
+      hotspot.toggleAttribute('data-desktop-active', enabled && hotspot === source);
+    }
   }
 
   #handleReducedMotionChange = () => {
@@ -759,6 +776,7 @@ class ProductHotspots extends HTMLElement {
   resetState({ animateImage = false } = {}) {
     this.#resetImageState(animateImage);
     this.#clearMobileSelection();
+    if (!animateImage) this.#syncDesktopVisibility(null);
     for (const hotspot of this.querySelectorAll('product-hotspot-component')) {
       if (hotspot instanceof ProductHotspotComponent && hotspot.refs.dialog) void hotspot.closeDialog();
     }
@@ -951,12 +969,17 @@ export class ProductHotspotComponent extends Component {
         );
       };
       this.#hoverImageLeaveHandler = () => {
+        if (this.#hotspotsRoot?.hasAttribute('data-hide-inactive-desktop') && this.matches(':focus-within')) return;
         this.dispatchEvent(
           new CustomEvent('product-hotspot-reset-image', { bubbles: true, detail: { source: this } })
         );
       };
       this.addEventListener('pointerenter', this.#hoverImageEnterHandler);
       this.addEventListener('pointerleave', this.#hoverImageLeaveHandler);
+      if (this.#hotspotsRoot?.hasAttribute('data-hide-inactive-desktop')) {
+        this.addEventListener('focusin', this.#hoverImageEnterHandler);
+        this.addEventListener('focusout', this.#handleMediaFocusOut);
+      }
     }
   }
 
@@ -979,6 +1002,8 @@ export class ProductHotspotComponent extends Component {
 
     if (this.#hoverImageEnterHandler) {
       this.removeEventListener('pointerenter', this.#hoverImageEnterHandler);
+      this.removeEventListener('focusin', this.#hoverImageEnterHandler);
+      this.removeEventListener('focusout', this.#handleMediaFocusOut);
       this.#hoverImageEnterHandler = null;
     }
     if (this.#hoverImageLeaveHandler) {
@@ -1150,6 +1175,12 @@ export class ProductHotspotComponent extends Component {
     void this.closeDialog();
   };
 
+  /** @param {FocusEvent} event */
+  #handleMediaFocusOut = (event) => {
+    if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return;
+    this.dispatchEvent(new CustomEvent('product-hotspot-reset-image', { bubbles: true, detail: { source: this } }));
+  };
+
   /**
    * Get the product link for the hotspot product.
    * @returns {HTMLAnchorElement | null} The product link or null.
@@ -1262,6 +1293,7 @@ export class ProductHotspotComponent extends Component {
     event.preventDefault();
     void this.closeDialog();
     this.refs.trigger.focus();
+    if (this.#hotspotsRoot?.hasAttribute('data-hide-inactive-desktop')) this.#hotspotsRoot.resetHoverImage(this);
   };
 }
 

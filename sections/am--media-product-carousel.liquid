@@ -306,6 +306,8 @@
     max-height: none;
     scroll-snap-align: start;
     content-visibility: visible;
+    border: 1px solid;
+    border-radius: 2rem;
   }
 
   .am-media-product-carousel__slideshow:has(> slideshow-container > slideshow-slides > .am-media-product-carousel__slide:only-child) > slideshow-container > slideshow-slides > .am-media-product-carousel__slide {
@@ -498,6 +500,22 @@
   "disabled_on": { "groups": ["header", "footer"] },
   "blocks": [{ "type": "am--media-carousel-card" }],
   "settings": [
+    {
+      "type": "select",
+      "id": "am_product_card_style",
+      "label": "t:am_commerce.card_style",
+      "options": [
+        {
+          "value": "original",
+          "label": "t:am_commerce.original"
+        },
+        {
+          "value": "circular",
+          "label": "t:am_commerce.circular"
+        }
+      ],
+      "default": "original"
+    },
     { "type": "header", "content": "Diseño" },
     { "type": "select", "id": "section_width", "label": "Ancho de la sección", "options": [{ "value": "full-width", "label": "Ancho completo" }, { "value": "page-width", "label": "Ancho de página" }], "default": "full-width" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Esquema de color", "default": "scheme-1" },

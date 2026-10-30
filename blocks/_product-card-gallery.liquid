@@ -26,13 +26,13 @@
         </div>
       {%- endif -%}
     </div>
-    {%  if settings.quick_add or settings.mobile_quick_add %}
+    {% if settings.quick_add or settings.mobile_quick_add or section.settings.am_product_card_style == 'circular' %}
       {% render 'quick-add', product: product, section_id: section.id %}
     {% endif %}
   {% endunless %}
 {% endcapture %}
 
-{% render 'card-gallery', children: children %}
+{% render 'card-gallery', children: children, section: section, block: block, card_style: section.settings.am_product_card_style %}
 
 {% # Title and price for the zoomed out grid view %}
 <div class="product-grid-view-zoom-out--details">

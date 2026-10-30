@@ -2284,5 +2284,233 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "t:am_commerce.gift_settings",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "am_gift_wrapping_enabled",
+        "label": "t:am_commerce.am_gift_wrapping_enabled",
+        "default": false
+      },
+      {
+        "type": "product",
+        "id": "am_gift_wrapping_product",
+        "label": "t:am_commerce.am_gift_wrapping_product",
+        "info": "t:am_commerce.product_info"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_gift_note_enabled",
+        "label": "t:am_commerce.am_gift_note_enabled",
+        "default": false
+      },
+      {
+        "type": "product",
+        "id": "am_gift_note_product",
+        "label": "t:am_commerce.am_gift_note_product",
+        "info": "t:am_commerce.product_info"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_gift_open",
+        "label": "t:am_commerce.am_gift_open",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "am_gift_title",
+        "label": "t:am_commerce.am_gift_title",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_wrapping_label",
+        "label": "t:am_commerce.am_gift_wrapping_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_note_label",
+        "label": "t:am_commerce.am_gift_note_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_modal_title",
+        "label": "t:am_commerce.am_gift_modal_title",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_from_label",
+        "label": "t:am_commerce.am_gift_from_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_to_label",
+        "label": "t:am_commerce.am_gift_to_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_message_label",
+        "label": "t:am_commerce.am_gift_message_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_save_label",
+        "label": "t:am_commerce.am_gift_save_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_edit_label",
+        "label": "t:am_commerce.am_gift_edit_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_remove_label",
+        "label": "t:am_commerce.am_gift_remove_label",
+        "info": "t:am_commerce.override_info"
+      },
+      {
+        "type": "image_picker",
+        "id": "am_gift_modal_image",
+        "label": "t:am_commerce.am_gift_modal_image"
+      },
+      {
+        "type": "textarea",
+        "id": "am_gift_modal_description",
+        "label": "t:am_commerce.am_gift_modal_description"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_from_placeholder",
+        "label": "t:am_commerce.am_gift_from_placeholder"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_to_placeholder",
+        "label": "t:am_commerce.am_gift_to_placeholder"
+      },
+      {
+        "type": "text",
+        "id": "am_gift_message_placeholder",
+        "label": "t:am_commerce.am_gift_message_placeholder"
+      }
+    ]
+  },
+  {
+    "name": "t:am_commerce.progress_settings",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "am_progress_enabled",
+        "label": "t:am_commerce.am_progress_enabled",
+        "default": false
+      },
+      {
+        "type": "paragraph",
+        "content": "t:am_commerce.progress_info"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_progress_1_enabled",
+        "label": "t:am_commerce.am_progress_1_enabled",
+        "default": false
+      },
+      {
+        "type": "number",
+        "id": "am_progress_1_threshold",
+        "label": "t:am_commerce.am_progress_1_threshold",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "am_progress_1_label",
+        "label": "t:am_commerce.am_progress_1_label"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_1_pending",
+        "label": "t:am_commerce.am_progress_1_pending",
+        "info": "t:am_commerce.message_info"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_1_reached",
+        "label": "t:am_commerce.am_progress_1_reached",
+        "info": "t:am_commerce.message_info"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_progress_2_enabled",
+        "label": "t:am_commerce.am_progress_2_enabled",
+        "default": false
+      },
+      {
+        "type": "number",
+        "id": "am_progress_2_threshold",
+        "label": "t:am_commerce.am_progress_2_threshold",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "am_progress_2_label",
+        "label": "t:am_commerce.am_progress_2_label"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_2_pending",
+        "label": "t:am_commerce.am_progress_2_pending",
+        "info": "t:am_commerce.message_info"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_2_reached",
+        "label": "t:am_commerce.am_progress_2_reached",
+        "info": "t:am_commerce.message_info"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_progress_3_enabled",
+        "label": "t:am_commerce.am_progress_3_enabled",
+        "default": false
+      },
+      {
+        "type": "number",
+        "id": "am_progress_3_threshold",
+        "label": "t:am_commerce.am_progress_3_threshold",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "am_progress_3_label",
+        "label": "t:am_commerce.am_progress_3_label"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_3_pending",
+        "label": "t:am_commerce.am_progress_3_pending",
+        "info": "t:am_commerce.message_info"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_3_reached",
+        "label": "t:am_commerce.am_progress_3_reached",
+        "info": "t:am_commerce.message_info"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_complete",
+        "label": "t:am_commerce.am_progress_complete",
+        "info": "t:am_commerce.override_info"
+      }
+    ]
   }
 ]

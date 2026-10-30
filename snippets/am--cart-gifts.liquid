@@ -1,0 +1,98 @@
+{% doc %}
+  Renders the shared order-level gift services accordion.
+  @param {string} section_id - Owner section used to keep control IDs unique.
+{% enddoc %}
+{% liquid
+  assign wrapping_variant = settings.am_gift_wrapping_product.variants | where: 'available', true | first
+  assign note_variant = settings.am_gift_note_product.variants | where: 'available', true | first
+  assign show_wrapping = false
+  assign show_note = false
+  assign missing_product = false
+  if settings.am_gift_wrapping_enabled and settings.am_gift_wrapping_product == blank
+    assign missing_product = true
+  endif
+  if settings.am_gift_note_enabled and settings.am_gift_note_product == blank
+    assign missing_product = true
+  endif
+  for item in cart.items
+    case item.properties._am_gift_service
+      when 'wrapping'
+        assign wrapping_item = item
+      when 'note'
+        assign note_item = item
+    endcase
+  endfor
+  if settings.am_gift_wrapping_enabled and settings.am_gift_wrapping_product != blank
+    assign show_wrapping = true
+  endif
+  if wrapping_item
+    assign show_wrapping = true
+  endif
+  if settings.am_gift_note_enabled and settings.am_gift_note_product != blank
+    assign show_note = true
+  endif
+  if note_item
+    assign show_note = true
+  endif
+  assign title = settings.am_gift_title | default: false
+  if title == false
+    assign title = 'am_commerce.gift_title' | t
+  endif
+  assign wrapping_label = settings.am_gift_wrapping_label
+  if wrapping_label == blank
+    assign wrapping_label = 'am_commerce.wrapping' | t
+  endif
+  assign note_label = settings.am_gift_note_label
+  if note_label == blank
+    assign note_label = 'am_commerce.note' | t
+  endif
+%}
+{% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or wrapping_item or note_item %}
+  <am-cart-gifts class="am-cart-gifts">
+    {% capture gift_accordion %}
+    <details data-am-gift-accordion {% if settings.am_gift_open %}open{% endif %}>
+      <summary class="am-cart-gifts__summary cart-action__summary">
+        <span class="am-cart-gifts__label cart-action__label cart-primary-typography">{{ title | escape }}</span>
+        <span class="cart-totals__icon icon-plus" aria-hidden="true">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+      </summary>
+      <div class="details-content">
+      <div class="am-cart-gifts__options">
+        {% if show_wrapping %}
+          <label class="am-cart-gifts__option" for="AMWrapping-{{ section_id }}">
+            <input id="AMWrapping-{{ section_id }}" type="checkbox" data-am-gift-toggle="wrapping"
+              {% if wrapping_item %}checked{% elsif wrapping_variant == blank %}disabled{% endif %}>
+            <span>{{ wrapping_label | escape }}{% if wrapping_variant == blank and wrapping_item == blank %}<small>{{ 'am_commerce.unavailable' | t }}</small>{% endif %}</span>
+            <span class="am-cart-gifts__price">+{{ wrapping_item.final_price | default: wrapping_variant.price | money }}</span>
+          </label>
+        {% endif %}
+        {% if show_note %}
+          <label class="am-cart-gifts__option" for="AMNote-{{ section_id }}">
+            <input id="AMNote-{{ section_id }}" type="checkbox" data-am-gift-toggle="note"
+              {% if note_item %}checked{% elsif note_variant == blank %}disabled{% endif %}>
+            <span>{{ note_label | escape }}{% if note_variant == blank and note_item == blank %}<small>{{ 'am_commerce.unavailable' | t }}</small>{% endif %}</span>
+            <span class="am-cart-gifts__price">+{{ note_item.final_price | default: note_variant.price | money }}</span>
+          </label>
+          {% if note_item %}
+            <button type="button" class="button-unstyled am-cart-gifts__edit" data-am-gift-edit>
+              {% if settings.am_gift_edit_label != blank %}{{ settings.am_gift_edit_label | escape }}{% else %}{{ 'am_commerce.edit' | t }}{% endif %}
+            </button>
+          {% endif %}
+        {% endif %}
+        {% if request.design_mode %}
+          {% if missing_product %}
+            <p class="am-cart-help">{{ 'am_commerce.choose_products' | t }}</p>
+          {% endif %}
+        {% endif %}
+      </div>
+      </div>
+    </details>
+    {% endcapture %}
+    {% render 'accordion-custom-component',
+      children: gift_accordion,
+      class: 'am-cart-gifts__accordion',
+      open_by_default_on_desktop: settings.am_gift_open,
+      open_by_default_on_mobile: settings.am_gift_open
+    %}
+    <p data-am-cart-feedback role="status" aria-live="polite" hidden></p>
+  </am-cart-gifts>
+{% endif %}

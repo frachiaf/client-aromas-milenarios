@@ -8,6 +8,32 @@
  * ------------------------------------------------------------
  */
 {
+  "am_commerce": {
+    "from_placeholder": "Sender name",
+    "to_placeholder": "Recipient name",
+    "message_placeholder": "Write your message here...",
+    "modal_description": "Add a personal message to the card included with this order.",
+    "gift_title": "Make it a gift",
+    "wrapping": "Gift wrapping",
+    "note": "Personalized gift note",
+    "unavailable": "Currently unavailable",
+    "edit": "Edit note",
+    "remove": "Remove note",
+    "save": "Save note",
+    "modal_title": "Gift this order",
+    "from": "From",
+    "to": "To",
+    "message": "Message",
+    "error": "We could not confirm the cart update. Please try again.",
+    "updated": "Your cart has been updated.",
+    "choose_products": "Choose the gift-service products in Theme settings > Gift services. The first available variant is used.",
+    "pending": "You are {amount} away from {benefit}.",
+    "reached": "You unlocked {benefit}!",
+    "complete": "You have unlocked all benefits!",
+    "milestone_complete": "Completed",
+    "progress": "Cart benefits",
+    "progress_help": "Enable one to three levels with a label and positive, increasing thresholds in your store currency."
+  },
   "am_pdp": {
     "connect_summary": "Connect the product summary metafield.",
     "connect_highlights": "Connect the product highlights metafield.",

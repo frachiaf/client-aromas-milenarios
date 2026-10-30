@@ -1,0 +1,24 @@
+{% doc %}
+  Renders translated note properties and its edit action.
+  @param {object} item - The managed gift-note cart line.
+{% enddoc %}
+<dl class="cart-items__properties am-gift-properties">
+  {% assign fields = 'From,To,Message' | split: ',' %}
+  {% for field in fields %}
+    {% if item.properties[field] != blank %}
+      {% liquid
+        assign field_key = field | downcase
+        assign setting_key = 'am_gift_' | append: field_key | append: '_label'
+        assign label = settings[setting_key]
+        if label == blank
+          assign translation_key = 'am_commerce.' | append: field_key
+          assign label = translation_key | t
+        endif
+      %}
+      <div><dt>{{ label | escape }}:</dt><dd>{{ item.properties[field] | escape | newline_to_br }}</dd></div>
+    {% endif %}
+  {% endfor %}
+</dl>
+<button class="button-unstyled am-cart-gifts__edit" type="button" data-am-gift-edit>
+  {% if settings.am_gift_edit_label != blank %}{{ settings.am_gift_edit_label | escape }}{% else %}{{ 'am_commerce.edit' | t }}{% endif %}
+</button>

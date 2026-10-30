@@ -8,6 +8,32 @@
  * ------------------------------------------------------------
  */
 {
+  "am_commerce": {
+    "from_placeholder": "Nombre del remitente",
+    "to_placeholder": "Nombre del destinatario",
+    "message_placeholder": "Escribí tu mensaje...",
+    "modal_description": "Agregá un mensaje personal a la tarjeta de este pedido.",
+    "gift_title": "Convertir en regalo",
+    "wrapping": "Envoltorio para regalo",
+    "note": "Tarjeta con mensaje personalizado",
+    "unavailable": "No disponible por el momento",
+    "edit": "Editar mensaje",
+    "remove": "Eliminar tarjeta",
+    "save": "Guardar mensaje",
+    "modal_title": "Prepará tu regalo",
+    "from": "De",
+    "to": "Para",
+    "message": "Mensaje",
+    "error": "No pudimos confirmar la actualización del carrito. Volvé a intentarlo.",
+    "updated": "Actualizamos tu carrito.",
+    "choose_products": "Elegí los productos de los servicios en Configuración del tema > Servicios de regalo. Se usa la primera variante disponible.",
+    "pending": "Te faltan {amount} para conseguir {benefit}.",
+    "reached": "¡Conseguiste {benefit}!",
+    "complete": "¡Conseguiste todos los beneficios!",
+    "milestone_complete": "Completado",
+    "progress": "Beneficios del carrito",
+    "progress_help": "Activá de uno a tres niveles con etiqueta y umbrales positivos y crecientes en la moneda de tu tienda."
+  },
   "am_pdp": {
     "connect_summary": "Conectá el metafield de resumen de producto.",
     "connect_highlights": "Conectá el metafield de aspectos de producto.",

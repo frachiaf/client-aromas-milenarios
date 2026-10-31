@@ -47,7 +47,7 @@
     "cart_type": "drawer",
     "cart_price_font": "accent",
     "auto_open_cart_drawer": true,
-    "am_drawer_width": 40,
+    "am_drawer_width": 36,
     "am_drawer_upsell_enabled": true,
     "am_drawer_upsell_collection": "cremas",
     "am_drawer_upsell_heading": "Milenarios que gustan..",

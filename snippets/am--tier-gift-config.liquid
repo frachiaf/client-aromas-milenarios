@@ -1,0 +1,87 @@
+{%- doc -%}
+  Provides fresh, inert tier configuration with each cart section response.
+  @param {boolean} [show_help] - Displays configuration help in the editor unless false.
+{%- enddoc -%}
+{%- liquid
+  assign slots = '1,2,3' | split: ','
+  assign valid = true
+  assign previous_threshold = 0
+  assign count = 0
+  assign has_lines = false
+  for item in cart.items
+    if item.properties._am_tier_gift != nil
+      assign has_lines = true
+    endif
+  endfor
+  for slot in slots
+    assign prefix = 'am_progress_' | append: slot
+    assign enabled_key = prefix | append: '_enabled'
+    assign threshold_key = prefix | append: '_threshold'
+    assign label_key = prefix | append: '_label'
+    if settings[enabled_key]
+      assign threshold = settings[threshold_key] | times: 100 | round
+      if threshold <= previous_threshold or settings[label_key] == blank
+        assign valid = false
+      endif
+      assign previous_threshold = threshold
+      assign count = count | plus: 1
+    endif
+  endfor
+  if count == 0
+    assign valid = false
+  endif
+-%}
+<script type="application/json" data-am-tier-gift-config>
+  {
+    "enabled": {{ settings.am_progress_enabled | json }},
+    "valid": {{ valid | json }},
+    "hasLines": {{ has_lines | json }},
+    "currency": {{ shop.currency | json }},
+    "error": {{ 'am_commerce.error' | t | json }},
+    "unavailable": {{ 'am_commerce.tier_gift_unavailable' | t | json }},
+    "tiers": [
+      {%- for slot in slots -%}
+        {%- liquid
+          assign prefix = 'am_progress_' | append: slot
+          assign product_key = prefix | append: '_product'
+          assign enabled_key = prefix | append: '_enabled'
+          assign threshold_key = prefix | append: '_threshold'
+          assign gift_product = settings[product_key]
+          assign gift_variant = gift_product.variants.first
+          assign usable = false
+          if gift_product != blank and gift_product.variants.size == 1 and gift_variant.price == 0 and gift_variant.available
+            if gift_variant.quantity_rule.min <= 1 and gift_variant.quantity_rule.increment <= 1
+              assign usable = true
+            endif
+          endif
+          if gift_product.id == settings.am_gift_wrapping_product.id or gift_product.id == settings.am_gift_note_product.id
+            assign usable = false
+          endif
+        -%}
+        {
+          "slot": {{ slot | json }},
+          "enabled": {{ settings[enabled_key] | json }},
+          "threshold": {{ settings[threshold_key] | times: 100 | round | json }},
+          "productId": {{ gift_product.id | default: 0 | json }},
+          "variantId": {{ gift_variant.id | default: 0 | json }},
+          "url": {{ gift_product.url | default: '' | json }},
+          "usable": {{ usable | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+{%- if request.design_mode and show_help != false -%}
+  {%- for slot in slots -%}
+    {%- liquid
+      assign product_key = 'am_progress_' | append: slot | append: '_product'
+      assign gift_product = settings[product_key]
+      assign gift_variant = gift_product.variants.first
+    -%}
+    {%- if gift_product != blank -%}
+      {%- if gift_product.variants.size != 1 or gift_variant.price != 0 or gift_variant.available == false or gift_variant.quantity_rule.min > 1 or gift_variant.quantity_rule.increment > 1 or gift_product.id == settings.am_gift_wrapping_product.id or gift_product.id == settings.am_gift_note_product.id -%}
+        <p class="am-cart-help">{{ 'am_commerce.tier_gift_help' | t: tier: slot }}</p>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}

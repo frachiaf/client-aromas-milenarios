@@ -16,7 +16,8 @@ import {
   DiscountUpdateEvent,
 } from '@theme/events';
 import { cartPerformance } from '@theme/performance';
-import { runCartMutation, removeGiftCartLine, isCartMutationBusy } from '@theme/am-cart-gifts';
+import { runCartMutation, runTierCartMutation, removeGiftCartLine, isCartMutationBusy } from '@theme/am-cart-gifts';
+import { hasTierGifts } from '@theme/am-tier-gifts';
 
 /** @typedef {import('./utilities').TextComponent} TextComponent */
 
@@ -141,7 +142,9 @@ class CartItemsComponent extends Component {
    */
   updateQuantity(config) {
     if (isCartMutationBusy()) return;
+    if (this.refs.cartItemRows[config.line - 1]?.hasAttribute('data-am-tier-gift')) return;
     const key = this.refs.cartItemRows[config.line - 1]?.dataset.key;
+    if (hasTierGifts()) return runTierCartMutation(() => this.performQuantityUpdate({ ...config, key }));
     return runCartMutation(() => this.performQuantityUpdate({ ...config, key }));
   }
 

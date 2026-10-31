@@ -1,3 +1,5 @@
+import { hasTierGifts, isReservedProduct } from '@theme/am-tier-gifts';
+import { runTierCartMutation } from '@theme/am-cart-gifts';
 import { Component } from '@theme/component';
 import { CartAddEvent, QuantitySelectorUpdateEvent, ThemeEvents } from '@theme/events';
 import { debounce, fetchConfig, resetShimmer } from '@theme/utilities';
@@ -205,7 +207,13 @@ class QuickOrderListComponent extends Component {
    * Handles removing all items from the cart
    * @param {Event} event - The click event
    */
-  async onRemoveAll(event) {
+  onRemoveAll(event) {
+    event.preventDefault();
+    if (isReservedProduct(this.dataset.productId)) return;
+    return hasTierGifts() ? runTierCartMutation(() => this.#removeAll(event)) : this.#removeAll(event);
+  }
+
+  async #removeAll(event) {
     event.preventDefault();
     const idsToRemove = this.cartVariantIds;
 
@@ -277,7 +285,12 @@ class QuickOrderListComponent extends Component {
    * Handles quantity selector updates
    * @param {CustomEvent} event - The quantity update event
    */
-  async #handleQuantityUpdate(event) {
+  #handleQuantityUpdate(event) {
+    if (isReservedProduct(this.dataset.productId)) return;
+    return hasTierGifts() ? runTierCartMutation(() => this.#performQuantityUpdate(event)) : this.#performQuantityUpdate(event);
+  }
+
+  async #performQuantityUpdate(event) {
     if (!(event instanceof QuantitySelectorUpdateEvent)) return;
 
     // Only handle events from our own quantity selectors

@@ -30,6 +30,10 @@
   @param {string} [product_price_preset] - Typography preset for the price.
   @param {string} [shopify_attributes] - Theme Editor attributes for a standalone block.
 {%- enddoc -%}
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% unless am_is_tier_gift == 'true' %}
+
 
 {% liquid
   assign placeholder_product_title = 'placeholders.product_title' | t
@@ -218,3 +222,5 @@
     <span class="hotspot-trigger" aria-hidden="true"></span>
   </div>
 {% endif %}
+
+{% endunless %}

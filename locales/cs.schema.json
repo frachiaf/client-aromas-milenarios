@@ -9,6 +9,14 @@
  */
 {
   "am_commerce": {
+    "tier_gift_line_label": "Gift label in cart",
+    "tier_gift_line_label_info": "Text for this tier only. Leave blank to use the translated Gift label.",
+    "tier_gift_free_text": "Free gift text",
+    "tier_gift_free_text_info": "Shared by all tiers. Leave blank to use the translated FREE label.",
+    "tier_gift_only_free": "Replace gift prices with the free gift text",
+    "tier_gift_only_free_info": "Applies only to tier gifts, in both the drawer and cart page.",
+    "tier_gift_product": "Gift product (optional)",
+    "tier_gift_product_info": "Dedicated product with one free variant available on Online Store. Adds one unit per reached tier. Reserved even when the tier is disabled.",
     "drawer_width": "Cart drawer width on desktop",
     "drawer_width_info": "Applies from 750 px. Limited to 95% of the viewport width.",
     "quick_buy_show_thumbnails": "Show thumbnails in Quick Buy on desktop",
@@ -36,7 +44,7 @@
     "progress_settings": "Cart benefits",
     "override_info": "Leave blank to use the translated default.",
     "product_info": "The first available variant is added once per order.",
-    "progress_info": "Informational only. Configure the benefits separately in Shopify. Thresholds use your store currency; the bar is hidden in other currencies.",
+    "progress_info": "Levels with a product automatically add gifts. Configure shipping and discounts separately in Shopify. Thresholds use the discounted total including services; the bar and gifts are disabled in other currencies.",
     "message_info": "Use {amount} for the amount remaining and {benefit} for the benefit label.",
     "card_style": "Product card style",
     "original": "Original",

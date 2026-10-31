@@ -24,7 +24,7 @@
     data-skip-subtree-update
     data-url="{{ upsell_url | escape }}"
     data-product-ids="{{ cart_product_ids | escape }}"
-    data-service-product-ids="{{ settings.am_gift_wrapping_product.id }},{{ settings.am_gift_note_product.id }}"
+    data-service-product-ids="{{ settings.am_gift_wrapping_product.id }},{{ settings.am_gift_note_product.id }},{{ settings.am_progress_1_product.id }},{{ settings.am_progress_2_product.id }},{{ settings.am_progress_3_product.id }}"
     data-heading="{{ settings.am_drawer_upsell_heading | escape }}"
   ></am-cart-upsell>
 {%- elsif settings.am_drawer_upsell_enabled and request.design_mode and settings.am_drawer_upsell_collection == blank -%}

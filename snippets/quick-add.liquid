@@ -7,6 +7,10 @@
   @param {string} [color_scheme] - The color scheme to use
   @param {string} [instance_id] - Unique suffix when a block renders more than one Quick Add form
 {%- enddoc -%}
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% unless am_is_tier_gift == 'true' %}
+
 
 {% liquid
   assign quick_add_instance_id = instance_id | default: block.id
@@ -116,3 +120,5 @@
 </quick-add-component>
 
 {% render 'quick-add-styles' %}
+
+{% endunless %}

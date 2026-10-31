@@ -10,6 +10,10 @@
   @example
   {% content_for 'block', type: 'accelerated-checkout', id: 'accelerated-checkout', can_add_to_cart: can_add_to_cart, form_obj: form %}
 {%- enddoc -%}
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: closest.product %}{% endcapture %}
+{% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% unless am_is_tier_gift == 'true' %}
+
 
 {% liquid
   assign product = closest.product
@@ -42,6 +46,8 @@
 
 {% render 'buy-buttons-styles' %}
 
+
+{% endunless %}
 {% schema %}
 {
   "name": "t:names.accelerated_checkout",

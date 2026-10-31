@@ -9,6 +9,11 @@
  */
 {
   "am_commerce": {
+    "tier_gift_free": "FREE",
+    "tier_gift": "Gift",
+    "tier_gift_only": "This product is added automatically as a gift when a cart milestone is reached.",
+    "tier_gift_unavailable": "One of the gifts could not be added. You can continue with your purchase.",
+    "tier_gift_help": "Check the gift for tier {{ tier }}: it requires one available free variant, a minimum and increment of one, and a product different from gift services.",
     "message_more": "Show more",
     "message_less": "Show less",
     "scroll_to_bottom": "Scroll to the bottom of the cart",

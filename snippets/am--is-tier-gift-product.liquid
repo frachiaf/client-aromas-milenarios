@@ -1,0 +1,18 @@
+{%- doc -%}
+  Outputs true when a product is reserved by any tier picker, including disabled tiers.
+  @param {product} product - Product to classify independently of its template.
+{%- enddoc -%}
+{%- liquid
+  assign reserved = false
+  assign slots = '1,2,3' | split: ','
+  if product != blank
+    for slot in slots
+      assign product_key = 'am_progress_' | append: slot | append: '_product'
+      if settings[product_key].id == product.id
+        assign reserved = true
+        break
+      endif
+    endfor
+  endif
+  echo reserved
+-%}

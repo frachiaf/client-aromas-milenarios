@@ -1,6 +1,7 @@
 am-cart-upsell {
   display: block;
   min-width: 0;
+  padding-bottom: 1rem;
 }
 
 am-cart-upsell:empty {

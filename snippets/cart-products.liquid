@@ -11,6 +11,8 @@
   {% render 'cart-products', force_empty: true %}
 {% enddoc %}
 
+{% render 'am--tier-gift-config' %}
+
 {% liquid
   assign block_settings = block.settings
 %}
@@ -126,12 +128,37 @@
 
           <tbody role="rowgroup">
             {% for item in cart.items %}
+              {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: item.product %}{% endcapture %}
+              {% liquid
+                assign am_is_tier_gift = am_is_tier_gift | strip
+                assign is_tier_gift = false
+                if am_is_tier_gift == 'true' or item.properties._am_tier_gift != nil
+                  assign is_tier_gift = true
+                endif
+                if is_tier_gift
+                  assign tier_gift_label = 'am_commerce.tier_gift' | t
+                  assign tier_gift_slot = item.properties._am_tier_gift | append: ''
+                  case tier_gift_slot
+                    when '1', '2', '3'
+                      assign tier_gift_label_key = 'am_progress_' | append: tier_gift_slot | append: '_gift_label'
+                      assign tier_gift_custom_label = settings[tier_gift_label_key] | strip
+                      if tier_gift_custom_label != blank
+                        assign tier_gift_label = tier_gift_custom_label
+                      endif
+                  endcase
+                  assign tier_gift_free_text = settings.am_progress_gift_free_text | strip
+                  if tier_gift_free_text == blank
+                    assign tier_gift_free_text = 'am_commerce.tier_gift_free' | t
+                  endif
+                endif
+              %}
               <tr
                 role="row"
                 class="cart-items__table-row{% if item.parent_relationship.parent != null %} cart-items__nested-line{% endif %}{% unless item.unit_price_measurement %} cart-items__table-row--full-width-variants{% endunless %}"
                 ref="cartItemRows[]"
                 data-parent-key="{{ item.parent_relationship.parent.key }}"
                 data-key="{{ item.key }}"
+                {% if is_tier_gift %}data-am-tier-gift="{{ item.properties._am_tier_gift | escape }}"{% endif %}
                 data-am-gift-service="{{ item.properties._am_gift_service | escape }}"
               >
                 <td
@@ -154,6 +181,11 @@
                         assign ratio = item.image.aspect_ratio
                       endif
                     %}
+                    {% if is_tier_gift %}
+                      <div class="cart-items__media-container" style="--ratio:{{ ratio }};">
+                        {{ item.image | image_url: width: 250 | image_tag: class: 'cart-items__media-image border-style', style: border_override }}
+                      </div>
+                    {% else %}
                     <a
                       href="{{ item.url }}"
                       class="cart-items__media-container"
@@ -163,6 +195,7 @@
                         echo item.image | image_url: width: 250 | image_tag: class: 'cart-items__media-image border-style', style: border_override
                       -%}
                     </a>
+                    {% endif %}
                   {%- endif %}
                 </td>
                 <td
@@ -172,6 +205,10 @@
                 >
                   <div class="cart-items__product-info">
                     <p>
+                      {% if is_tier_gift %}
+                        <span class="cart-items__title">{{ item.product.title | escape }}</span>
+                        <span class="am-cart-tier-gift-label">{{ tier_gift_label | escape }}</span>
+                      {% else %}
                       <a
                         href="{{ item.url }}"
                         class="cart-items__title"
@@ -181,6 +218,7 @@
                       >
                         {{- item.product.title -}}
                       </a>
+                      {% endif %}
                     </p>
                     {% if item.product.vendor and block_settings.vendor %}
                       <p>
@@ -279,7 +317,15 @@
                     {%- endif -%}
                   </div>
 
+                  {% unless is_tier_gift and settings.am_progress_gift_only_free %}
                   <div class="cart-items__unit-price-wrapper">
+                    {% if is_tier_gift %}
+                      <div class="am-cart-tier-gift-unit-price">
+                        <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
+                        <s class="compare-at-price">{{ item.final_price | money }}</s>
+                        <span class="am-cart-tier-gift-free">{{ tier_gift_free_text | escape }}</span>
+                      </div>
+                    {% else %}
                     <div>
                       {% if item.original_price != item.final_price %}
                         <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
@@ -307,7 +353,9 @@
                         {% endif %}
                       {% endif %}
                     </div>
+                    {% endif %}
                   </div>
+                  {% endunless %}
                 </td>
                 <td
                   class="cart-items__quantity"
@@ -319,7 +367,7 @@
                     | default: true, allow_false: true
                   %}
                   <div class="cart-items__quantity-controls">
-                    {% if item.properties._am_gift_service != 'wrapping' and item.properties._am_gift_service != 'note' %}
+                    {% if is_tier_gift == false and item.properties._am_gift_service != 'wrapping' and item.properties._am_gift_service != 'note' %}
                     {% render 'volume-pricing-info',
                       variant: item.variant,
                       unique_id: item.index,
@@ -334,6 +382,8 @@
                       class: 'cart-primary-typography',
                       can_update_quantity: can_update_quantity
                     %}
+                    {% elsif is_tier_gift %}
+                      <span>{{ 'content.quantity' | t }}: {{ item.quantity }}</span>
                     {% else %}
                       <span class="visually-hidden">{{ 'content.quantity' | t }}: {{ item.quantity }}</span>
                     {% endif %}
@@ -342,6 +392,7 @@
                       {% render 'am--gift-edit-button', label: settings.am_gift_edit_label %}
                     {% endif %}
 
+                    {% unless is_tier_gift %}
                     <button
                       class="button cart-items__remove"
                       type="button"
@@ -355,6 +406,7 @@
                       {{- 'icon-delete.svg' | inline_asset_content -}}
                       <span class="visually-hidden">{{ 'accessibility.remove' | t }}</span>
                     </button>
+                    {% endunless %}
                   </div>
                 </td>
                 <td
@@ -390,12 +442,16 @@
                   role="cell"
                   headers="productTotal"
                 >
+                  {% if is_tier_gift and settings.am_progress_gift_only_free %}
+                    <span class="am-cart-tier-gift-free">{{ tier_gift_free_text | escape }}</span>
+                  {% else %}
                   <text-component value="{{ price | strip_html }}">{{ price }}</text-component>
                   {%- if item.unit_price_measurement -%}
                     <div class="cart-items__price-unit cart-secondary-typography">
                       {% render 'unit-price', price: unit_price, measurement: item.unit_price_measurement %}
                     </div>
                   {%- endif -%}
+                  {% endif %}
                 </td>
               </tr>
             {% endfor %}
@@ -407,6 +463,28 @@
 </div>
 
 {% stylesheet %}
+  .am-cart-tier-gift-label {
+    display: block;
+    font-size: var(--cart-font-size--sm);
+    overflow-wrap: anywhere;
+  }
+
+  .am-cart-tier-gift-unit-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.125em 0.5em;
+  }
+
+  .am-cart-tier-gift-free {
+    overflow-wrap: anywhere;
+  }
+
+  .cart-items__table-row[data-am-tier-gift] .cart-items__price .am-cart-tier-gift-free {
+    display: block;
+    max-inline-size: min(12rem, 30cqi);
+  }
+
   .cart-items {
     --cart-item-media-width-min: 2.5rem;
     --cart-item-media-width-max: 7.5rem;

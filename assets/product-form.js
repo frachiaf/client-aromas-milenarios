@@ -4,6 +4,7 @@ import { ThemeEvents, CartAddEvent, CartErrorEvent, CartUpdateEvent, VariantUpda
 import { cartPerformance } from '@theme/performance';
 import { morph } from '@theme/morph';
 import '@theme/am-atc-total';
+import { hasTierGifts, isReservedProduct } from '@theme/am-tier-gifts';
 
 // Error message display duration - gives users time to read the message
 const ERROR_MESSAGE_DISPLAY_DURATION = 10000;
@@ -324,13 +325,14 @@ class ProductFormComponent extends Component {
 
   /** @param {() => Promise<unknown>} task */
   #runAddRequest(task) {
-    if (!this.hasAttribute('data-am-cart-upsell')) return task();
+    if (isReservedProduct(this.dataset.productId)) return Promise.resolve();
+    if (!this.hasAttribute('data-am-cart-upsell') && !hasTierGifts()) return task();
     if (this.#upsellRequestPending) return Promise.resolve();
 
     this.#upsellRequestPending = true;
     this.setAttribute('aria-busy', 'true');
     return import('@theme/am-cart-gifts')
-      .then(({ runCartMutation }) => runCartMutation(task))
+      .then(({ runCartMutation, runTierCartMutation }) => hasTierGifts() ? runTierCartMutation(task) : runCartMutation(task))
       .catch(this.#handleRequestError)
       .finally(() => {
         this.#upsellRequestPending = false;
@@ -340,7 +342,7 @@ class ProductFormComponent extends Component {
 
   /** @param {Event} event */
   #dispatchCartEvent(event) {
-    const target = !this.isConnected && this.hasAttribute('data-am-cart-upsell') ? document : this;
+    const target = !this.isConnected && (this.hasAttribute('data-am-cart-upsell') || hasTierGifts()) ? document : this;
     target.dispatchEvent(event);
   }
 

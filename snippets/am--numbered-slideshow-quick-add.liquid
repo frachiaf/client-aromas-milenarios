@@ -6,6 +6,10 @@
   @param {string} section_id - Section ID used by the product form
   @param {string} instance_id - Unique form suffix for the slide
 {%- enddoc -%}
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% unless am_is_tier_gift == 'true' %}
+
 
 {%- liquid
   assign variant = product.selected_or_first_available_variant
@@ -75,3 +79,5 @@
     {%- endform -%}
   </product-form-component>
 </quick-add-component>
+
+{% endunless %}

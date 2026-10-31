@@ -2528,6 +2528,19 @@
         "content": "t:am_commerce.progress_info"
       },
       {
+        "type": "text",
+        "id": "am_progress_gift_free_text",
+        "label": "t:am_commerce.tier_gift_free_text",
+        "info": "t:am_commerce.tier_gift_free_text_info"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_progress_gift_only_free",
+        "label": "t:am_commerce.tier_gift_only_free",
+        "info": "t:am_commerce.tier_gift_only_free_info",
+        "default": false
+      },
+      {
         "type": "checkbox",
         "id": "am_progress_1_enabled",
         "label": "t:am_commerce.am_progress_1_enabled",
@@ -2543,6 +2556,18 @@
         "type": "text",
         "id": "am_progress_1_label",
         "label": "t:am_commerce.am_progress_1_label"
+      },
+      {
+        "type": "product",
+        "id": "am_progress_1_product",
+        "label": "t:am_commerce.tier_gift_product",
+        "info": "t:am_commerce.tier_gift_product_info"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_1_gift_label",
+        "label": "t:am_commerce.tier_gift_line_label",
+        "info": "t:am_commerce.tier_gift_line_label_info"
       },
       {
         "type": "text",
@@ -2574,6 +2599,18 @@
         "label": "t:am_commerce.am_progress_2_label"
       },
       {
+        "type": "product",
+        "id": "am_progress_2_product",
+        "label": "t:am_commerce.tier_gift_product",
+        "info": "t:am_commerce.tier_gift_product_info"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_2_gift_label",
+        "label": "t:am_commerce.tier_gift_line_label",
+        "info": "t:am_commerce.tier_gift_line_label_info"
+      },
+      {
         "type": "text",
         "id": "am_progress_2_pending",
         "label": "t:am_commerce.am_progress_2_pending",
@@ -2601,6 +2638,18 @@
         "type": "text",
         "id": "am_progress_3_label",
         "label": "t:am_commerce.am_progress_3_label"
+      },
+      {
+        "type": "product",
+        "id": "am_progress_3_product",
+        "label": "t:am_commerce.tier_gift_product",
+        "info": "t:am_commerce.tier_gift_product_info"
+      },
+      {
+        "type": "text",
+        "id": "am_progress_3_gift_label",
+        "label": "t:am_commerce.tier_gift_line_label",
+        "info": "t:am_commerce.tier_gift_line_label_info"
       },
       {
         "type": "text",

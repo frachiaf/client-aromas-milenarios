@@ -1,3 +1,5 @@
+import { hasTierGifts } from '@theme/am-tier-gifts';
+import { runTierCartMutation } from '@theme/am-cart-gifts';
 import { Component } from '@theme/component';
 import { morphSection } from '@theme/section-renderer';
 import { DiscountUpdateEvent } from '@theme/events';
@@ -36,7 +38,13 @@ class CartDiscount extends Component {
    * Handles updates to the cart note.
    * @param {SubmitEvent} event - The submit event on our form.
    */
-  applyDiscount = async (event) => {
+  applyDiscount = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    return hasTierGifts() ? runTierCartMutation(() => this.#applyDiscount(event)) : this.#applyDiscount(event);
+  };
+
+  #applyDiscount = async (event) => {
     const { cartDiscountError, cartDiscountErrorDiscountCode, cartDiscountErrorShipping } = this.refs;
 
     event.preventDefault();
@@ -121,7 +129,13 @@ class CartDiscount extends Component {
    * Handles removing a discount from the cart.
    * @param {MouseEvent | KeyboardEvent} event - The mouse or keyboard event in our pill.
    */
-  removeDiscount = async (event) => {
+  removeDiscount = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    return hasTierGifts() ? runTierCartMutation(() => this.#removeDiscount(event)) : this.#removeDiscount(event);
+  };
+
+  #removeDiscount = async (event) => {
     event.preventDefault();
     event.stopPropagation();
 

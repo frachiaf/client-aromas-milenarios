@@ -2,11 +2,13 @@ import { CartUpdateEvent, ThemeEvents } from '@theme/events';
 import { fetchConfig } from '@theme/utilities';
 import { sectionRenderer } from '@theme/section-renderer';
 import '@theme/am-cart-message';
+import { hasTierGifts, tierGiftConfig, isTierGift, isNormalCartProduct, reconcileTierGifts } from '@theme/am-tier-gifts';
 
 let mutationQueue = Promise.resolve();
 let pending = 0;
 let reconciliationScheduled = false;
 let refreshRequested = false;
+let tierWarning = '';
 let draft = { From: '', To: '', Message: '' };
 const roles = new Set(['wrapping', 'note']);
 const service = (item) => roles.has(item.properties?._am_gift_service);
@@ -35,11 +37,34 @@ export function runCartMutation(task) {
   });
 }
 
+export function runTierCartMutation(task) {
+  if (!hasTierGifts()) return task();
+  return runCartMutation(async () => {
+    try {
+      const result = await task();
+      await synchronizeTierCart();
+      return result;
+    } catch (error) {
+      await recover(error);
+      throw error;
+    }
+  });
+}
+
+async function synchronizeTierCart() {
+  tierWarning = '';
+  const cart = await readCart();
+  const updated = await normalizeCart(cart);
+  if (JSON.stringify(cart.items) !== JSON.stringify(updated.items)) await publish(updated, updated.sections);
+  document.documentElement.removeAttribute('data-am-cart-unverified');
+  if (tierWarning) feedback(tierWarning, true);
+}
+
 async function readCart() {
   const response = await fetch(route(Theme.routes.cart_url), {
     cache: 'no-store', credentials: 'same-origin', signal: AbortSignal.timeout(15000),
   });
-  if (!response.ok) throw new Error(modal()?.dataset.error);
+  if (!response.ok) throw new Error(modal()?.dataset.error || tierGiftConfig().error);
   return response.json();
 }
 
@@ -54,7 +79,7 @@ async function writeCart(url, payload) {
   });
   const result = await response.json();
   if (!response.ok || result.errors) {
-    const error = new Error(typeof result.errors === 'string' ? result.errors : result.description || modal()?.dataset.error);
+    const error = new Error(typeof result.errors === 'string' ? result.errors : result.description || modal()?.dataset.error || tierGiftConfig().error);
     error.cartRejected = true;
     throw error;
   }
@@ -93,7 +118,7 @@ async function publish(cart, sections) {
 
 function corrections(cart) {
   const updates = {};
-  const hasProducts = cart.items.some((item) => !service(item));
+  const hasProducts = cart.items.some((item) => isNormalCartProduct(item));
   const found = new Set();
   for (const item of cart.items.filter(service)) {
     const role = item.properties._am_gift_service;
@@ -105,8 +130,13 @@ function corrections(cart) {
 }
 
 async function normalizeCart(cart) {
+  tierWarning = '';
   const updates = corrections(cart);
-  return Object.keys(updates).length ? writeCart(Theme.routes.cart_update_url, { updates }) : cart;
+  if (Object.keys(updates).length) cart = await writeCart(Theme.routes.cart_update_url, { updates });
+  return reconcileTierGifts(cart, {
+    read: readCart, write: writeCart,
+    unavailable: (message) => { tierWarning = message; },
+  });
 }
 
 async function recover(error, expected) {
@@ -123,7 +153,7 @@ async function recover(error, expected) {
   } catch {
     document.documentElement.setAttribute('data-am-cart-unverified', '');
   }
-  const message = error.cartRejected ? error.message : modal()?.dataset.error;
+  const message = error.cartRejected ? error.message : modal()?.dataset.error || tierGiftConfig().error;
   feedback(message, true);
   const errorNode = modal()?.querySelector('[data-am-gift-modal-error]');
   if (errorNode) {
@@ -145,7 +175,7 @@ async function updateService(role, enabled, values) {
       if (!enabled) {
         if (lines.length) response = await writeCart(Theme.routes.cart_update_url, { updates: Object.fromEntries(lines.map((item) => [item.key, 0])) });
       } else {
-        if (!cart.items.some((item) => !service(item))) throw new Error(modal()?.dataset.error);
+        if (!cart.items.some((item) => isNormalCartProduct(item))) throw new Error(modal()?.dataset.error);
         const properties = { ...lines[0]?.properties, _am_gift_service: role, ...values };
         if (lines[0]) {
           response = await writeCart(Theme.routes.cart_change_url, { id: lines[0].key, quantity: 1, properties });
@@ -156,9 +186,9 @@ async function updateService(role, enabled, values) {
         }
       }
       const updated = await normalizeCart(response.items && response.item_count !== undefined ? response : await readCart());
-      await publish(updated, updated.sections || response.sections);
+      await publish(updated, updated.sections);
       document.documentElement.removeAttribute('data-am-cart-unverified');
-      feedback(modal()?.dataset.success);
+      feedback(tierWarning || modal()?.dataset.success, Boolean(tierWarning));
     });
     return true;
   } catch (error) {
@@ -173,7 +203,8 @@ async function updateService(role, enabled, values) {
 }
 
 export function removeGiftCartLine(owner, line) {
-  if (!owner.querySelector('[data-am-gift-service="wrapping"], [data-am-gift-service="note"]')) return false;
+  if (owner.querySelectorAll('[ref="cartItemRows[]"]')[line - 1]?.hasAttribute('data-am-tier-gift')) return true;
+  if (!hasTierGifts() && !owner.querySelector('[data-am-gift-service="wrapping"], [data-am-gift-service="note"]')) return false;
   const key = owner.querySelectorAll('[ref="cartItemRows[]"]')[line - 1]?.dataset.key;
   if (!key) return false;
   void runCartMutation(async () => {
@@ -182,10 +213,11 @@ export function removeGiftCartLine(owner, line) {
     if (removed?.properties?._am_gift_service === 'note') draft = noteValues(removed.properties);
     const remaining = cart.items.filter((item) => item.key !== key && item.parent_relationship?.parent?.key !== key);
     const updates = { [key]: 0 };
-    if (!remaining.some((item) => !service(item))) {
-      for (const item of remaining.filter(service)) updates[item.key] = 0;
+    if (removed && isTierGift(removed)) return;
+    if (!remaining.some((item) => isNormalCartProduct(item))) {
+      for (const item of remaining.filter((item) => service(item) || isTierGift(item))) updates[item.key] = 0;
     }
-    const updated = await writeCart(Theme.routes.cart_update_url, { updates });
+    const updated = await normalizeCart(await writeCart(Theme.routes.cart_update_url, { updates }));
     await publish(updated, updated.sections);
     document.documentElement.removeAttribute('data-am-cart-unverified');
     feedback(modal()?.dataset.success);
@@ -195,15 +227,17 @@ export function removeGiftCartLine(owner, line) {
 
 function scheduleReconciliation() {
   if (reconciliationScheduled) return;
-  if (!refreshRequested && !document.documentElement.hasAttribute('data-am-cart-unverified') && !document.querySelector('[data-am-gift-service="wrapping"], [data-am-gift-service="note"]')) return;
+  if (!hasTierGifts() && !refreshRequested && !document.documentElement.hasAttribute('data-am-cart-unverified') && !document.querySelector('[data-am-gift-service="wrapping"], [data-am-gift-service="note"]')) return;
   reconciliationScheduled = true;
   void runCartMutation(async () => {
-    const cart = await readCart();
     const refresh = refreshRequested;
     refreshRequested = false;
-    if (refresh || Object.keys(corrections(cart)).length || document.documentElement.hasAttribute('data-am-cart-unverified')) {
+    const cart = await readCart();
+    if (hasTierGifts() || refresh || Object.keys(corrections(cart)).length || document.documentElement.hasAttribute('data-am-cart-unverified')) {
+      tierWarning = '';
       const normalized = await normalizeCart(cart);
-      await publish(normalized, normalized.sections);
+      if (refresh || JSON.stringify(cart.items) !== JSON.stringify(normalized.items) || document.documentElement.hasAttribute('data-am-cart-unverified')) await publish(normalized, normalized.sections);
+      if (tierWarning) feedback(tierWarning, true);
     }
     document.documentElement.removeAttribute('data-am-cart-unverified');
   }).catch((error) => runCartMutation(() => recover(error))).finally(() => {
@@ -356,7 +390,7 @@ for (const type of ['click', 'change', 'submit', 'keydown']) {
 function handleExternalCartUpdate(event) {
   const source = event.detail?.data?.source;
   if (source === 'am-cart-gifts') return;
-  if (isCartMutationBusy() && source !== 'cart-items-component' && modal()) refreshRequested = true;
+  if (isCartMutationBusy() && source !== 'cart-items-component' && (modal() || hasTierGifts())) refreshRequested = true;
   queueMicrotask(scheduleReconciliation);
 }
 
@@ -364,3 +398,26 @@ document.addEventListener(ThemeEvents.cartUpdate, handleExternalCartUpdate);
 document.addEventListener(ThemeEvents.discountUpdate, handleExternalCartUpdate);
 
 document.addEventListener('shopify:section:load', scheduleReconciliation);
+document.addEventListener('dialog:open', (event) => {
+  if (event.target instanceof Element && event.target.closest('cart-drawer-component')) scheduleReconciliation();
+});
+queueMicrotask(scheduleReconciliation);
+
+const approvedCheckouts = new WeakSet();
+document.addEventListener('submit', (event) => {
+  if (!(event.target instanceof HTMLFormElement) || !event.target.matches('.cart-form') || event.submitter?.getAttribute('name') !== 'checkout') return;
+  if (approvedCheckouts.delete(event.target) || !hasTierGifts()) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  if (isCartMutationBusy()) return;
+  const owner = event.target.closest('cart-items-component');
+  void runCartMutation(synchronizeTierCart).then(() => {
+    if (document.documentElement.hasAttribute('data-am-cart-unverified')) return;
+    const form = owner?.querySelector('.cart-form');
+    const button = owner?.querySelector('[name="checkout"]');
+    if (form && button) {
+      approvedCheckouts.add(form);
+      form.requestSubmit(button);
+    }
+  }).catch((error) => runCartMutation(() => recover(error)));
+}, true);

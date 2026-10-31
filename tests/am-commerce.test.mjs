@@ -90,12 +90,13 @@ products.get(3).variants.push({ ...products.get(3).variants[0], id: 103, title: 
 products.set(103, products.get(3));
 products.get(5).compare_at_price = 1250;
 products.get(5).selected_or_first_available_variant.compare_at_price = 1250;
+products.set(20, product(20, 0)); products.set(21, product(21, 0));
 const upsellCollection = { id: 77, handle: 'upsell', url: '/collections/upsell', title: 'Productos del fixture' };
 const popularityOrder = [4, 1, 10, 11, 3, 2, 5, 6, 7, 8, 9, 12, 13, 14, 15];
 let collectionRequests = [], failUpsell = false, delayUpsellNext = 0, upsellCandidates = popularityOrder;
 let galleryImageRequests = [], galleryVideo;
 let items = [], serial = 0, writes = [], failNext = '', nullSections = false, delayNext = 0, discount = 0;
-let activeCartRequests = 0, maxActiveCartRequests = 0;
+let activeCartRequests = 0, maxActiveCartRequests = 0, failCartReads = 0, cartReadCount = 0;
 let current = new URLSearchParams();
 const settings = Object.fromEntries(json(read('config/settings_schema.json')).flatMap((g) => g.settings || []).filter((s) => s.id).map((s) => [s.id, s.default]));
 Object.assign(settings, { am_gift_wrapping_enabled: true, am_gift_note_enabled: true,
@@ -196,7 +197,7 @@ const server = http.createServer(async (req, res) => {
       current = url.searchParams;
       return res.end(await page());
     }
-    if (url.pathname === '/cart.js') { res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify(cart())); }
+    if (url.pathname === '/cart.js') { cartReadCount++; if(failCartReads>0){failCartReads--;res.writeHead(503);return res.end('{}')} res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify(cart())); }
     if (url.pathname === upsellCollection.url && url.searchParams.get('section_id') === 'am--cart-upsell') {
       collectionRequests.push(url.searchParams.get('sort_by'));
       const delay = delayUpsellNext; delayUpsellNext = 0;
@@ -204,6 +205,11 @@ const server = http.createServer(async (req, res) => {
       if (failUpsell) { failUpsell = false; res.writeHead(500); return res.end('Collection fixture error'); }
       res.setHeader('Content-Type', 'text/html');
       return res.end(await upsellSection(url.searchParams.get('sort_by')));
+    }
+    if (/^\/products\/test-\d+\.js$/.test(url.pathname)) {
+      res.setHeader('Content-Type', 'application/json');
+      const id = Number(url.pathname.split('-').pop().replace('.js', ''));
+      return res.end(JSON.stringify(products.get(id)));
     }
     if (/^\/products\/test-\d+$/.test(url.pathname)) {
       res.setHeader('Content-Type', 'text/html');
@@ -294,6 +300,7 @@ try {
   };
   const viewport = (width, height = 900) => cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 750 });
   const openDrawer = async () => {
+    await evaluate(`Promise.all(document.querySelector('.cart-drawer__dialog').getAnimations().map(animation=>animation.finished.catch(()=>{})))`);
     await evaluate(`document.querySelector('cart-drawer-component').open()`);
     await wait(`document.querySelector('.cart-drawer__dialog').open`);
     await evaluate(`Promise.all(document.querySelector('.cart-drawer__dialog').getAnimations().map(animation=>animation.finished.catch(()=>{})))`);
@@ -568,6 +575,7 @@ try {
     await check('last drawer line waits for confirmed removal', `!!document.querySelector('.cart-form') && !document.querySelector('.cart-drawer__empty-state')`);
     await idle(); await wait(`!!document.querySelector('.cart-drawer__empty-state') && !!document.querySelector('[data-am-upsell-product-id="1"]')`);
     await check('last removal resets progress and removes checkout without reload', `document.querySelector('[role="progressbar"]').getAttribute('aria-valuenow')==='0' && !document.querySelector('#checkout') && document.querySelector('.cart-drawer__dialog').open && !!document.getElementById(document.querySelector('.cart-drawer__dialog').getAttribute('aria-labelledby'))`);
+    await wait(`document.querySelector('[data-am-upsell-product-id="3"] button')`);
     await evaluate(`document.querySelector('[data-am-upsell-product-id="3"] button').focus();document.querySelector('[data-am-upsell-product-id="3"] button').click()`);
     await wait(`document.querySelector('#quick-add-dialog dialog').open`);
     await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' });
@@ -646,6 +654,7 @@ try {
       for (const [width, height] of [[750,900], [1024,900], [1440,900], [1024,420]]) {
         await viewport(width, height); await load('gallery&presentation=' + presentation); await openProduct();
         await check('main media and thumbnails fit desktop modal ' + presentation + '/' + width + '/' + height, `(()=>{const g=${gallery},m=${modal}.getBoundingClientRect(),c=g.querySelector('slideshow-container').getBoundingClientRect(),t=g.querySelector('slideshow-controls').getBoundingClientRect(),b=document.querySelector('#quick-add-modal-content [type="submit"]').getBoundingClientRect();return c.height>44 && c.bottom<=t.top+1 && t.bottom<=m.bottom+1 && g.scrollWidth<=g.clientWidth+1 && m.left>=-1 && m.right<=innerWidth+1 && b.width>0 && b.height>0 && b.bottom<=m.bottom+1})()`);
+        await check('main image fills its frame without letterboxing ' + presentation + '/' + width + '/' + height, `(()=>{const g=${gallery},slide=g.querySelector('slideshow-slide[aria-hidden="false"]'),image=slide.querySelector('.product-media > img.product-media__image'),frame=slide.getBoundingClientRect(),rect=image.getBoundingClientRect();return getComputedStyle(image).objectFit==='cover' && Math.abs(rect.top-frame.top)<1 && Math.abs(rect.bottom-frame.bottom)<1 && Math.abs(rect.width-frame.width)<1})()`);
       }
       const shot = await cdp('Page.captureScreenshot', { format: 'png' });
       fs.writeFileSync(path.join(output, 'quick-buy-thumbnails-' + presentation + '.png'), Buffer.from(shot.data, 'base64'));
@@ -704,8 +713,111 @@ try {
     await check('closing the gallery preserves drawer focus and scroll lock', `document.querySelector('.cart-drawer__dialog').open && document.body.style.position==='fixed' && document.querySelector('.cart-drawer__dialog').contains(document.activeElement)`);
     Object.assign(settings, saved); items = previousItems;
   };
-  if (![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY].some(Boolean)) await quickBuyGalleryChecks();
-  if (!process.env.AM_QA_GALLERY_ONLY) {
+  const tierGiftChecks = async () => {
+    const saved = { ...settings }, previousItems = items;
+    Object.assign(settings, { am_progress_1_product: products.get(20), am_progress_2_product: products.get(21), am_progress_3_product: products.get(20) });
+    items = []; add(1, 4);
+    const giftRows = 'document.querySelectorAll("[data-am-tier-gift]")';
+    for (const width of [390, 1440]) for (const query of ['', 'view=page']) {
+      await viewport(width); await load(query); if (!query) await openDrawer(); await idle();
+      await wait(giftRows + '.length===3');
+      await check('tier gifts are read-only in ' + (query || 'drawer') + '/' + width, '(()=>{const rows=[...'+giftRows+'];return rows.length===3 && rows.every(row=>!row.querySelector("a,button,input") && row.textContent.includes("Regalo"))})()');
+      await check('default gift copy and crossed-out current price in ' + (query || 'drawer') + '/' + width, `(()=>{return [...${giftRows}].every(row=>row.querySelector('.am-cart-tier-gift-label').textContent==='Regalo' && row.querySelector('.cart-items__unit-price-wrapper s').textContent==='$0.00' && row.querySelector('.am-cart-tier-gift-free').textContent==='GRATIS' && !!row.querySelector('.cart-items__price text-component'))})()`);
+      assert.deepEqual(items.filter(item=>item.properties._am_tier_gift).map(item=>[item.id,item.quantity,item.properties._am_tier_gift]), [[20,1,'1'],[21,1,'2'],[20,1,'3']]); checks++;
+      if(!query){const shot=await cdp('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(output,'tier-gifts-'+width+'.png'),Buffer.from(shot.data,'base64'))}
+    }
+    const appearanceKeys = ['am_progress_1_gift_label', 'am_progress_2_gift_label', 'am_progress_3_gift_label', 'am_progress_gift_free_text', 'am_progress_gift_only_free'];
+    const previousAppearance = Object.fromEntries(appearanceKeys.map(key => [key, settings[key]]));
+    const labels = { '1': 'Regalo <em>uno</em> & "1"', '2': 'Muestra de regalo', '3': 'Obsequio del nivel tres' };
+    const freeText = 'INCLUIDO <sin cargo> & "gratis"';
+    Object.assign(settings, { am_progress_1_gift_label: labels['1'], am_progress_2_gift_label: labels['2'], am_progress_3_gift_label: labels['3'], am_progress_gift_free_text: freeText });
+    const previousCompareAt = products.get(20).selected_or_first_available_variant.compare_at_price;
+    products.get(20).selected_or_first_available_variant.compare_at_price = 12345;
+    for (const width of [390, 1440]) for (const query of ['', 'view=page']) for (const onlyFree of [false, true]) {
+      settings.am_progress_gift_only_free = onlyFree;
+      await viewport(width); await load(query); if (!query) await openDrawer(); await idle();
+      await check('custom gift labels follow tier markers ' + width + '/' + query + '/' + onlyFree, `(()=>{const labels=${JSON.stringify(labels)};return [...${giftRows}].every(row=>{const label=row.querySelector('.am-cart-tier-gift-label');return label.textContent===labels[row.dataset.amTierGift] && label.childElementCount===0})})()`);
+      await check('free text replaces only the intended gift prices ' + width + '/' + query + '/' + onlyFree, `(()=>{const expected=${JSON.stringify(freeText)};return [...${giftRows}].every(row=>{const unit=row.querySelector('.cart-items__unit-price-wrapper'),price=row.querySelector('.cart-items__price'),texts=[...row.querySelectorAll('.am-cart-tier-gift-free')];return texts.length===1 && texts[0].textContent===expected && texts[0].childElementCount===0 && (${onlyFree} ? !unit && price.textContent.trim()===expected && !price.querySelector('text-component,s') : unit.querySelectorAll('s').length===1 && unit.querySelector('s').textContent==='$0.00' && !!price.querySelector('text-component'))})})()`);
+      await check('normal product price remains native ' + width + '/' + query + '/' + onlyFree, `(()=>{const row=document.querySelector('[ref="cartItemRows[]"]:not([data-am-tier-gift])');return !!row.querySelector('.cart-items__unit-price-wrapper') && !!row.querySelector('.cart-items__price text-component') && !row.querySelector('.am-cart-tier-gift-free')})()`);
+      if (!query && width===390) { const shot=await cdp('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(output,'tier-copy-only-free-'+onlyFree+'.png'),Buffer.from(shot.data,'base64')); }
+    }
+    settings.am_progress_3_gift_label = 'Regalo'.repeat(25);
+    settings.am_progress_gift_free_text = 'GRATIS'.repeat(25);
+    for (const query of ['', 'view=page']) {
+      await viewport(390); await load(query); if (!query) await openDrawer(); await idle();
+      await check('long gift text wraps within the cart ' + query, `(()=>{const owner=document.querySelector('cart-items-component');return owner.scrollWidth<=owner.clientWidth+1 && [...${giftRows}].every(row=>{const r=row.getBoundingClientRect(),p=row.querySelector('.cart-items__price').getBoundingClientRect(),l=row.querySelector('.am-cart-tier-gift-label').getBoundingClientRect();return p.right<=r.right+1 && l.right<=r.right+1})})()`);
+    }
+    Object.assign(settings, previousAppearance);
+    settings.am_progress_1_gift_label = '   '; settings.am_progress_gift_free_text = '   ';
+    await load(); await openDrawer(); await idle();
+    await check('blank gift settings use translated defaults', `document.querySelector('[data-am-tier-gift="1"] .am-cart-tier-gift-label').textContent==='Regalo' && [...document.querySelectorAll('.am-cart-tier-gift-free')].every(node=>node.textContent==='GRATIS')`);
+    Object.assign(settings, previousAppearance);
+    products.get(20).selected_or_first_available_variant.compare_at_price = previousCompareAt;
+    const duplicate = items.find(item=>item.properties._am_tier_gift==='1'); duplicate.quantity=7;
+    add(20, 4); add(21, 1, { _am_tier_gift:'2', Extra:'duplicate' });
+    await load(); await openDrawer(); await idle();
+    assert.equal(items.filter(item=>item.product_id===20 || item.product_id===21).length,3); checks++;
+    assert.ok(items.filter(item=>item.properties._am_tier_gift).every(item=>item.quantity===1)); checks++;
+    const beforeGuard=writes.length;
+    await evaluate('(()=>{const owner=document.querySelector("cart-items-component");const row=[...owner.refs.cartItemRows].findIndex(row=>row.hasAttribute("data-am-tier-gift"))+1;owner.updateQuantity({line:row,quantity:9,action:"change"});owner.onLineItemRemove(row)})()');
+    await pause(150); assert.equal(writes.length,beforeGuard); checks++;
+    await evaluate('document.querySelector("cart-items-component").updateQuantity({line:1,quantity:2,action:"change"})'); await idle();
+    await wait(giftRows+'.length===1');
+    await toggle('wrapping');
+    await toggle('note'); await wait('document.querySelector("#AMGiftNoteModal dialog").open'); await note('Regalos por nivel');
+    await wait(giftRows+'.length===2');
+    await check('paid services contribute to the current tier total', 'document.querySelectorAll(".am-cart-progress [data-complete]").length===2');
+    await evaluate('document.querySelector("cart-items-component").onLineItemRemove(1)'); await idle();
+    assert.deepEqual(items,[]); checks++;
+    items=[]; add(1,4); await load('view=page'); await idle();
+    await evaluate('(()=>{const input=document.querySelector("[name=discount]");input.value="FIXTURE";input.form.requestSubmit()})()'); await idle();
+    await wait(giftRows+'.length===0'); assert.equal(discount,2500); checks++;
+    discount=0;
+    await load('currency=EUR'); assert.equal(items.length,1); checks++;
+    await load(); await openDrawer(); await idle();
+    await wait(giftRows+'.length===3');
+    settings.am_progress_enabled=false; await load(); await idle(); assert.equal(items.length,1); checks++;
+    settings.am_progress_enabled=true; settings.am_progress_2_product=products.get(3);
+    await load('editor'); await idle();
+    await check('editor explains invalid multi-variant gift products', 'document.body.textContent.includes("Revisá el regalo del nivel 2")');
+    assert.ok(!items.some(item=>item.properties._am_tier_gift==='2')); checks++;
+    settings.am_progress_2_product=products.get(21);
+    await load(); await openDrawer(); await idle();
+    const beforeProductGuard=writes.length;
+    await evaluate('(()=>{const form=document.querySelector(".fixture-cards product-form-component");form.dataset.productId="20";form.querySelector("form").requestSubmit()})()'); await idle();
+    assert.equal(writes.length,beforeProductGuard); checks++;
+    const normalWrites=writes.length;
+    await evaluate('(()=>{const form=document.querySelector(".fixture-cards product-form-component");form.dataset.productId="1";form.querySelector("form").requestSubmit()})()'); await idle();
+    assert.ok(writes.length>normalWrites); checks++;
+    assert.equal(maxActiveCartRequests,1); checks++;
+    items.find(item=>item.properties._am_tier_gift==='1').quantity=9;
+    await evaluate('document.addEventListener("submit",function captureCheckout(event){if(event.submitter?.name!=="checkout")return;event.preventDefault();window.amCheckoutVerified=true;document.removeEventListener("submit",captureCheckout)});document.querySelector(".cart-form").requestSubmit(document.querySelector("[name=checkout]"))');
+    await wait('window.amCheckoutVerified===true'); await idle();
+    assert.ok(items.filter(item=>item.properties._am_tier_gift).every(item=>item.quantity===1));checks++;
+    await check('checkout preflight releases the shared busy state', '!document.documentElement.hasAttribute("data-am-cart-unverified") && !document.documentElement.hasAttribute("data-am-cart-busy")');
+    failCartReads=1000;
+    await evaluate('(async()=>{const m=await import("@theme/am-cart-gifts");await m.runCartMutation(()=>{document.dispatchEvent(new CustomEvent("cart:update",{detail:{data:{source:"external-test"}}}));});})()');
+    await idle(); await pause(100);
+    await check('an unreadable cart blocks checkout without a retry loop', 'document.documentElement.hasAttribute("data-am-cart-unverified") && !document.documentElement.hasAttribute("data-am-cart-busy")');
+    const stoppedReads=cartReadCount;await pause(150);assert.equal(cartReadCount,stoppedReads);checks++;
+    failCartReads=0;
+    await evaluate('document.dispatchEvent(new CustomEvent("cart:update",{detail:{data:{source:"retry-test"}}}))');await idle();
+    await check('a verified retry releases checkout', '!document.documentElement.hasAttribute("data-am-cart-unverified")');
+    const p=products.get(20), fixture=context({product:p,closest:{product:p},section:{id:'guard',settings:{enable_sticky_add_to_cart:true}},block:{id:'guard',settings:{}},can_add_to_cart:true});
+    for(const file of ['blocks/buy-buttons.liquid','snippets/add-to-cart-button.liquid','snippets/quick-add.liquid','snippets/am--numbered-slideshow-quick-add.liquid','snippets/am--cart-upsell-card.liquid','snippets/product-hotspot.liquid','sections/quick-order-list.liquid','blocks/accelerated-checkout.liquid']) {
+      const html=await render(file,fixture); assert.ok(!/<form|<button|<quick-add-component/.test(html),file+' blocks reserved gifts in Liquid'); checks++;
+    }
+    for(const view of ['product.json','product.velas.json']) {
+      assert.ok(read('templates/'+view).includes('product-information')); const html=await render('sections/product-information.liquid',fixture);assert.ok(!html.includes('<sticky-add-to-cart'));checks++;
+    }
+    settings.am_progress_1_enabled=false;const stillReserved=await render('snippets/quick-add.liquid',fixture);assert.ok(!stillReserved.includes('<form'));checks++;
+    await evaluate('document.querySelectorAll("cart-items-component").forEach(owner=>owner.remove())');
+    await check('page cart mode retains global gift guards without a cart section', '(async()=>{const m=await import("@theme/am-tier-gifts");return m.hasTierGifts() && m.isReservedProduct(20)})()');
+    Object.assign(settings,saved); for(const slot of [1,2,3])delete settings['am_progress_'+slot+'_product'];items=previousItems;discount=0;
+  };
+  if (![process.env.AM_QA_DETAILS_ONLY,process.env.AM_QA_HOTSPOTS_ONLY,process.env.AM_QA_DENSITY_ONLY,process.env.AM_QA_UPSELL_ONLY,process.env.AM_QA_EMPTY_ONLY,process.env.AM_QA_GALLERY_ONLY].some(Boolean)) await tierGiftChecks();
+  if (!process.env.AM_QA_TIERS_ONLY && ![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY].some(Boolean)) await quickBuyGalleryChecks();
+  if (!process.env.AM_QA_GALLERY_ONLY && !process.env.AM_QA_TIERS_ONLY) {
   if (!process.env.AM_QA_DETAILS_ONLY && !process.env.AM_QA_HOTSPOTS_ONLY && !process.env.AM_QA_DENSITY_ONLY && !process.env.AM_QA_UPSELL_ONLY) await emptyDrawer();
   add(1); add(2);
   if (process.env.AM_QA_EMPTY_ONLY) {
@@ -976,6 +1088,7 @@ try {
   await wait(`!document.querySelector('[data-am-upsell-product-id="2"]')`); await idle();
   assert.equal(cart().item_count, beforeDirect + 1, 'Direct upsell adds the product once'); checks++;
   await check('upsell addition refreshes count and keeps drawer open', `document.querySelector('.cart-drawer__dialog').open && document.querySelector('[ref="cartItemCount"]').textContent.trim()==='${cart().item_count}'`);
+  await wait(`document.querySelector('[data-am-upsell-product-id="3"] button')`);
   await evaluate(`document.querySelector('[data-am-upsell-product-id="3"] button').focus();document.querySelector('[data-am-upsell-product-id="3"] button').click()`);
   await wait(`document.querySelector('#quick-add-dialog dialog').open`);
   await check('multivariant upsell uses the shared modal with cart context', `document.querySelectorAll('#quick-add-dialog').length===1 && document.querySelector('#quick-add-modal-content product-form-component').hasAttribute('data-am-cart-upsell') && document.querySelector('.cart-drawer__dialog').open`);
@@ -1010,6 +1123,7 @@ try {
   assert.equal(items.find((i) => i.product_id === 5)?.quantity, 1, 'Double submit adds one upsell unit'); checks++;
   assert.equal(maxActiveCartRequests, 1, 'Upsell and quantity mutations share one request queue'); checks++;
   delayNext = 200;
+  await wait(`document.querySelector('[data-am-upsell-product-id="6"] form')`);
   await evaluate(`document.querySelector('[data-am-upsell-product-id="6"] form').requestSubmit()`);
   await wait(`document.documentElement.hasAttribute('data-am-cart-busy')`);
   await evaluate(`document.querySelector('[data-am-upsell-product-id="6"]').remove()`);

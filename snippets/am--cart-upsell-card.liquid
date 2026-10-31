@@ -4,6 +4,10 @@
   @param {product} product - Available recommended product
   @param {string} section_id - Section ID used for unique form identifiers
 {%- enddoc -%}
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% unless am_is_tier_gift == 'true' %}
+
 
 {%- liquid
   assign variant = product.selected_or_first_available_variant
@@ -70,3 +74,5 @@
     </quick-add-component>
   </div>
 </article>
+
+{% endunless %}

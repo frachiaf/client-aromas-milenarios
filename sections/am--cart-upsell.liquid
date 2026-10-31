@@ -9,6 +9,9 @@
   {%- if settings.am_drawer_upsell_enabled and collection != blank and collection.id == settings.am_drawer_upsell_collection.id -%}
     {%- paginate collection.products by 50 -%}
       {%- for upsell_product in collection.products limit: 50 -%}
+        {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: upsell_product %}{% endcapture %}
+        {% assign am_is_tier_gift = am_is_tier_gift | strip %}
+        {% if am_is_tier_gift == 'true' %}{% continue %}{% endif %}
         {%- if upsell_product.available == false or cart_product_ids contains upsell_product.id or upsell_product.id == wrapping_product_id or upsell_product.id == note_product_id -%}
           {%- continue -%}
         {%- endif -%}

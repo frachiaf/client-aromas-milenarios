@@ -10,6 +10,10 @@
   @param {string} [data_testid] - The data-testid attribute for testing.
   @param {boolean} [show_total_price] - Show quantity total inside the main PDP only.
 {%- enddoc -%}
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% unless am_is_tier_gift == 'true' %}
+
 
 {%- liquid
   assign default_add_to_cart_text = 'actions.add_to_cart' | t
@@ -87,6 +91,8 @@
   </button>
 </add-to-cart-component>
 
+
+{% endunless %}
 {% stylesheet %}
   .am-atc-total {
     display: none;

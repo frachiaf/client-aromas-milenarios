@@ -3,9 +3,13 @@
 {% enddoc %}
 {% liquid
   assign has_gifts = false
+  assign has_tier_gifts = false
   for item in cart.items
     if item.properties._am_gift_service == 'wrapping' or item.properties._am_gift_service == 'note'
       assign has_gifts = true
+    endif
+    if item.properties._am_tier_gift != nil
+      assign has_tier_gifts = true
     endif
   endfor
 %}
@@ -15,8 +19,11 @@
 {% if request.design_mode or settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled %}
   {{ 'am--cart-upsell.css' | asset_url | stylesheet_tag }}
 {% endif %}
+{% render 'am--tier-gift-config', show_help: false %}
+{% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or has_gifts or has_tier_gifts or request.design_mode or settings.am_progress_1_product != blank or settings.am_progress_2_product != blank or settings.am_progress_3_product != blank %}
+<script type="module" src="{{ 'am--cart-gifts.js' | asset_url }}" fetchpriority="low"></script>
+{% endif %}
 {% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or has_gifts or request.design_mode %}
-  <script type="module" src="{{ 'am--cart-gifts.js' | asset_url }}" fetchpriority="low"></script>
   {% liquid
     assign wrapping_variant = settings.am_gift_wrapping_product.variants | where: 'available', true | first
     assign note_variant = settings.am_gift_note_product.variants | where: 'available', true | first

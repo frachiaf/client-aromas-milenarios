@@ -280,6 +280,52 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-31 — Textos de regalos y ajuste de imágenes de Quick Buy
+
+### Añadido
+
+- Objetivo: personalizar la etiqueta de cada regalo y su comunicación de gratuidad en drawer y página. Cada nivel agrega `am_progress_1_gift_label`, `am_progress_2_gift_label` o `am_progress_3_gift_label`; `am_progress_gift_free_text` comparte el texto «GRATIS». Los campos vacíos usan traducciones y las líneas sin un nivel reconocible conservan «Regalo». Un producto repetido admite etiquetas distintas según su marca.
+- El precio unitario actual del regalo aparece tachado junto al texto configurado. El nuevo checkbox `am_progress_gift_only_free`, desactivado por defecto, omite la fila del precio unitario y reemplaza el importe de la derecha únicamente por ese texto. Los textos se escapan y admiten saltos de línea visuales sin desbordar. No cambian precios reales, cantidades, elegibilidad ni reconciliación.
+- Archivos: `config/settings_schema.json`, `snippets/cart-products.liquid`, los 51 locales, `tests/am-commerce.test.mjs`, `docs/cart-tier-gifts.md`, guía técnica y este changelog. Se preservaron los cambios pendientes de estilos del drawer y upsell; sin cambios en datos administrados, productos o publicación.
+
+### Corregido
+
+- Objetivo: llenar el marco principal de Quick Buy sin espacios internos arriba y abajo. Desde 750 px, con la galería de miniaturas activa, `snippets/quick-add-modal-styles.liquid` aplica dimensiones completas y `object-fit: cover` exclusivamente a la imagen principal, con recorte proporcional y su punto focal. Conserva miniaturas, navegación, selección de variantes, videos/modelos y el comportamiento móvil y de PDP.
+
+### Validación
+
+- El subset de tiers aprobó 70 comprobaciones en Chromium con Liquid/assets reales: etiquetas por nivel, producto repetido, textos especiales escapados, precio cero tachado incluso con compare-at, texto compartido, ambos modos a 390/1440 px en drawer/página, textos largos, defaults vacíos y conservación de productos normales. Incluye las regresiones previas de regalos y recuperación del carrito.
+- El subset de galería aprobó 50 comprobaciones, sin escrituras de carrito: imágenes a marco completo con origen grilla/carrusel a 750/1024/1440 px y viewport de 1024×420, miniaturas, teclado, variantes, reapertura y regresiones de videos, previews de modelos, móvil, hotspots, upsell y PDP. Se revisaron capturas de ambos modos de regalos y de Quick Buy.
+- Theme Check terminó con cero errores y las 30 advertencias preexistentes. Sintaxis de la suite y JSON/settings/locales validados; no se modificaron los módulos de carrito. Sin preview autenticado ni publicación; la persistencia en Theme Editor real sigue pendiente.
+
+### Reversión
+
+- Desactivar el checkbox recupera los importes numéricos; vaciar los textos restaura las traducciones predeterminadas. Retirar las reglas específicas de la imagen principal recupera el ajuste contenido de Quick Buy. No requiere migraciones.
+
+## 2026-10-31 — Regalos automáticos por nivel del carrito
+
+### Añadido
+
+- Objetivo: convertir opcionalmente los niveles de beneficios en regalos automáticos acumulables, con una unidad por nivel y retiro al perder su umbral, conservando el total con descuentos y servicios pagos. Los pickers globales `am_progress_1_product`, `am_progress_2_product` y `am_progress_3_product` empiezan vacíos. Un nivel sin producto conserva su comunicación anterior de envío, descuento u otro beneficio.
+- Los productos elegidos quedan reservados por ID incluso con el nivel desactivado. Requieren una sola variante gratuita, disponible y con reglas que permitan una unidad, distinta de los servicios pagos. Cada línea usa `_am_tier_gift: 1|2|3`; repetir un producto en dos niveles crea líneas independientes. El editor muestra ayuda para configuraciones incompatibles y se actualiza la explicación de los beneficios en los 20 locales de schema.
+- Drawer y página muestran regalos sin enlaces, selector de cantidad ni papelera. Se omiten las acciones de compra desde Liquid en Buy buttons, ATC compartido, barra fija, Quick Add/Quick Buy, hotspots, slideshow, upsell y Quick Order, independientemente del template o `?view=...`. Los productos normales, incluidos otros gratuitos, mantienen su flujo.
+- El módulo de reglas se integra a la cola existente para serializar altas, cantidades, descuentos y servicios. La configuración JSON se actualiza con las secciones y tiene respaldo global para el modo Página sin un carrito montado. La reconciliación usa claves actuales, comprueba precio/disponibilidad por Ajax antes del alta, confirma respuestas inciertas, corrige cantidades/duplicados/copias sin marca y limpia regalos y servicios al retirar el último producto normal. Las secciones publicadas corresponden al estado final, incluidas las altas causadas por servicios pagos.
+- Pagar verifica el carrito antes de continuar. Un regalo rechazado o no disponible no bloquea la compra normal; un carrito que no puede verificarse conserva el bloqueo existente y permite reintentar sin un bucle de consultas. Se preservan apertura, scroll, foco y anuncios; el feedback vive en el resumen compartido, también cuando los servicios están desactivados.
+- Archivos: nuevos `assets/am--tier-gifts.js`, `snippets/am--is-tier-gift-product.liquid`, `snippets/am--tier-gift-config.liquid`, `tests/am-tier-gifts.test.mjs` y `docs/cart-tier-gifts.md`; integración en los controladores de regalos/carrito/Product Form/descuentos/Quick Order, listado/resumen/servicios/upsell/scripts del carrito, componentes compartidos de compra, secciones de producto y Quick Order, schema global, los 51 locales, suite de comercio, guía técnica y este changelog.
+- Alcance: gestión exclusivamente en el theme, sin Functions ni modificaciones del checkout. Las propiedades privadas son identificación, no autorización; solicitudes directas, JavaScript desactivado y recorridos que saltan el carrito pueden eludirla. El procedimiento documenta productos Unlisted, publicación solo en Online Store, límites de Basic y necesidad de validación de Shopify para imponer reglas del lado servidor. Sin cambios en settings guardados, templates, section groups, mercados, productos, pedidos ni publicación del theme.
+
+### Validación
+
+- `node tests/am-tier-gifts.test.mjs` aprobó 17 escenarios de fronteras, acumulación, moneda, reserva con niveles desactivados, servicios, productos gratuitos normales, marcas, duplicados, cantidades, precio, variantes, respuestas perdidas, stock, consultas fallidas y prevención de oscilaciones con descuentos.
+- `AM_QA_TIERS_ONLY=1 node tests/am-commerce.test.mjs` aprobó 39 comprobaciones en Chromium con Liquid/assets reales y respuestas de tienda locales: drawer/página a 390/1440 px, regalos repetidos, manipulación de líneas, servicios, descuentos, moneda, desactivación, ayuda del editor, guards Liquid/JS, ambos templates de producto, preflight de checkout y recuperación de un carrito ilegible sin reintentos continuos. Se revisaron capturas móviles y de escritorio de las líneas bloqueadas.
+- La suite completa final `node tests/am-commerce.test.mjs` aprobó 545 comprobaciones y 61 escrituras locales, sin excepciones de navegador. El subset de upsell aprobó además 106 comprobaciones. Las pruebas esperan las cards después de una recarga y el fin de animaciones antes de reabrir el drawer; se preservaron las regresiones de servicios, mensajes, foco, scroll, Quick Buy, carruseles y hotspots.
+- Theme Check terminó con cero errores y las 30 advertencias preexistentes. Sintaxis JavaScript, los 51 locales JSON/JSONC, IDs únicos, compatibilidad de los 165 settings previos y `git diff --check` aprobados. El validador adicional de la skill no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Shopify CLI cubrió Liquid y schemas.
+- No se verificaron guardado de pickers ni checkout reales: `shopify theme info --json` falló por EPERM al acceder a su configuración local. Queda pendiente el QA de tienda con productos reales y repetir checkout al migrar de Development a Basic. Las pruebas no crearon productos ni pedidos ni modificaron un carrito remoto.
+
+### Reversión
+
+- Desactivar la barra o los niveles retira sus regalos cuando el carrito vuelve a reconciliarse; vaciar todos los pickers libera la reserva de los productos. Retirar el código deja de gestionar líneas ya existentes, cuyas propiedades persisten en Shopify: desactivar y limpiar antes de esa reversión. No requiere migrar datos administrados.
+
 ## 2026-10-31 — Ancho del drawer y miniaturas de Quick Buy
 
 ### Añadido

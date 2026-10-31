@@ -1,4 +1,8 @@
 
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% unless am_is_tier_gift == 'true' %}
+
 
 {% liquid
   assign items_in_cart = cart | line_items_for: product
@@ -460,6 +464,8 @@
   </quick-order-list-component>
 </div>
 
+
+{% endunless %}
 {% stylesheet %}
   .quick-order-list {
     --quantity-selector-width: 124px;

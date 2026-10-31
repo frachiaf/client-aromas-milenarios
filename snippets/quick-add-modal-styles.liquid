@@ -636,6 +636,14 @@
       object-fit: contain;
     }
 
+    .quick-add-modal__content [data-am-quick-buy-gallery] .product-media > img.product-media__image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: var(--focal-point, center center);
+    }
+
     .quick-add-modal__content [data-am-quick-buy-gallery] .product-media > :is(deferred-media, product-model) {
       display: block;
       inset: 0;

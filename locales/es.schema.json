@@ -9,6 +9,14 @@
  */
 {
   "am_commerce": {
+    "tier_gift_line_label": "Etiqueta del regalo en el carrito",
+    "tier_gift_line_label_info": "Texto exclusivo de este nivel. Dejar vacío para usar «Regalo» traducido.",
+    "tier_gift_free_text": "Texto de gratuidad de los regalos",
+    "tier_gift_free_text_info": "Compartido por todos los niveles. Dejar vacío para usar «GRATIS» traducido.",
+    "tier_gift_only_free": "Reemplazar los precios de regalos por el texto de gratuidad",
+    "tier_gift_only_free_info": "Aplica solo a regalos de niveles, tanto en el drawer como en la página de carrito.",
+    "tier_gift_product": "Producto de regalo (opcional)",
+    "tier_gift_product_info": "Producto dedicado, una variante gratuita y disponible en Online Store. Se agrega una unidad por nivel alcanzado. Se reserva incluso con el nivel desactivado.",
     "drawer_width": "Ancho del cart drawer en escritorio",
     "drawer_width_info": "Se aplica desde 750 px. Limitado al 95% del ancho de la pantalla.",
     "quick_buy_show_thumbnails": "Mostrar miniaturas en Quick Buy en escritorio",
@@ -36,7 +44,7 @@
     "progress_settings": "Beneficios del carrito",
     "override_info": "Dejar vacío para usar el texto traducido predeterminado.",
     "product_info": "Se agrega una unidad de la primera variante disponible por pedido.",
-    "progress_info": "Solo informativa. Configurá los beneficios por separado en Shopify. Los umbrales usan la moneda de tu tienda; la barra se oculta en otras monedas.",
+    "progress_info": "Los niveles con producto agregan regalos automáticamente. Configurá envíos y descuentos por separado en Shopify. Los umbrales usan el total con descuentos y servicios; la barra y los regalos se desactivan en otras monedas.",
     "message_info": "Usá {amount} para el importe faltante y {benefit} para la etiqueta del beneficio.",
     "card_style": "Estilo de tarjetas de producto",
     "original": "Original",

@@ -9,6 +9,11 @@
  */
 {
   "am_commerce": {
+    "tier_gift_free": "GRATIS",
+    "tier_gift": "Regalo",
+    "tier_gift_only": "Este producto se agrega automáticamente como regalo al alcanzar un beneficio del carrito.",
+    "tier_gift_unavailable": "No pudimos agregar uno de los regalos. Podés continuar con tu compra.",
+    "tier_gift_help": "Revisá el regalo del nivel {{ tier }}: requiere una sola variante gratuita, disponible, con mínimo e incremento de una unidad y distinta de los servicios de regalo.",
     "message_more": "Ver más",
     "message_less": "Ver menos",
     "scroll_to_bottom": "Ir al final del carrito",

@@ -280,6 +280,26 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-31 — Ancho del drawer y miniaturas de Quick Buy
+
+### Añadido
+
+- Objetivo: configurar el ancho del carrito y navegar los medios de Quick Buy desde el editor. `am_drawer_width`, en Carrito > Drawer, permite 30–50 rem con paso de 1 y valor inicial de 30 rem, desde 750 px y limitado a 95vw. Usa una variable exclusiva del diálogo; móvil conserva su ancho completo y `--sidebar-width` permanece intacta.
+- `am_quick_buy_show_thumbnails`, en Tarjetas de producto y activado inicialmente, muestra desde 750 px un medio principal contenido en la altura disponible y una fila horizontal de miniaturas debajo. Reutiliza los medios ordenados/filtrados y el slideshow nativo, responde a variantes y reinicia la galería al reabrir. Funciona desde cards, hotspots y upsell aunque los botones globales de Quick Add estén desactivados. Sin medios conserva los detalles y con uno solo omite controles; desactivarlo recupera el apilado anterior. Móvil conserva su presentación compacta.
+- Las miniaturas se preparan en un template inerte, sin descargar sus imágenes en la PDP. Solo se adapta la copia del modal, retirando grilla duplicada y zoom. Las slides inactivas quedan `inert`; videos/modelos usan sus componentes nativos y se pausan al cambiar de medio o cerrar. Se corrige el escape del HTML de `image_tag` en los controles compartidos para mostrar imágenes reales en lugar de texto.
+- La fuente mantiene el setting existente `cart_price_font`, compartido por importes de línea y totales de drawer/página. El precio unitario debajo del nombre conserva su fuente. Se añaden etiquetas y ayudas en los 20 locales de schema, con español/inglés propios y respaldo inglés para los demás idiomas.
+- Archivos: `config/settings_schema.json`, `snippets/header-actions.liquid`, `snippets/quick-add-modal.liquid`, `snippets/quick-add-modal-styles.liquid`, `snippets/product-media-gallery-content.liquid`, `snippets/slideshow-controls.liquid`, `assets/quick-add.js`, `assets/media-gallery.js`, los 20 `locales/*.schema.json`, `tests/am-commerce.test.mjs`, guía técnica y este changelog. Sin cambios en settings guardados, templates, section groups, mercados ni datos comerciales; sin publicación.
+
+### Validación
+
+- `node tests/am-commerce.test.mjs` aprobó 507 comprobaciones y 37 escrituras locales, sin excepciones de navegador. Incluye los anchos 30/40/50 rem a 749/750/1024/1440 px en carrito vacío/lleno, grilla/carrusel de origen, clic/teclado, variantes, reapertura, fila larga, cero/uno/varios medios, desactivación, móvil, templates inertes, hotspots y upsell. Un video WebM generado localmente verificó reproducción y pausa; el modelo conservó su preview y template nativos. Las capturas revisadas incluyen el modal en un viewport de 1024×420 px. Se conservan las regresiones de regalos, beneficios, foco, scroll, descuentos, cantidades y carruseles.
+- Theme Check terminó con cero errores y las 30 advertencias preexistentes. Los 21 JSON/JSONC y sus contratos validaron, conservando todos los settings y traducciones anteriores; sintaxis JavaScript y `git diff --check` aprobados. El validador adicional de la skill no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Shopify CLI cubrió Liquid y schemas.
+- No se verificó guardado en Theme Editor real: `shopify theme info --json` encontró EPERM al acceder a la configuración local de la CLI. El visor 3D real y Safari/iOS físicos quedan pendientes; las respuestas de tienda y el video de QA fueron locales.
+
+### Reversión
+
+- Seleccionar 30 rem y desactivar las miniaturas recupera la presentación anterior del drawer y Quick Buy. Retirar los settings y su integración elimina la capacidad sin migraciones; la corrección del HTML de miniaturas es independiente y puede conservarse.
+
 ## 2026-10-31 — Upsell y beneficios en el drawer vacío
 
 ### Añadido

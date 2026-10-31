@@ -572,6 +572,86 @@
     display: none;
   }
 
+  @media screen and (min-width: 750px) {
+    .quick-add-modal__content .product-information__media:has([data-am-quick-buy-gallery]) {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .quick-add-modal__content .product-information__media media-gallery[data-am-quick-buy-gallery] {
+      --thumbnail-width: 64px;
+      --slideshow-thumbnails-padding-block: 8px;
+      --slideshow-thumbnails-padding-inline: 8px;
+
+      position: absolute;
+      display: flex;
+      height: 100%;
+      pointer-events: auto;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] > slideshow-component {
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
+      flex: 1;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] slideshow-container {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] slideshow-slides {
+      flex-direction: row;
+      gap: 0;
+      height: 100%;
+      overflow: hidden;
+      scroll-snap-type: x mandatory;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] slideshow-component[in-viewport] slideshow-slides {
+      overflow-x: auto;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] slideshow-slide {
+      --constrained-height: 100%;
+
+      flex: 0 0 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      scroll-snap-align: center;
+      animation: none;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] [class~='product-media-constraint-wrapper'],
+    .quick-add-modal__content [data-am-quick-buy-gallery] .product-media {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      aspect-ratio: auto;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] .product-media :is(img, video, iframe) {
+      object-fit: contain;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] .product-media > :is(deferred-media, product-model) {
+      display: block;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] slideshow-controls[thumbnails] {
+      display: flex;
+    }
+
+    .quick-add-modal__content [data-am-quick-buy-gallery] slideshow-slide[aria-hidden='true'] {
+      pointer-events: none;
+    }
+  }
+
   .quick-add-modal__content .sticky-content,
   .quick-add-modal__content .sticky-content--desktop {
     top: 0;

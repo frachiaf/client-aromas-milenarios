@@ -9,6 +9,10 @@
  */
 {
   "am_commerce": {
+    "drawer_width": "Cart drawer width on desktop",
+    "drawer_width_info": "Applies from 750 px. Limited to 95% of the viewport width.",
+    "quick_buy_show_thumbnails": "Show thumbnails in Quick Buy on desktop",
+    "quick_buy_show_thumbnails_info": "From 750 px, displays one main media item with thumbnails underneath. Mobile keeps its compact layout.",
     "upsell_card_background": "Upsell card background",
     "upsell_card_text": "Upsell card text",
     "upsell_button_background": "Upsell Add button background",

@@ -1768,6 +1768,18 @@
         "content": "t:am_commerce.drawer_settings"
       },
       {
+        "type": "range",
+        "id": "am_drawer_width",
+        "label": "t:am_commerce.drawer_width",
+        "info": "t:am_commerce.drawer_width_info",
+        "min": 30,
+        "max": 50,
+        "step": 1,
+        "unit": "rem",
+        "default": 30,
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
         "type": "checkbox",
         "id": "am_drawer_hide_continue_shopping",
         "label": "t:am_commerce.drawer_hide_continue_shopping",
@@ -2176,6 +2188,13 @@
         "label": "t:settings.quick_add_colors",
         "default": "scheme-1",
         "visible_if": "{{ settings.quick_add == true }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_quick_buy_show_thumbnails",
+        "label": "t:am_commerce.quick_buy_show_thumbnails",
+        "info": "t:am_commerce.quick_buy_show_thumbnails_info",
+        "default": true
       },
       {
         "type": "header",

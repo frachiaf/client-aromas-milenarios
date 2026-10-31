@@ -4,6 +4,7 @@ import { CartUpdateEvent, ThemeEvents, VariantSelectedEvent } from '@theme/event
 import { DialogComponent, DialogCloseEvent, DialogOpenEvent } from '@theme/dialog';
 import { mediaQueryLarge, isMobileBreakpoint, getIOSVersion } from '@theme/utilities';
 import VariantPicker from '@theme/variant-picker';
+import { prepareQuickBuyGallery } from '@theme/media-gallery';
 
 export class QuickAddComponent extends Component {
   static #activeOpenRequestId = 0;
@@ -273,6 +274,11 @@ export class QuickAddComponent extends Component {
 
     if (!productGrid || !modalContent) return;
 
+    if (!isMobileBreakpoint() && this.#getQuickAddDialog()?.dataset.amShowThumbnails === 'true') {
+      const gallery = productGrid.querySelector('media-gallery');
+      if (gallery) prepareQuickBuyGallery(gallery);
+    }
+
     const isCartUpsell = this.hasAttribute('data-am-cart-upsell');
     this.#getQuickAddDialog()?.setCartUpsellSource(isCartUpsell ? this : null);
     for (const form of productGrid.querySelectorAll('product-form-component')) {
@@ -314,6 +320,13 @@ export class QuickAddComponent extends Component {
       productDetails?.remove();
     }
 
+    const currentGallery = modalContent.querySelector('media-gallery');
+    if (
+      productGrid.querySelector('[data-am-quick-buy-gallery]') ||
+      currentGallery?.hasAttribute('data-am-quick-buy-gallery')
+    ) {
+      currentGallery?.remove();
+    }
     morph(modalContent, productGrid);
 
     this.#syncVariantSelection(modalContent);
@@ -404,6 +417,9 @@ class QuickAddDialog extends DialogComponent {
   };
 
   #handleDialogClose = () => {
+    for (const media of this.querySelectorAll('[data-am-quick-buy-gallery] :is(deferred-media, product-model)')) {
+      if ('pauseMedia' in media && typeof media.pauseMedia === 'function') media.pauseMedia();
+    }
     if (this.#cartUpsellSource && !this.#cartUpsellSource.isConnected) {
       const heading = document.querySelector('.cart-drawer__dialog[open] #cart-drawer-heading');
       if (heading instanceof HTMLElement) {

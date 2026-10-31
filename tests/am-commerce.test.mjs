@@ -63,12 +63,17 @@ engine.registerFilter('t', (key, ...args) => {
 engine.registerFilter('asset_url', (name) => '/assets/' + name);
 engine.registerFilter('stylesheet_tag', (url) => `<link rel="stylesheet" href="${url}">`);
 engine.registerFilter('inline_asset_content', (name) => read('assets/' + name));
-engine.registerFilter('image_url', (image) => image?.src || '/image.svg');
-engine.registerFilter('image_tag', (src, ...args) => `<img src="${src}" width="600" height="600" ${args.filter(Array.isArray).map(([k, v]) => `${k}="${v}"`).join(' ')}>`);
+engine.registerFilter('image_url', (image, ...args) => {
+  const src = image?.src || '/image.svg', width = args.find(arg => Array.isArray(arg) && arg[0] === 'width')?.[1];
+  return src.startsWith('/gallery-') && width ? src + '?width=' + width : src;
+});
+engine.registerFilter('image_tag', (src, ...args) => `<img src="${src}" width="600" height="600" ${Object.entries(Object.fromEntries(args.filter(Array.isArray))).map(([k, v]) => `${k}="${v ?? ''}"`).join(' ')}>`);
 engine.registerFilter('placeholder_svg_tag', (_, cls) => `<svg class="${cls || ''}" viewBox="0 0 600 600"><rect width="600" height="600" fill="#ccc"/></svg>`);
 engine.registerFilter('money', (n) => '$' + (Number(n || 0) / 100).toFixed(2));
 engine.registerFilter('money_with_currency', (n) => '$' + (Number(n || 0) / 100).toFixed(2) + ' USD');
 engine.registerFilter('sort_by', (url, order) => url + '?sort_by=' + order);
+engine.registerFilter('video_tag', () => '<video src="/gallery-video.webm" autoplay muted playsinline loop></video>');
+engine.registerFilter('model_viewer_tag', () => '<model-viewer src="/gallery-model.glb"></model-viewer>');
 const render = (file, context) => engine.parseAndRender(clean(read(file)), context, { globals: context });
 const image = { src: '/image.svg', width: 600, height: 600, aspect_ratio: 1, alt: 'Producto' };
 function product(id, price) {
@@ -88,6 +93,7 @@ products.get(5).selected_or_first_available_variant.compare_at_price = 1250;
 const upsellCollection = { id: 77, handle: 'upsell', url: '/collections/upsell', title: 'Productos del fixture' };
 const popularityOrder = [4, 1, 10, 11, 3, 2, 5, 6, 7, 8, 9, 12, 13, 14, 15];
 let collectionRequests = [], failUpsell = false, delayUpsellNext = 0, upsellCandidates = popularityOrder;
+let galleryImageRequests = [], galleryVideo;
 let items = [], serial = 0, writes = [], failNext = '', nullSections = false, delayNext = 0, discount = 0;
 let activeCartRequests = 0, maxActiveCartRequests = 0;
 let current = new URLSearchParams();
@@ -150,18 +156,34 @@ async function upsellSection(order) {
   if (order === 'price-descending') sorted = [...sorted].sort((a, b) => b.price - a.price);
   return `<div id="shopify-section-am--cart-upsell" class="shopify-section">${await render('sections/am--cart-upsell.liquid', context({ section: { id: 'am--cart-upsell', settings: {} }, collection: { ...upsellCollection, products: sorted } }))}</div>`;
 }
-function productPage(id) {
+async function productGallery(id, variantId = id) {
+  const original = products.get(id);
+  const count = Number(current.get('media_count') || 3);
+  const media = Array.from({ length: count }, (_, index) => ({ id: original.id * 100 + index, media_type: 'image',
+    alt: 'Medio ' + (index + 1), aspect_ratio: [1, .5, 2][index % 3], preview_image: { ...image, src: `/gallery-${index}.svg`, aspect_ratio: [1, .5, 2][index % 3] } }));
+  if (current.has('mixed_media') && media.length >= 3) { media[1].media_type = 'video'; media[2].media_type = 'model'; }
+  const p = { ...original, media, images: media.map(m => ({ ...m.preview_image, 'attached_to_variant?': false })),
+    selected_or_first_available_variant: { ...original.selected_or_first_available_variant, id: variantId, featured_media: media[variantId === 103 ? 1 : 0] } };
+  const block = { id: 'fixture-gallery', shopify_attributes: '', settings: { ...defaults('blocks/_product-media-gallery.liquid'),
+    media_presentation: current.get('presentation') || 'grid', slideshow_controls_style: 'dots', slideshow_mobile_controls_style: 'hint', zoom: true } };
+  return render('snippets/product-media-gallery-content.liquid', context({ closest: { product: p }, product: p, block,
+    block_settings: block.settings, block_id: block.id, block_shopify_attributes: '', media_presentation: block.settings.media_presentation,
+    section: { id: 'fixture-product', settings: { gap: 24, equal_columns: true } } }));
+}
+async function productPage(id, variantId = id) {
   const p = products.get(id);
-  return `<div data-product-grid-content><div class="product-details"><h2>${p.title}</h2><product-form-component data-section-id="fixture" data-product-id="${p.id}" on:submit="/handleSubmit"><div ref="liveRegion" role="status"></div><form id="QuickBuyFixture-${id}"><input name="id" ref="variantId" value="${id}"><input name="quantity" value="1"><span ref="addToCartTextError" class="hidden"></span><add-to-cart-component ref="addToCartButtonContainer" data-add-to-cart-animation="false"><button type="submit" class="button" ref="addToCartButton">Agregar variante</button></add-to-cart-component></form></product-form-component></div></div>`;
+  const gallery = current.has('gallery') && current.get('media_count') !== '0' ? `<div class="product-information__media">${await productGallery(id, variantId)}</div>` : '';
+  return `<div data-product-grid-content>${gallery}<div class="product-details"><div class="group-block"><div class="group-block-content"><div class="view-product-title"><a href="/products/test-${p.id}">${p.title}</a></div><div class="buy-buttons-block"><product-form-component data-section-id="fixture" data-product-id="${p.id}" on:submit="/handleSubmit"><div ref="liveRegion" role="status"></div><form id="QuickBuyFixture-${id}"><input name="id" ref="variantId" value="${variantId}"><input name="quantity" value="1"><span ref="addToCartTextError" class="hidden"></span><add-to-cart-component ref="addToCartButtonContainer" data-add-to-cart-animation="false"><button type="submit" class="button" ref="addToCartButton">Agregar variante</button></add-to-cart-component></form></product-form-component></div></div></div></div></div>`;
 }
 const styles = ['snippets/accordion-custom-component.liquid', 'snippets/header-actions.liquid', 'snippets/cart-items-component.liquid', 'snippets/cart-products.liquid', 'snippets/cart-summary.liquid', 'sections/main-cart.liquid',
   'snippets/product-card.liquid', 'snippets/card-gallery.liquid', 'snippets/quick-add-styles.liquid', 'snippets/add-to-cart-button.liquid', 'snippets/slideshow-styles.liquid',
-  'snippets/slideshow-slide.liquid', 'snippets/slideshow-arrows.liquid', 'snippets/slideshow-arrow.liquid', 'snippets/quick-add-modal-styles.liquid', 'blocks/am--media-carousel-card.liquid', 'sections/am--media-product-carousel.liquid', 'sections/product-hotspots.liquid'].map(css).join('\n') + ':root{--height-buy-buttons:48px;--icon-size-xs:16px;--icon-size-sm:20px;--icon-size-md:24px;--padding-2xs:6px;--margin-sm:12px;--margin-2xs:8px;--animation-speed:.25s;--animation-easing:ease;--animation-speed-fast:.15s;--layer-heightened:2}';
+  'snippets/slideshow-slide.liquid', 'snippets/slideshow-arrows.liquid', 'snippets/slideshow-arrow.liquid', 'snippets/slideshow-controls.liquid', 'snippets/product-media.liquid', 'snippets/video.liquid', 'snippets/product-media-gallery-content-styles.liquid', 'snippets/quick-add-modal-styles.liquid', 'blocks/am--media-carousel-card.liquid', 'sections/am--media-product-carousel.liquid', 'sections/product-hotspots.liquid'].map(css).join('\n') + ':root{--height-buy-buttons:48px;--icon-size-xs:16px;--icon-size-sm:20px;--icon-size-md:24px;--padding-2xs:6px;--margin-sm:12px;--margin-2xs:8px;--animation-speed:.25s;--animation-easing:ease;--animation-speed-fast:.15s;--layer-heightened:2;--quick-add-modal-width:min(54rem,96vw);--quick-add-modal-height:min(38.5rem,96vh);--quick-add-modal-gallery-width:24rem}';
 const imports = JSON.parse(read('snippets/scripts.liquid').match(/<script type="importmap">([\s\S]*?)<\/script>/)[1].replace(/\{\{\s*'([^']+)'\s*\|\s*asset_url\s*\}\}/g, '/assets/$1'));
 async function page() {
+  const pdp = current.has('gallery') && !current.has('mixed_media') && current.get('media_count') !== '0' ? `<div id="fixture-pdp" class="shopify-section" style="max-width:400px">${await productGallery(3)}</div>` : '';
   const cards = `<div class="fixture-cards">${await card()}${await card('original', 'original-test')}<div class="am-media-product-carousel__product-slide" style="--am-card-height:360px;--am-card-content-padding:16px">${await card('circular', 'carousel-test')}</div></div>`;
   const upsellStyles = ['snippets/am--cart-upsell.liquid', 'sections/am--cart-upsell.liquid'].filter((file) => fs.existsSync(path.join(root, file))).map(css).join('\n');
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/assets/base.css"><link rel="stylesheet" href="/assets/product-hotspot.css"><link rel="stylesheet" href="/assets/am--cart-upsell.css"><style>:root{--sidebar-width:480px;--page-margin:20px;--page-width:1200px;--spacing-scale:1;--color-background:#fff;--color-foreground:#222;--color-border:#ddd;--color-foreground-rgb:34 34 34;--color-primary-button-background:#624534;--color-primary-button-text:#fff;--button-size:40px;--button-size-md:44px;--minimum-touch-target:44px;--focus-outline-width:2px;--focus-outline-offset:3px;--padding-sm:12px;--padding-md:16px;--padding-lg:20px;--padding-xl:24px;--padding-2xl:28px;--gap-xl:24px;--gap-2xs:6px;--gap-xs:8px;--font-size--2xs:12px;--cart-font-size--sm:14px;--font-paragraph--family:Arial;--font-paragraph--size:16px;--font-paragraph--weight:400;--font-paragraph--line-height:1.4}body{margin:0;font-family:Arial}button{cursor:pointer}[hidden]{display:none!important}.fixture-cards{display:flex;overflow:auto;max-width:calc(100% - 48px);gap:24px;margin:24px}.fixture-cards>*{flex:0 0 230px}.fixture-cards product-card{width:230px}.cart-page{max-width:1200px;margin:auto}.section-product-hotspots{min-height:480px} ${styles} ${upsellStyles}</style><script>window.Shopify={designMode:false,routes:{root:'/'},locale:'es'};window.Theme={utilities:{},routes:{cart_url:'/cart',cart_add_url:'/cart/add.js',cart_change_url:'/cart/change',cart_update_url:'/cart/update'},translations:{cart_count:'Productos',added:'Agregado'}};</script><script type="importmap">${JSON.stringify(imports)}</script><script type="module" src="/assets/accordion-custom.js"></script><script type="module" src="/assets/cart-discount.js"></script><script type="module" src="/assets/product-card.js"></script><script type="module" src="/assets/slideshow.js"></script><script type="module" src="/assets/product-form.js"></script><script type="module" src="/assets/quick-add.js"></script><script type="module" src="/assets/am--cart-upsell.js"></script></head><body>${await section()}${await render('snippets/am--cart-features.liquid', context())}${await render('snippets/quick-add-modal.liquid', context())}${current.has('carousel') ? await mediaCarousel() : ''}${cards}${await hotspots()}</body></html>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/assets/base.css"><link rel="stylesheet" href="/assets/product-hotspot.css"><link rel="stylesheet" href="/assets/am--cart-upsell.css"><style>:root{--sidebar-width:480px;--page-margin:20px;--page-width:1200px;--spacing-scale:1;--color-background:#fff;--color-foreground:#222;--color-border:#ddd;--color-foreground-rgb:34 34 34;--color-primary-button-background:#624534;--color-primary-button-text:#fff;--button-size:40px;--button-size-md:44px;--minimum-touch-target:44px;--focus-outline-width:2px;--focus-outline-offset:3px;--padding-sm:12px;--padding-md:16px;--padding-lg:20px;--padding-xl:24px;--padding-2xl:28px;--gap-xl:24px;--gap-2xs:6px;--gap-xs:8px;--font-size--2xs:12px;--cart-font-size--sm:14px;--font-paragraph--family:Arial;--font-paragraph--size:16px;--font-paragraph--weight:400;--font-paragraph--line-height:1.4}body{margin:0;font-family:Arial}button{cursor:pointer}[hidden]{display:none!important}.fixture-cards{display:flex;overflow:auto;max-width:calc(100% - 48px);gap:24px;margin:24px}.fixture-cards>*{flex:0 0 230px}.fixture-cards product-card{width:230px}.cart-page{max-width:1200px;margin:auto}.section-product-hotspots{min-height:480px} ${styles} ${upsellStyles}</style><script>window.Shopify={designMode:false,routes:{root:'/'},locale:'es'};window.Theme={utilities:{},routes:{cart_url:'/cart',cart_add_url:'/cart/add.js',cart_change_url:'/cart/change',cart_update_url:'/cart/update'},translations:{cart_count:'Productos',added:'Agregado'}};</script><script type="importmap">${JSON.stringify(imports)}</script><script type="module" src="/assets/accordion-custom.js"></script><script type="module" src="/assets/cart-discount.js"></script><script type="module" src="/assets/product-card.js"></script><script type="module" src="/assets/slideshow.js"></script><script type="module" src="/assets/product-form.js"></script><script type="module" src="/assets/quick-add.js"></script><script type="module" src="/assets/media.js"></script><script type="module" src="/assets/am--cart-upsell.js"></script></head><body>${await section()}${await render('snippets/am--cart-features.liquid', context())}${await render('snippets/quick-add-modal.liquid', context())}${current.has('carousel') ? await mediaCarousel() : ''}${pdp}${cards}${await hotspots()}</body></html>`;
 }
 
 const server = http.createServer(async (req, res) => {
@@ -185,7 +207,8 @@ const server = http.createServer(async (req, res) => {
     }
     if (/^\/products\/test-\d+$/.test(url.pathname)) {
       res.setHeader('Content-Type', 'text/html');
-      return res.end(productPage(Number(url.pathname.split('-').pop())));
+      const id = Number(url.pathname.split('-').pop());
+      return res.end((await productPage(id, Number(url.searchParams.get('variant') || id))).replaceAll('https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css', '/model-viewer.css'));
     }
     if (/^\/cart\/(add|update|change)(\.js)?$/.test(url.pathname)) {
       mutationStarted = true; activeCartRequests++;
@@ -220,7 +243,9 @@ const server = http.createServer(async (req, res) => {
       res.setHeader('Content-Type', file.endsWith('.css') ? 'text/css' : 'text/javascript');
       return res.end(fs.readFileSync(file));
     }
-    if (url.pathname.endsWith('.svg')) { res.setHeader('Content-Type', 'image/svg+xml'); return res.end(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="600" height="600" fill="${url.pathname.includes('hover') ? '#c99' : '#dda'}"/><circle cx="300" cy="300" r="170" fill="#b86"/></svg>`); }
+    if (url.pathname === '/gallery-video.webm') { res.setHeader('Content-Type', 'video/webm'); return res.end(galleryVideo); }
+    if (url.pathname === '/model-viewer.css') { res.setHeader('Content-Type', 'text/css'); return res.end(''); }
+    if (url.pathname.endsWith('.svg')) { if (url.pathname.startsWith('/gallery-') && url.searchParams.get('width') === '144') galleryImageRequests.push(url.toString()); res.setHeader('Content-Type', 'image/svg+xml'); return res.end(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="600" height="600" fill="${url.pathname.includes('hover') ? '#c99' : '#dda'}"/><circle cx="300" cy="300" r="170" fill="#b86"/></svg>`); }
     res.writeHead(404); res.end();
   } catch (error) { console.error(error.stack); res.writeHead(500); res.end(error.stack); }
   finally { if (mutationStarted) activeCartRequests--; }
@@ -565,6 +590,122 @@ try {
     await check('first add never reopens a closed empty drawer', `!document.querySelector('.cart-drawer__dialog').open && !!document.querySelector('#checkout')`);
     Object.assign(settings, savedSettings); items = []; discount = 0;
   };
+  const quickBuyGalleryChecks = async () => {
+    const saved = { ...settings }, previousItems = items;
+    settings.am_drawer_upsell_enabled = false;
+    if (!process.env.AM_QA_MEDIA_ONLY) for (const width of [749, 750, 1024, 1440]) {
+      await viewport(width);
+      for (const rem of [30, 40, 50]) {
+        settings.am_drawer_width = rem;
+        for (const empty of [false, true]) {
+          items = []; if (!empty) add(1, 2);
+          await load(); await openDrawer();
+          await check(`drawer width ${rem} rem / ${width} px / empty ${empty}`, `(()=>{const d=document.querySelector('.cart-drawer__dialog'),r=d.getBoundingClientRect(),root=parseFloat(getComputedStyle(document.documentElement).fontSize),expected=innerWidth<750?innerWidth:Math.min(${rem}*root,innerWidth*.95);return Math.abs(r.width-expected)<1 && r.left>=-1 && r.right<=innerWidth+1 && d.scrollWidth<=d.clientWidth+1 && getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width').trim()==='480px' && ${empty ? "!document.querySelector('#checkout')" : "document.querySelector('#checkout').getBoundingClientRect().bottom<=r.bottom+1"}})()`);
+        }
+      }
+    }
+    settings.am_drawer_width = 30; items = []; add(1);
+    const modal = `document.querySelector('.quick-add-modal')`;
+    const gallery = `document.querySelector('#quick-add-modal-content media-gallery')`;
+    const openProduct = async (selector = 'quick-add-component', url = '/products/test-3') => {
+      await evaluate(`document.querySelector('${selector}').open('${url}')`);
+      await wait(`${modal}.open`);
+      await evaluate(`Promise.all(${modal}.getAnimations().map(a=>a.finished.catch(()=>{})))`);
+      await pause(120);
+    };
+    const closeProduct = async () => {
+      await evaluate(`document.getElementById('quick-add-dialog').closeDialog()`);
+      await wait(`!${modal}.open`);
+    };
+    for (const presentation of ['grid', 'carousel']) {
+      galleryImageRequests = [];
+      await viewport(1440); await load('gallery&presentation=' + presentation);
+      assert.equal(galleryImageRequests.length, 0, 'Inert Quick Buy thumbnails do not load on the PDP'); checks++;
+      await evaluate(`window.pdpBefore=document.getElementById('fixture-pdp').innerHTML`);
+      await openProduct();
+      await check('native main gallery and thumbnails in ' + presentation, `${gallery}.hasAttribute('data-am-quick-buy-gallery') && ${gallery}.querySelectorAll('slideshow-controls').length===1 && ${gallery}.querySelectorAll('.slideshow-controls__thumbnail').length===3 && !${gallery}.querySelector('.media-gallery__grid, zoom-dialog') && [...${gallery}.querySelectorAll('slideshow-slide')].every(s=>!s.hasAttribute('on:click'))`);
+      await check('thumbnails contain real images in ' + presentation, `${gallery}.querySelectorAll('.slideshow-controls__thumbnail img').length===3`);
+      await check('PDP remains intact in ' + presentation, `document.getElementById('fixture-pdp').innerHTML===window.pdpBefore`);
+      await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[1].click()`);
+      await wait(`${gallery}.querySelector('slideshow-component').current===1`);
+      await check('thumbnail selects the second main media in ' + presentation, `(()=>{const g=${gallery},s=g.querySelector('slideshow-component'),t=g.querySelectorAll('.slideshow-controls__thumbnail');return t[1].getAttribute('aria-selected')==='true' && s.refs.slides[1].getBoundingClientRect().left>=g.getBoundingClientRect().left-1 && !s.refs.slides[1].inert})()`);
+      await pause(350);
+      await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[2].focus()`);
+      await check('keyboard can focus thumbnails in ' + presentation, `document.activeElement===${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[2]`);
+      await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' });
+      await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+      await wait(`${gallery}.querySelector('slideshow-component').current===2`);
+      await check('keyboard activates media and inactive slides are inert in ' + presentation, `${gallery}.querySelectorAll('slideshow-slide[inert]').length===2 && document.activeElement===${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[2]`);
+      await evaluate(`(async()=>{const html=new DOMParser().parseFromString(await (await fetch('/products/test-3?variant=103')).text(),'text/html');const {VariantUpdateEvent}=await import('@theme/events');document.querySelector('#quick-add-modal-content product-form-component').dispatchEvent(new VariantUpdateEvent({id:'103',available:true},'fixture-product',{html,productId:'3'}))})()`);
+      await wait(`${gallery}.querySelector('.product-media').dataset.mediaId==='301'`);
+      await check('variant response retains working thumbnails in ' + presentation, `${gallery}.hasAttribute('data-am-quick-buy-gallery') && ${gallery}.querySelectorAll('.slideshow-controls__thumbnail').length===3 && ${gallery}.querySelectorAll('slideshow-controls').length===1`);
+      await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[1].click()`);
+      await wait(`${gallery}.querySelector('slideshow-component').current===1`);
+      await closeProduct(); await openProduct();
+      await check('reopening resets media without duplicate controls in ' + presentation, `${gallery}.querySelector('slideshow-component').current===0 && ${gallery}.querySelectorAll('slideshow-controls').length===1`);
+      for (const [width, height] of [[750,900], [1024,900], [1440,900], [1024,420]]) {
+        await viewport(width, height); await load('gallery&presentation=' + presentation); await openProduct();
+        await check('main media and thumbnails fit desktop modal ' + presentation + '/' + width + '/' + height, `(()=>{const g=${gallery},m=${modal}.getBoundingClientRect(),c=g.querySelector('slideshow-container').getBoundingClientRect(),t=g.querySelector('slideshow-controls').getBoundingClientRect(),b=document.querySelector('#quick-add-modal-content [type="submit"]').getBoundingClientRect();return c.height>44 && c.bottom<=t.top+1 && t.bottom<=m.bottom+1 && g.scrollWidth<=g.clientWidth+1 && m.left>=-1 && m.right<=innerWidth+1 && b.width>0 && b.height>0 && b.bottom<=m.bottom+1})()`);
+      }
+      const shot = await cdp('Page.captureScreenshot', { format: 'png' });
+      fs.writeFileSync(path.join(output, 'quick-buy-thumbnails-' + presentation + '.png'), Buffer.from(shot.data, 'base64'));
+    }
+    await viewport(1440); await load('gallery&media_count=12'); await openProduct();
+    await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[11].click()`);
+    await wait(`${gallery}.querySelector('slideshow-component').current===11`);
+    await wait(`(()=>{const g=${gallery},c=g.querySelector('.slideshow-controls__thumbnails-container').getBoundingClientRect(),t=g.querySelectorAll('.slideshow-controls__thumbnail')[11].getBoundingClientRect();return t.left>=c.left-1 && t.right<=c.right+1})()`);
+    await check('long thumbnail row scrolls to the selected media', `(()=>{const g=${gallery},c=g.querySelector('.slideshow-controls__thumbnails-container'),t=g.querySelectorAll('.slideshow-controls__thumbnail')[11].getBoundingClientRect(),r=c.getBoundingClientRect();return c.scrollWidth>c.clientWidth && t.left>=r.left-1 && t.right<=r.right+1})()`);
+    const clip = await evaluate(`(async()=>{const canvas=document.createElement('canvas');canvas.width=64;canvas.height=64;const context=canvas.getContext('2d'),stream=canvas.captureStream(15),chunks=[],recorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp8'});recorder.ondataavailable=e=>chunks.push(e.data);const stopped=new Promise(resolve=>recorder.onstop=resolve);let frame=0;const timer=setInterval(()=>{context.fillStyle=++frame%2?'#ac7':'#ca7';context.fillRect(0,0,64,64)},30);recorder.start();await new Promise(resolve=>setTimeout(resolve,220));recorder.stop();await stopped;clearInterval(timer);stream.getTracks().forEach(t=>t.stop());return await new Promise(resolve=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.readAsDataURL(new Blob(chunks,{type:'video/webm'}))})})()`);
+    galleryVideo = Buffer.from(clip, 'base64');
+    await load('gallery&mixed_media'); await openProduct();
+    await check('mixed media retain native deferred video and model previews', `${gallery}.querySelectorAll('.slideshow-controls__thumbnail-badge').length===2 && !!${gallery}.querySelector('deferred-media template') && !!${gallery}.querySelector('product-model template') && !${gallery}.querySelector('video')`);
+    await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[1].click()`);
+    await wait(`${gallery}.querySelector('slideshow-component').current===1`);
+    await pause(300);
+    await evaluate(`${gallery}.querySelector('deferred-media [ref="deferredMediaPlayButton"]').click()`);
+    await wait(`!!${gallery}.querySelector('video') && !${gallery}.querySelector('video').paused && ${gallery}.querySelector('video').readyState>=2`);
+    await check('native video plays only after activating its poster', `getComputedStyle(${gallery}.querySelector('deferred-media')).pointerEvents==='auto' && ${gallery}.querySelector('video').muted`);
+    await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[0].click()`);
+    await wait(`${gallery}.querySelector('video').paused`);
+    await check('changing the main media pauses the previous video', `${gallery}.querySelector('video').paused && ${gallery}.querySelector('deferred-media').closest('slideshow-slide').inert`);
+    await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[2].click()`);
+    await wait(`${gallery}.querySelector('slideshow-component').current===2`);
+    await wait(`getComputedStyle(${gallery}.querySelector('product-model')).pointerEvents==='auto'`);
+    await check('model preview remains interactive without product zoom', `!${gallery}.querySelector('product-model').closest('slideshow-slide').inert && getComputedStyle(${gallery}.querySelector('product-model')).pointerEvents==='auto' && !${gallery}.querySelector('zoom-dialog')`);
+    await evaluate(`${gallery}.querySelectorAll('.slideshow-controls__thumbnail')[1].click()`);
+    await pause(300);
+    await evaluate(`${gallery}.querySelector('deferred-media').playMedia();window.galleryVideo=${gallery}.querySelector('video')`);
+    await wait(`!window.galleryVideo.paused`);
+    await closeProduct();
+    await check('closing Quick Buy pauses its video', `window.galleryVideo.paused`);
+    for (const count of [0, 1]) {
+      await load('gallery&media_count=' + count); await openProduct();
+      await check('Quick Buy handles ' + count + ' media', count ? `${gallery}.querySelectorAll('slideshow-slide').length===1 && !${gallery}.querySelector('slideshow-controls')` : `!${gallery} && !!document.querySelector('#quick-add-modal-content product-form-component')`);
+    }
+    settings.am_quick_buy_show_thumbnails = false;
+    await load('gallery'); await openProduct();
+    await check('disabled setting restores stacked grid presentation', `${gallery}.classList.contains('media-gallery--grid') && !${gallery}.hasAttribute('data-am-quick-buy-gallery') && !${gallery}.querySelector('template[data-am-quick-buy-thumbnails]') && [...${gallery}.querySelectorAll('slideshow-controls')].every(c=>getComputedStyle(c).display==='none')`);
+    settings.am_quick_buy_show_thumbnails = true;
+    for (const width of [390, 749]) {
+      await viewport(width); await load('gallery'); await openProduct();
+      await check('mobile preserves compact Quick Buy at ' + width, `!${gallery}.hasAttribute('data-am-quick-buy-gallery') && !!document.querySelector('#quick-add-modal-content .product-header') && [...${gallery}.querySelectorAll('slideshow-controls')].every(c=>getComputedStyle(c).display==='none')`);
+    }
+    await viewport(1440); settings.quick_add = false;
+    await load('gallery');
+    await check('thumbnail option remains independent of card Quick Add', `document.getElementById('quick-add-dialog').dataset.amShowThumbnails==='true'`);
+    await evaluate(`document.querySelector('product-hotspot-component').querySelector('button').click()`);
+    await wait(`${modal}.open`);
+    await check('hotspot uses the shared thumbnail gallery', `${gallery}.hasAttribute('data-am-quick-buy-gallery') && document.querySelectorAll('#quick-add-dialog').length===1`);
+    settings.am_drawer_upsell_enabled = true; settings.am_drawer_upsell_collection = upsellCollection;
+    await load('gallery'); await openDrawer(); await wait(`document.querySelector('[data-am-upsell-product-id="3"] quick-add-component')`);
+    await openProduct('[data-am-upsell-product-id="3"] quick-add-component');
+    await check('upsell mounts native thumbnails over the open drawer', `${gallery}.hasAttribute('data-am-quick-buy-gallery') && document.querySelector('.cart-drawer__dialog').open && !!document.querySelector('#quick-add-modal-content [data-am-cart-upsell]')`);
+    await closeProduct();
+    await check('closing the gallery preserves drawer focus and scroll lock', `document.querySelector('.cart-drawer__dialog').open && document.body.style.position==='fixed' && document.querySelector('.cart-drawer__dialog').contains(document.activeElement)`);
+    Object.assign(settings, saved); items = previousItems;
+  };
+  if (![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY].some(Boolean)) await quickBuyGalleryChecks();
+  if (!process.env.AM_QA_GALLERY_ONLY) {
   if (!process.env.AM_QA_DETAILS_ONLY && !process.env.AM_QA_HOTSPOTS_ONLY && !process.env.AM_QA_DENSITY_ONLY && !process.env.AM_QA_UPSELL_ONLY) await emptyDrawer();
   add(1); add(2);
   if (process.env.AM_QA_EMPTY_ONLY) {
@@ -960,6 +1101,7 @@ try {
   await pause(100);
   await check('mobile does not enable desktop visibility state', `!document.querySelector('product-hotspots').hasAttribute('data-desktop-preview-active')`);
   await check('touch cards expose Quick Add', `getComputedStyle(document.querySelector('#product-card-card-test .quick-add__button--add')).opacity==='1'`);
+  }
   }
   assert.deepEqual(errors, [], 'No browser exceptions'); checks++;
   fs.writeFileSync(path.join(output, 'density.json'), JSON.stringify(metrics, null, 2));

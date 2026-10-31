@@ -9,6 +9,10 @@
  */
 {
   "am_commerce": {
+    "drawer_width": "Ancho del cart drawer en escritorio",
+    "drawer_width_info": "Se aplica desde 750 px. Limitado al 95% del ancho de la pantalla.",
+    "quick_buy_show_thumbnails": "Mostrar miniaturas en Quick Buy en escritorio",
+    "quick_buy_show_thumbnails_info": "Desde 750 px, muestra un medio principal con miniaturas debajo. Móvil conserva su diseño compacto.",
     "upsell_card_background": "Fondo de las cards del upsell",
     "upsell_card_text": "Texto de las cards del upsell",
     "upsell_button_background": "Fondo del botón Agregar del upsell",

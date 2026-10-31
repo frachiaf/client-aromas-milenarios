@@ -400,6 +400,19 @@
 
     {% if sorted_media.size > 1 %}
       {% capture controls %}
+        {% if settings.am_quick_buy_show_thumbnails %}
+          <template data-am-quick-buy-thumbnails>
+            {% render 'slideshow-controls',
+              style: 'thumbnails',
+              item_count: sorted_media.size,
+              thumbnails: sorted_media,
+              controls_on_media: false,
+              pagination_position: 'center',
+              aspect_ratio: '1',
+              thumbnail_radius: block_settings.thumbnail_radius
+            %}
+          </template>
+        {% endif %}
         {% if render_slideshow_controls %}
           {%- render 'slideshow-controls',
             class: slideshow_controls_class,

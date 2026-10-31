@@ -141,6 +141,7 @@
       <dialog
         ref="dialog"
         class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}"
+        style="--am-cart-drawer-width: {{ settings.am_drawer_width | default: 30 | at_least: 30 | at_most: 50 }}rem;"
         data-testid="cart-drawer-dialog"
         aria-labelledby="cart-drawer-heading"
         scroll-lock
@@ -343,7 +344,7 @@
     background-color: var(--color-background);
 
     @media screen and (min-width: 750px) {
-      width: var(--sidebar-width);
+      width: var(--am-cart-drawer-width, 30rem);
       max-width: 95vw;
     }
   }

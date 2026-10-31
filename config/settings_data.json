@@ -47,6 +47,7 @@
     "cart_type": "drawer",
     "am_drawer_upsell_enabled": true,
     "am_drawer_upsell_collection": "cremas",
+    "am_drawer_upsell_heading": "Milenarios que gustan..",
     "am_drawer_upsell_sort": "price-ascending",
     "icon_stroke": "default",
     "input_border_width": 1,

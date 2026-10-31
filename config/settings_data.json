@@ -71,7 +71,7 @@
     "am_progress_1_label": "Envío Gratis",
     "am_progress_2_enabled": true,
     "am_progress_2_threshold": 80000,
-    "am_progress_2_label": "1er Regalo",
+    "am_progress_2_label": "10% OFF",
     "am_progress_3_enabled": true,
     "am_progress_3_threshold": 100000,
     "am_progress_3_label": "Gift Card",

@@ -1768,6 +1768,13 @@
         "content": "t:am_commerce.drawer_settings"
       },
       {
+        "type": "checkbox",
+        "id": "am_drawer_hide_continue_shopping",
+        "label": "t:am_commerce.drawer_hide_continue_shopping",
+        "default": true,
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
         "type": "richtext",
         "id": "am_drawer_checkout_text",
         "label": "t:am_commerce.drawer_checkout_text",

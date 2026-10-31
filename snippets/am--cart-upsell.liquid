@@ -5,7 +5,7 @@
   {% render 'am--cart-upsell' %}
 {%- enddoc -%}
 
-{%- if settings.am_drawer_upsell_enabled and settings.am_drawer_upsell_collection != blank and cart != empty -%}
+{%- if settings.am_drawer_upsell_enabled and settings.am_drawer_upsell_collection != blank -%}
   {% style %}
     am-cart-upsell {
       --am-upsell-card-background: {% if settings.am_drawer_upsell_card_background != blank %}{{ settings.am_drawer_upsell_card_background }}{% else %}initial{% endif %};

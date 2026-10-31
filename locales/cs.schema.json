@@ -13,6 +13,7 @@
     "upsell_card_text": "Upsell card text",
     "upsell_button_background": "Upsell Add button background",
     "upsell_button_text": "Upsell Add button text",
+    "drawer_hide_continue_shopping": "Hide Continue shopping when the cart is empty",
     "drawer_settings": "Drawer",
     "drawer_checkout_text": "Text below the checkout button",
     "drawer_gift_open": "Open gift options by default in the drawer",

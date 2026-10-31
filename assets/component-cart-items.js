@@ -105,6 +105,8 @@ class CartItemsComponent extends Component {
     // If the cart item row is the last row, optimistically trigger the cart empty state
     const isEmptyCart = rowsToRemove.length == this.refs.cartItemRows.length;
 
+    if (isEmptyCart && this.isDrawer) return;
+
     const template = document.getElementById('empty-cart-template');
     if (isEmptyCart && template instanceof HTMLTemplateElement) {
       const clone = document.importNode(template.content, true);

@@ -280,6 +280,26 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-31 — Upsell y beneficios en el drawer vacío
+
+### Añadido
+
+- Objetivo: ofrecer recomendaciones y mostrar los beneficios pendientes antes de agregar el primer producto. El drawer conserva título/cierre y barra arriba, seguidos del mensaje vacío y el upsell dentro del viewport desplazable. No muestra resumen ni checkout hasta tener productos; mantiene colores, colección, orden, controles, Quick Buy y activaciones existentes.
+- El nuevo checkbox `am_drawer_hide_continue_shopping`, en Carrito > Drawer, oculta Seguir comprando por defecto. Desactivarlo recupera el botón con su enlace configurado. La etiqueta se incorpora a los 20 locales de schema, en español/inglés y con respaldo inglés en los demás idiomas. La página conserva su botón y no incorpora upsell ni progreso vacío.
+- La barra vacía parte de cero, sin niveles completados y con el importe completo del primer beneficio pendiente, manteniendo las validaciones de moneda y umbrales. Quitar la última línea del drawer espera la respuesta confirmada y no inserta un template optimista con datos anteriores; la página mantiene su flujo. Header y referencia accesible son estables en las transiciones AJAX.
+- Archivos: `snippets/header-actions.liquid`, `snippets/cart-products.liquid`, `snippets/am--cart-upsell.liquid`, `snippets/am--cart-progress.liquid`, `assets/am--cart.css`, `assets/component-cart-items.js`, `config/settings_schema.json`, los 20 locales de schema, `tests/am-commerce.test.mjs`, guía técnica y este changelog. Sin cambios en templates, section groups, settings guardados, mercados o productos; sin publicación.
+
+### Validación
+
+- `AM_QA_EMPTY_ONLY=1 node tests/am-commerce.test.mjs` aprobó 48 comprobaciones y cinco escrituras locales con Liquid/assets reales en Chromium: carga diferida, seis anchos de 320 a 1837 px y viewport de 390×420, orden, geometría, progreso cero, ambos valores del checkbox, moneda/niveles inválidos, desactivación, candidatos/errores/reintento, scroll/foco, aislamiento de página y transiciones con Agregar/Quick Buy/eliminación/cierre durante solicitud. Se revisaron capturas del drawer vacío en móvil, escritorio y viewport bajo.
+- El subset de regresión `AM_QA_UPSELL_ONLY=1 node tests/am-commerce.test.mjs` aprobó 106 comprobaciones y siete escrituras locales. La suite espera el documento nuevo al navegar y un periodo sin scroll antes de probar el bucle después de swipe, evitando interactuar con el documento saliente o con la inercia del gesto; no se modificó el carrusel.
+- La suite completa final `node tests/am-commerce.test.mjs` aprobó 442 comprobaciones y 37 escrituras locales, sin excepciones de navegador, incluidas las regresiones de regalos, descuentos, progreso, cantidades, Quick Buy, upsell, carrusel y hotspots. Sintaxis JavaScript y `git diff --check` aprobados.
+- Theme Check terminó con cero errores y las 30 advertencias preexistentes. Los 21 JSON/JSONC modificados validaron y conservaron todas las traducciones anteriores. El validador adicional de la skill no pudo iniciar por `@shopify/theme-check-common` ausente. No se verificó guardado en Theme Editor real: `shopify theme info --json` encontró EPERM en la configuración local de la CLI.
+
+### Reversión
+
+- Desactivar el nuevo checkbox restaura Seguir comprando en el drawer vacío. Revertir el render compartido, sus estilos y las condiciones de upsell/progreso recupera el estado vacío anterior; restaurar el template optimista y retirar el guard de la última línea devuelve la transición anterior. No requiere migraciones.
+
 ## 2026-10-31 — Nota compacta y bucle del upsell
 
 ### Modificado

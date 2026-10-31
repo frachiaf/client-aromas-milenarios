@@ -4,7 +4,7 @@
   Renders the cart products list or empty cart state.
 
   @param {boolean} [force_empty] - Force render empty cart state
-  @param {boolean} [is_drawer] - Enables drawer-only gift message presentation; defaults to false.
+  @param {boolean} [is_drawer] - Enables drawer-only gift messages and empty-cart button settings; defaults to false.
   @param {block} [block] - The block object providing settings and editor attributes.
 
   @example
@@ -45,14 +45,16 @@
       </p>
     {%- endif -%}
 
-    <a
-      class="button cart-items__empty-button"
-      href="{{ settings.empty_cart_button_link | default: routes.all_products_collection_url }}"
-    >
-      <span class="button-text">
-        {{ 'actions.continue_shopping' | t }}
-      </span>
-    </a>
+    {% unless is_drawer and settings.am_drawer_hide_continue_shopping %}
+      <a
+        class="button cart-items__empty-button"
+        href="{{ settings.empty_cart_button_link | default: routes.all_products_collection_url }}"
+      >
+        <span class="button-text">
+          {{ 'actions.continue_shopping' | t }}
+        </span>
+      </a>
+    {% endunless %}
   {%- else -%}
     <span
       class="visually-hidden"

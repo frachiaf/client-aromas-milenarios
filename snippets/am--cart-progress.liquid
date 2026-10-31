@@ -40,7 +40,13 @@
       assign valid = false
     endif
   %}
-  {% if valid and cart.currency.iso_code == shop.currency and cart.item_count > 0 %}
+  {% liquid
+    assign show_progress = false
+    if cart.item_count > 0 or is_drawer
+      assign show_progress = true
+    endif
+  %}
+  {% if valid and cart.currency.iso_code == shop.currency and show_progress %}
     {% liquid
       assign progress = 100
       if completed < count

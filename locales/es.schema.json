@@ -13,6 +13,7 @@
     "upsell_card_text": "Texto de las cards del upsell",
     "upsell_button_background": "Fondo del botón Agregar del upsell",
     "upsell_button_text": "Texto del botón Agregar del upsell",
+    "drawer_hide_continue_shopping": "Ocultar Seguir comprando con carrito vacío",
     "drawer_settings": "Drawer",
     "drawer_checkout_text": "Texto debajo de Pagar",
     "drawer_gift_open": "Desplegar regalos inicialmente en el drawer",

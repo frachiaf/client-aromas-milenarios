@@ -1,6 +1,7 @@
 import { CartUpdateEvent, ThemeEvents } from '@theme/events';
 import { fetchConfig } from '@theme/utilities';
 import { sectionRenderer } from '@theme/section-renderer';
+import '@theme/am-cart-message';
 
 let mutationQueue = Promise.resolve();
 let pending = 0;
@@ -65,6 +66,7 @@ function feedback(message, error = false) {
     node.hidden = !message;
     node.textContent = message || '';
     node.classList.toggle('am-cart-error', error);
+    node.classList.toggle('visually-hidden', Boolean(message) && !error && Boolean(node.closest('cart-drawer-component')));
     node.setAttribute('role', error ? 'alert' : 'status');
   }
 }
@@ -341,7 +343,7 @@ for (const type of ['click', 'change', 'submit', 'keydown']) {
   document.addEventListener(type, (event) => {
     if (type === 'keydown' && !['Enter', ' '].includes(event.key)) return;
     if (!(event.target instanceof Element)) return;
-    const blocked = isCartMutationBusy() && event.target.closest('.cart-form, .cart__ctas, am-cart-gifts');
+    const blocked = isCartMutationBusy() && event.target.closest('.cart-form, .cart__ctas, am-cart-gifts, [data-am-cart-upsell]');
     const unverified = document.documentElement.hasAttribute('data-am-cart-unverified') && event.target.closest('.cart__ctas');
     if (blocked || unverified) {
       event.preventDefault();

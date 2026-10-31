@@ -1,0 +1,72 @@
+{%- doc -%}
+  Renders a compact horizontal cart recommendation with native add-to-cart and Quick Buy.
+
+  @param {product} product - Available recommended product
+  @param {string} section_id - Section ID used for unique form identifiers
+{%- enddoc -%}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign quantity = variant.quantity_rule.min | default: 1
+  assign product_form_id = 'CartUpsell-ProductForm-' | append: section_id | append: '-' | append: product.id
+-%}
+
+<article class="am-cart-upsell__card">
+  <a class="am-cart-upsell__image-link" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_image != blank -%}
+      {{- product.featured_image | image_url: width: 320 | image_tag: widths: '120, 180, 240, 320', sizes: '140px', loading: 'lazy', class: 'am-cart-upsell__image', alt: '' -}}
+    {%- endif -%}
+  </a>
+  <div class="am-cart-upsell__details">
+    <a class="am-cart-upsell__title" href="{{ product.url }}">{{ product.title | escape }}</a>
+    <div class="am-cart-upsell__price">
+      {%- render 'price', product_resource: product, show_sale_price_first: true -%}
+    </div>
+    <quick-add-component
+      data-am-cart-upsell
+      data-am-cart-error="{{ 'products.product.add_to_cart_error' | t | escape }}"
+      data-product-title="{{ product.title | escape }}"
+      data-product-url="{{ product.url | escape }}"
+      data-product-options-count="{{ product.options.size }}"
+    >
+      <product-form-component
+        data-am-cart-upsell
+        data-am-cart-error="{{ 'products.product.add_to_cart_error' | t | escape }}"
+        data-section-id="{{ section_id }}"
+        data-product-id="{{ product.id }}"
+        on:submit="/handleSubmit"
+      >
+        <div class="visually-hidden" ref="liveRegion" aria-live="assertive" role="status" aria-atomic="true"></div>
+        {%- form 'product', product, id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" ref="variantId" value="{{ variant.id }}">
+          <input type="hidden" name="quantity" value="{{ quantity }}">
+          {%- if product.variants_count == 1 -%}
+            <add-to-cart-component ref="addToCartButtonContainer" data-add-to-cart-animation="false">
+              <button
+                type="submit"
+                name="add"
+                ref="addToCartButton"
+                on:click="/handleClick"
+                class="am-cart-upsell__button button"
+                aria-label="{{ 'actions.add_to_cart' | t | escape }}: {{ product.title | escape }}"
+              >
+                {{- 'am_commerce.upsell_add' | t -}}
+              </button>
+            </add-to-cart-component>
+          {%- else -%}
+            <button
+              type="button"
+              name="add"
+              on:click="quick-add-component/handleClick"
+              class="am-cart-upsell__button button"
+              aria-label="{{ 'actions.add_to_cart' | t | escape }}: {{ product.title | escape }}"
+            >
+              {{- 'am_commerce.upsell_add' | t -}}
+            </button>
+          {%- endif -%}
+          <span class="am-cart-upsell__error hidden" ref="addToCartTextError"></span>
+        {%- endform -%}
+      </product-form-component>
+    </quick-add-component>
+  </div>
+</article>

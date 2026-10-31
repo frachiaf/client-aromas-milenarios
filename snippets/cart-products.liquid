@@ -4,6 +4,7 @@
   Renders the cart products list or empty cart state.
 
   @param {boolean} [force_empty] - Force render empty cart state
+  @param {boolean} [is_drawer] - Enables drawer-only gift message presentation; defaults to false.
   @param {block} [block] - The block object providing settings and editor attributes.
 
   @example
@@ -229,7 +230,7 @@
                         endfor
                       -%}
                       {% if item.properties._am_gift_service == 'note' %}
-                        {% render 'am--gift-line-details', item: item %}
+                        {% render 'am--gift-line-details', item: item, is_drawer: is_drawer, section_id: section.id %}
                       {% endif %}
                       {%- if has_visible_properties -%}
                         <dl class="cart-items__properties">
@@ -333,6 +334,10 @@
                     %}
                     {% else %}
                       <span class="visually-hidden">{{ 'content.quantity' | t }}: {{ item.quantity }}</span>
+                    {% endif %}
+
+                    {% if is_drawer and item.properties._am_gift_service == 'note' %}
+                      {% render 'am--gift-edit-button', label: settings.am_gift_edit_label %}
                     {% endif %}
 
                     <button

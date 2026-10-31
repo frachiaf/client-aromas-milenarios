@@ -19,6 +19,9 @@
       "@theme/product-form": "{{ 'product-form.js' | asset_url }}",
       "@theme/am-atc-total": "{{ 'am--atc-total.js' | asset_url }}",
       "@theme/am-cart-gifts": "{{ 'am--cart-gifts.js' | asset_url }}",
+      "@theme/am-cart-message": "{{ 'am--cart-message.js' | asset_url }}",
+      "@theme/am-cart-upsell": "{{ 'am--cart-upsell.js' | asset_url }}",
+      "@theme/slideshow": "{{ 'slideshow.js' | asset_url }}",
       "@theme/recently-viewed-products": "{{ 'recently-viewed-products.js' | asset_url }}",
       "@theme/scrolling": "{{ 'scrolling.js' | asset_url }}",
       "@theme/section-renderer": "{{ 'section-renderer.js' | asset_url }}",
@@ -126,12 +129,16 @@
   type="module"
   fetchpriority="low"
 ></script>
-{% if settings.show_add_discount_code %}
+{% if settings.show_add_discount_code or settings.am_drawer_show_discount %}
   <script
     src="{{ 'cart-discount.js' | asset_url }}"
     type="module"
     fetchpriority="low"
   ></script>
+{% endif %}
+
+{% if request.design_mode or settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled %}
+  <script type="module" src="{{ 'am--cart-upsell.js' | asset_url }}" fetchpriority="low"></script>
 {% endif %}
 
 <script

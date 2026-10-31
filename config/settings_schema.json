@@ -1747,6 +1747,7 @@
         "type": "checkbox",
         "id": "show_add_discount_code",
         "label": "t:settings.add_discount_code",
+        "info": "t:am_commerce.cart_page_setting_info",
         "default": true
       },
       {
@@ -1761,6 +1762,87 @@
         "label": "t:settings.checkout_buttons",
         "info": "t:info.checkout_buttons",
         "default": true
+      },
+      {
+        "type": "header",
+        "content": "t:am_commerce.drawer_settings"
+      },
+      {
+        "type": "richtext",
+        "id": "am_drawer_checkout_text",
+        "label": "t:am_commerce.drawer_checkout_text",
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_drawer_gift_open",
+        "label": "t:am_commerce.drawer_gift_open",
+        "default": false,
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_drawer_show_discount",
+        "label": "t:am_commerce.drawer_show_discount",
+        "default": false,
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_drawer_upsell_enabled",
+        "label": "t:am_commerce.drawer_upsell_enabled",
+        "default": false,
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
+        "type": "collection",
+        "id": "am_drawer_upsell_collection",
+        "label": "t:am_commerce.drawer_upsell_collection",
+        "info": "t:am_commerce.drawer_upsell_collection_info"
+      },
+      {
+        "type": "text",
+        "id": "am_drawer_upsell_heading",
+        "label": "t:am_commerce.drawer_upsell_heading",
+        "info": "t:am_commerce.override_info",
+        "visible_if": "{{ settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled }}"
+      },
+      {
+        "type": "select",
+        "id": "am_drawer_upsell_sort",
+        "label": "t:am_commerce.drawer_upsell_sort",
+        "info": "t:am_commerce.drawer_upsell_sort_info",
+        "options": [
+          { "value": "best-selling", "label": "t:am_commerce.drawer_sort_best_selling" },
+          { "value": "price-ascending", "label": "t:am_commerce.drawer_sort_price_ascending" },
+          { "value": "price-descending", "label": "t:am_commerce.drawer_sort_price_descending" }
+        ],
+        "default": "best-selling",
+        "visible_if": "{{ settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled }}"
+      },
+      {
+        "type": "color",
+        "id": "am_drawer_upsell_card_background",
+        "label": "t:am_commerce.upsell_card_background",
+        "visible_if": "{{ settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled }}"
+      },
+      {
+        "type": "color",
+        "id": "am_drawer_upsell_card_text",
+        "label": "t:am_commerce.upsell_card_text",
+        "visible_if": "{{ settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled }}"
+      },
+      {
+        "type": "color",
+        "id": "am_drawer_upsell_button_background",
+        "label": "t:am_commerce.upsell_button_background",
+        "visible_if": "{{ settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled }}"
+      },
+      {
+        "type": "color",
+        "id": "am_drawer_upsell_button_text",
+        "label": "t:am_commerce.upsell_button_text",
+        "visible_if": "{{ settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled }}"
       },
       {
         "type": "url",
@@ -2316,6 +2398,7 @@
         "type": "checkbox",
         "id": "am_gift_open",
         "label": "t:am_commerce.am_gift_open",
+        "info": "t:am_commerce.cart_page_setting_info",
         "default": true
       },
       {

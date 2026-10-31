@@ -9,6 +9,12 @@
  */
 {
   "am_commerce": {
+    "message_more": "Show more",
+    "message_less": "Show less",
+    "scroll_to_bottom": "Scroll to the bottom of the cart",
+    "upsell_heading": "You may also like",
+    "upsell_add": "Add",
+    "upsell_choose_collection": "Choose an upsell collection in Theme settings > Cart > Drawer.",
     "from_placeholder": "Sender name",
     "to_placeholder": "Recipient name",
     "message_placeholder": "Write your message here...",

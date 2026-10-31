@@ -12,6 +12,9 @@
 {% if settings.cart_type == 'drawer' or settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or settings.am_progress_enabled or has_gifts or request.design_mode %}
   {{ 'am--cart.css' | asset_url | stylesheet_tag }}
 {% endif %}
+{% if request.design_mode or settings.cart_type == 'drawer' and settings.am_drawer_upsell_enabled %}
+  {{ 'am--cart-upsell.css' | asset_url | stylesheet_tag }}
+{% endif %}
 {% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or has_gifts or request.design_mode %}
   <script type="module" src="{{ 'am--cart-gifts.js' | asset_url }}" fetchpriority="low"></script>
   {% liquid

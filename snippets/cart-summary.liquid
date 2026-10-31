@@ -3,9 +3,17 @@
 
   @param {string} [accelerated_checkout_buttons_layout] - { 'vertical' } Forced layout of the additional checkout buttons, instead of relying on platform's layout.
   @param {string} [section_id] - The section ID for cart discount component.
+  @param {boolean} [is_drawer] - Uses drawer-only settings when true; defaults to false.
 {%- enddoc -%}
 
-{% capture gift_actions %}{% render 'am--cart-gifts', section_id: section_id %}{% endcapture %}
+{% liquid
+  assign is_drawer = is_drawer | default: false
+  assign show_discount = settings.show_add_discount_code
+  if is_drawer
+    assign show_discount = settings.am_drawer_show_discount
+  endif
+%}
+{% capture gift_actions %}{% render 'am--cart-gifts', section_id: section_id, is_drawer: is_drawer %}{% endcapture %}
 {% assign gift_actions = gift_actions | strip %}
 
 <div class="cart-totals">
@@ -41,7 +49,7 @@
     {%- endif -%}
   </div>
 
-  {% if settings.show_cart_note or settings.show_add_discount_code or gift_actions != blank %}
+  {% if settings.show_cart_note or show_discount or gift_actions != blank %}
     <div class="cart-actions">
       {{ gift_actions }}
       {% if settings.show_cart_note %}
@@ -93,7 +101,7 @@
           %}
         </cart-note>
       {% endif %}
-      {% if settings.show_add_discount_code %}
+      {% if show_discount %}
         {% liquid
           assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
           for item in cart.items
@@ -253,7 +261,7 @@
       </span>
     {% endif %}
     <div class="cart-totals__item cart-totals__tax-note cart-primary-typography">
-      {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
+      {% render 'tax-info', has_discounts_enabled: show_discount %}
     </div>
   </div>
 </div>
@@ -273,6 +281,10 @@
       {{ 'content.checkout' | t }}
     </span>
   </button>
+
+  {% if is_drawer and settings.am_drawer_checkout_text != blank %}
+    <div class="am-cart-checkout-text rte">{{ settings.am_drawer_checkout_text }}</div>
+  {% endif %}
 
   {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
     <div

@@ -1,6 +1,6 @@
 import { DialogComponent, DialogOpenEvent, DialogCloseEvent } from '@theme/dialog';
 import { CartAddEvent } from '@theme/events';
-import { isMobileBreakpoint } from '@theme/utilities';
+import { isMobileBreakpoint, prefersReducedMotion } from '@theme/utilities';
 
 /**
  * A custom element that manages a cart drawer.
@@ -18,12 +18,24 @@ class CartDrawerComponent extends DialogComponent {
   /** @type {AbortController | null} */
   #historyAbortController = null;
 
+  /** @type {number | null} */
+  #scrollFrame = null;
+  /** @type {Set<Element>} */
+  #scrollTargets = new Set();
+  #scrollResizeObserver = new ResizeObserver(() => this.#scheduleScrollUpdate());
+  #scrollMutationObserver = new MutationObserver(() => this.#scheduleScrollUpdate());
+
   connectedCallback() {
     super.connectedCallback();
     document.addEventListener(CartAddEvent.eventName, this.#handleCartAdd);
     this.addEventListener(DialogOpenEvent.eventName, this.#updateStickyState);
     this.addEventListener(DialogOpenEvent.eventName, this.#handleHistoryOpen);
     this.addEventListener(DialogCloseEvent.eventName, this.#handleHistoryClose);
+    this.addEventListener(DialogOpenEvent.eventName, this.#scheduleScrollUpdate);
+    this.addEventListener(DialogCloseEvent.eventName, this.#scheduleScrollUpdate);
+    this.addEventListener('scroll', this.#scheduleScrollUpdate, { capture: true, passive: true });
+    this.#scrollMutationObserver.observe(this.refs.dialog, { childList: true, subtree: true });
+    this.#scheduleScrollUpdate();
 
     if (history.state?.cartDrawerOpen) {
       history.replaceState(null, '');
@@ -37,6 +49,14 @@ class CartDrawerComponent extends DialogComponent {
     this.removeEventListener(DialogOpenEvent.eventName, this.#handleHistoryOpen);
     this.removeEventListener(DialogCloseEvent.eventName, this.#handleHistoryClose);
     this.#historyAbortController?.abort();
+    this.removeEventListener(DialogOpenEvent.eventName, this.#scheduleScrollUpdate);
+    this.removeEventListener(DialogCloseEvent.eventName, this.#scheduleScrollUpdate);
+    this.removeEventListener('scroll', this.#scheduleScrollUpdate, true);
+    this.#scrollMutationObserver.disconnect();
+    this.#scrollResizeObserver.disconnect();
+    this.#scrollTargets.clear();
+    if (this.#scrollFrame !== null) cancelAnimationFrame(this.#scrollFrame);
+    this.#scrollFrame = null;
   }
 
   #handleHistoryOpen = () => {
@@ -70,7 +90,7 @@ class CartDrawerComponent extends DialogComponent {
    * @param {CustomEvent<{ resource?: { item_count?: number }, data?: { source?: string } }>} event
    */
   #handleCartAdd = (event) => {
-    if (event.detail?.data?.source === 'am-cart-gifts') {
+    if (event.detail?.data?.source === 'am-cart-gifts' || event.detail?.data?.source === 'am-cart-upsell') {
       this.#announceCartCount(event.detail.resource?.item_count);
       this.#updateStickyState();
       return;
@@ -108,6 +128,35 @@ class CartDrawerComponent extends DialogComponent {
 
   close() {
     this.closeDialog();
+  }
+
+  scrollToBottom() {
+    const viewport = this.querySelector('.cart-drawer__body .cart-drawer__items');
+    viewport?.scrollTo({ top: viewport.scrollHeight, behavior: prefersReducedMotion() ? 'instant' : 'smooth' });
+  }
+
+  #scheduleScrollUpdate = () => {
+    if (!this.isConnected || this.#scrollFrame !== null) return;
+    this.#scrollFrame = requestAnimationFrame(() => {
+      this.#scrollFrame = null;
+      this.#updateScrollButton();
+    });
+  };
+
+  #updateScrollButton() {
+    const targets = new Set(this.querySelectorAll('.cart-drawer__body .cart-drawer__items, .cart-drawer__body .cart-form, .cart-drawer__body am-cart-upsell, .cart-drawer__summary'));
+    if (targets.size !== this.#scrollTargets.size || [...targets].some((target) => !this.#scrollTargets.has(target))) {
+      this.#scrollResizeObserver.disconnect();
+      this.#scrollTargets = targets;
+      targets.forEach((target) => this.#scrollResizeObserver.observe(target));
+    }
+
+    const viewport = this.querySelector('.cart-drawer__body .cart-drawer__items');
+    const button = this.querySelector('[data-am-cart-scroll-bottom]');
+    if (!(viewport instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
+    const visible = this.refs.dialog.open && viewport.clientHeight > 0 && viewport.scrollHeight - viewport.clientHeight - viewport.scrollTop > 2;
+    if (!visible && document.activeElement === button) viewport.focus({ preventScroll: true });
+    button.hidden = !visible;
   }
 
   #updateStickyState() {

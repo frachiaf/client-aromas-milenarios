@@ -217,22 +217,39 @@
                 </button>
               </div>
 
-              {% render 'am--cart-progress' %}
+              {% render 'am--cart-progress', is_drawer: true %}
               <scroll-hint
                 class="cart-drawer__content"
                 aria-label="{{ 'accessibility.cart' | t }}"
                 style="--header-height: 60px;"
               >
-                <scroll-hint
-                  class="cart-drawer__items"
-                >
-                  {% render 'cart-products' %}
-                </scroll-hint>
+                <div class="cart-drawer__body">
+                  <scroll-hint
+                    class="cart-drawer__items"
+                    id="CartDrawerBody-{{ section.id }}"
+                    tabindex="-1"
+                    aria-label="{{ 'accessibility.cart' | t }}"
+                  >
+                    {% render 'cart-products', is_drawer: true %}
+                    {% render 'am--cart-upsell' %}
+                  </scroll-hint>
+                  <button
+                    type="button"
+                    class="button cart-drawer__scroll-bottom"
+                    data-am-cart-scroll-bottom
+                    on:click="cart-drawer-component/scrollToBottom"
+                    aria-label="{{ 'am_commerce.scroll_to_bottom' | t | escape }}"
+                    aria-controls="CartDrawerBody-{{ section.id }}"
+                    hidden
+                  >
+                    {{ 'icon-caret.svg' | inline_asset_content }}
+                  </button>
+                </div>
 
                 <div
                   class="cart-drawer__summary"
                 >
-                  {% render 'cart-summary', section_id: section.id %}
+                  {% render 'cart-summary', section_id: section.id, is_drawer: true %}
                 </div>
               </scroll-hint>
             {%- endif -%}

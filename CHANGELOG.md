@@ -280,6 +280,110 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-31 — Nota compacta y bucle del upsell
+
+### Modificado
+
+- Objetivo: homogeneizar a 4 px la separación de título, De, Para, Mensaje, precio y acciones de la nota personalizada, exclusivamente en drawer. Se neutralizan los márgenes acumulados y se ocultan contenedores de propiedades vacíos; precio y acciones mantienen su ubicación. Los otros productos, servicios y la página conservan su presentación.
+- Ver más/Ver menos, Editar y papelera usan una altura visual de línea y zonas interactivas extendidas de 44 px, sin inflar los espacios alrededor del precio. La última nota conserva 12 px al final para impedir que el footer recorte esas zonas. Se mantienen alineación, ellipsis, etiquetas y foco.
+- El mensaje solo se recorta durante la transición. En reposo permite sus áreas táctiles extendidas, mientras el texto plegado conserva su propio recorte. Si aparece el scrollbar al expandir, se recalcula el destino y se anima desde la altura actual durante el tiempo restante de los 250 ms; se conservan inversión, movimiento reducido y estado AJAX.
+- El upsell activa el bucle nativo en ambos sentidos con más de un candidato: Siguiente desde el final vuelve al primero y Anterior desde el inicio vuelve al último. Mantiene 1,2 cards, swipe y navegación manual; una sola card ocupa el ancho completo sin flechas ni bucle. No se agregan settings, traducciones o propiedades; no se publica el theme.
+- Archivos: `assets/am--cart.css`, `assets/am--cart-message.js`, `sections/am--cart-upsell.liquid`, `tests/am-commerce.test.mjs`, guía técnica y este changelog.
+
+### Validación
+
+- Pruebas de separación por geometría en mensajes cortos, largos, multilínea y sin espacios; apertura/cierre reversible, recorte temporal, toque real fuera de la fila visual y conservación de la página. Navegación del upsell con dos y ocho productos a 390/1440 px, ambos extremos, teclado, clics consecutivos, movimiento reducido y AJAX; regresiones responsive de 320 a 1837 px.
+- `node tests/am-commerce.test.mjs` aprobó 396 comprobaciones y 32 escrituras locales, sin excepciones de navegador. Se revisó la captura móvil de la nota compacta; el hit testing también comprobó ambos extremos de las zonas de mensaje, edición y papelera junto al footer.
+- Sintaxis JavaScript, Liquid/schema mediante Theme Check y `git diff --check` aprobados. Theme Check conserva cero errores y 30 advertencias preexistentes. El validador adicional de la skill no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Shopify CLI cubrió la validación del theme. No se verificó guardado en Theme Editor real.
+
+### Reversión
+
+- Retirar los estilos exclusivos de la nota y restaurar el viewport de mensaje devuelve la densidad anterior. Pasar `infinite: false` en el upsell restablece los límites de navegación. No requiere migraciones.
+
+## 2026-10-31 — Confirmación de regalos sin texto visible en drawer
+
+### Corregido
+
+- Objetivo: retirar del drawer el texto persistente «Actualizamos tu carrito» después de modificar regalos. `feedback()` aplica la utilidad existente `visually-hidden` exclusivamente a confirmaciones exitosas dentro de `cart-drawer-component`; conserva el anuncio accesible sin reservar espacio en el footer. Cubre agregar, editar, eliminar y recuperar operaciones confirmadas tras respuestas inciertas.
+- Los errores siguen visibles con `role="alert"`; una operación posterior limpia su mensaje y estilos. Limpiar feedback vacía y oculta el contenedor y retira la clase de ocultación visual. La página de carrito mantiene sus confirmaciones visibles. No se agregaron settings, traducciones ni cambios en propiedades del carrito; no se publicó el theme.
+- Archivos: `assets/am--cart-gifts.js`, `tests/am-commerce.test.mjs`, `docs/theme-architecture.md` y este changelog.
+
+### Validación
+
+- Pruebas ampliadas para confirmaciones accesibles sin espacio en el footer a 390/1440 px, altas/edición/bajas, limpieza al iniciar otra operación, errores visibles, reintento exitoso, respuestas recuperadas y conservación del mensaje visible en la página.
+- `node tests/am-commerce.test.mjs` aprobó 359 comprobaciones y 32 escrituras locales, sin excepciones de navegador. Incluye las regresiones previas de notas, scroll, upsell, progreso, carrusel y hotspots.
+- Sintaxis JavaScript y `git diff --check` aprobados. Theme Check: cero errores y las 30 advertencias preexistentes. El validador adicional de la skill no pudo iniciar por `@shopify/theme-check-common` ausente; Shopify CLI validó el theme completo.
+
+### Reversión
+
+- Retirar el toggle de `visually-hidden` en `feedback()` restaura las confirmaciones visibles del drawer. No requiere migraciones.
+
+## 2026-10-31 — Distribución y acciones de la nota del drawer
+
+### Corregido
+
+- Objetivo: presentar `Mensaje: texto… Ver más` en una sola fila al plegar, con espacio reservado para el control y un único ellipsis. Al expandir, Mensaje permanece junto al comienzo y Ver menos sigue al final del texto cuando entra; se conservan saltos de línea, transición reversible de 250 ms y movimiento reducido. La medición incluye ahora el control inline y mantiene la expansión al actualizar cantidades, reiniciándola al editar el mensaje.
+- Solo en drawer, De/Para/Mensaje reciben un espacio visible después de los dos puntos y peso 600 exclusivamente en sus etiquetas. Editar mensaje se muestra una única vez, antes de la papelera en la fila de controles, y se retira del acordeón de regalos. Las restricciones de eliminación permanecen intactas. Editar y Ver más/Ver menos usan cursor pointer y acentúan el subrayado al hover/foco visible, conservando áreas táctiles e indicador de foco.
+- Archivos: nuevo `snippets/am--gift-edit-button.liquid` para compartir la etiqueta y el contrato de edición; cambios en `snippets/am--gift-line-details.liquid`, `snippets/cart-products.liquid`, `snippets/am--cart-gifts.liquid`, `assets/am--cart-message.js`, `assets/am--cart.css`, `tests/am-commerce.test.mjs`, guía técnica y este changelog.
+- Compatibilidad: la página conserva mensaje completo y sus acciones de edición anteriores. Se reutilizan `is_drawer`, etiquetas administrables y `data-am-gift-edit`; no se agregan settings ni traducciones. Scroll y upsell conservan su comportamiento. Sin cambios en JSON administrados o propiedades guardadas; sin publicación del theme.
+
+### Validación
+
+- El subset `AM_QA_DETAILS_ONLY=1 node tests/am-commerce.test.mjs` aprobó 48 comprobaciones con Liquid/assets reales en Chromium: geometría de etiquetas/texto/control, único ellipsis, pesos y espacios, mensaje corto/largo/multilínea/sin espacios, Ver menos inline, animación reversible, teclado, foco, hover, AJAX, restricciones de papelera y aislamiento de página; conserva las regresiones de scroll y colores. Se revisaron capturas móviles de nota abierta/cerrada.
+- La suite completa `node tests/am-commerce.test.mjs` aprobó 349 comprobaciones y 32 escrituras locales, sin excepciones de navegador, incluidas edición/eliminación de nota y regresiones de progreso, upsell, carrusel y hotspots. La comprobación de reset de hotspots ahora despacha y comprueba la selección en la misma evaluación para impedir que un nuevo hover entre ambas altere su resultado; el componente no cambió.
+- Sintaxis de los ocho scripts pendientes, 52 JSON/JSONC y 144 schemas Liquid aprobados; los valores anteriores de los 51 locales se conservaron. `git diff --check` aprobado y JSON administrados intactos.
+- Theme Check: cero errores y 30 advertencias preexistentes. El validador adicional de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Shopify CLI validó Liquid y el theme completo. No se verificó guardado en Theme Editor real.
+
+### Reversión
+
+- Restaurar los snippets del detalle/listado/acordeón, el componente de mensaje y sus estilos devuelve la distribución anterior. No requiere migraciones ni cambios en propiedades de línea.
+
+## 2026-10-30 — Mensajes plegables, scroll del drawer y colores de upsell
+
+### Añadido
+
+- Objetivo: reducir el espacio de la nota personalizada y facilitar el acceso al final de los productos sin cambiar la página de carrito. El drawer muestra el mensaje en una línea con ellipsis y Ver más/Ver menos solo cuando hace falta. La transición de altura dura 250 ms, admite inversión y respeta movimiento reducido; mantiene saltos de línea al expandir y nunca cambia las propiedades guardadas. Cantidades conservan el estado y editar el mensaje lo reinicia.
+- El nuevo botón flotante con chevrón aparece cuando quedan más de 2 px por desplazar en el body, baja suavemente hasta el final y se oculta al llegar. Está fuera de la máscara del viewport, conserva header/footer y funciona con o sin upsell. Responde a scroll, redimensionado, expansión de notas y actualizaciones AJAX; movimiento reducido evita la animación. Si se oculta estando enfocado, devuelve el foco al viewport sin mover la página.
+- Cuatro selectores en Carrito > Drawer permiten elegir fondo/texto de cards y fondo/texto de Agregar. Los valores vacíos preservan la apariencia existente y los explícitos se mantienen en hover/foco. Las actualizaciones de color conservan productos y scroll; encabezado, flechas y Quick Buy mantienen sus colores.
+- Archivos: nuevo `assets/am--cart-message.js`; integración en `assets/am--cart-gifts.js`, `assets/cart-drawer.js`, `assets/am--cart.css`, `assets/am--cart-upsell.css`, snippets de listado/detalle de regalos/header/upsell/scripts, `config/settings_schema.json`, los 51 locales, `tests/am-commerce.test.mjs`, guía técnica y este changelog.
+- Compatibilidad: `is_drawer` es opcional en el listado y detalle de nota; la página conserva su contenido completo. No se modificaron templates, section groups, mercados, settings guardados, productos, pedidos ni propiedades del carrito. No se publicó el theme.
+
+### Validación
+
+- El subset `AM_QA_DETAILS_ONLY=1 node tests/am-commerce.test.mjs` aprobó 35 comprobaciones con Liquid/assets reales en Chromium, sin excepciones. Cubre texto corto/largo/multilínea y sin espacios, ellipsis, expansión/cierre/reversión, teclado, movimiento reducido, conservación y edición por morph, aislamiento de página, scroll suave/instantáneo, foco, overflow dinámico y colores independientes, hover, foco visible, deshabilitado, valores vacíos y ausencia de nuevas solicitudes de recomendaciones. Se revisaron capturas móviles de nota abierta/cerrada.
+- La suite ampliada completa `node tests/am-commerce.test.mjs` aprobó 336 comprobaciones y 32 escrituras de carrito locales, sin excepciones de navegador. Incluye las regresiones anteriores de carrito, upsell, Quick Buy, progreso, hotspots y hover del carrusel; los seis anchos de 320 a 1837 px y el viewport bajo conservaron checkout y límites del drawer.
+- Theme Check: cero errores y las 30 advertencias preexistentes. Sintaxis JavaScript, schemas, cuatro colores sin defaults, JSONC y conservación de traducciones anteriores en los 51 locales validados localmente; whitespace aprobado y datos administrados intactos. El validador adicional de la skill no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Shopify CLI cubrió Liquid y schemas. No se verificó guardado en Theme Editor real ni se accedió a datos comerciales remotos.
+
+### Reversión
+
+- Vaciar los cuatro colores devuelve el estilo previo. Retirar el componente de mensaje y el wrapper/control del body restaura la presentación y navegación anteriores. No hay migraciones de datos ni cambios que revertir en propiedades de línea.
+
+## 2026-10-30 — Carrusel sin desbordes y upsell del drawer
+
+### Corregido
+
+- Objetivo: eliminar el overflow horizontal al hover/foco de `AM Medio + Carrusel 60/40`. Las flechas exteriores ahora reservan un gutter que contiene su animación nativa. La inspección previa del storefront confirmó aproximadamente 11 px de desborde durante la entrada de la flecha derecha; no se recorta el documento ni se modifican galerías internas.
+- El progreso del drawer comparte ambos márgenes con el header y distribuye indicadores/etiquetas en columnas simétricas. El relleno interpola hasta los centros de los hitos y completa al alcanzar el último importe, con checks y accesibilidad sincronizados. La página mantiene su escala y geometría anteriores.
+
+### Añadido
+
+- Controles exclusivos en Ajustes del tema > Carrito > Drawer: richtext debajo de Pagar, apertura inicial de regalos, visibilidad de descuentos y upsell con colección, título y orden. Texto y colección empiezan vacíos; regalos cerrados, descuentos ocultos y upsell desactivado. Los controles existentes conservan el comportamiento de la página y ahora explican su alcance.
+- Upsell bajo los productos y antes de las acciones de regalo, con imagen, título, precio/compare-at y Agregar. Muestra 1,2 slides con swipe/flechas manuales o una card completa sin flechas. Solicita la colección con el orden nativo Más vendidos o precio ascendente/descendente; entrega hasta ocho candidatos entre sus primeros 50, excluyendo agotados, productos presentes y servicios de regalo. No incluye reseñas ni requiere backend o tokens.
+- Carga al abrir, conservación del scroll durante cantidades, invalidación por composición/configuración y cancelación de respuestas obsoletas. Altas y Quick Buy comparten la cola de carrito; la intención durante selección de variante no puede duplicarse ni usar una variante de la página subyacente. Las respuestas de formularios desmontados actualizan el carrito y no reabren el drawer si el cliente lo cerró. Los diálogos apilados conservan bloqueo de scroll y retorno de foco.
+- Archivos: nueva sección auxiliar `sections/am--cart-upsell.liquid`, snippets `am--cart-upsell`/`am--cart-upsell-card` y assets `am--cart-upsell.js`/`.css`; ajustes en la sección media/carrusel, resumen/regalos/progreso del carrito, header, scripts/import map, carga de assets, controladores de carrito/Product Form/Quick Add/dialog, schema global, los 51 locales, suite de comercio y guía de arquitectura.
+- Compatibilidad: sin cambios en templates, section groups, settings guardados, mercados, productos o promociones. La página de carrito conserva sus componentes y preferencias. La configuración editorial y los productos reales se eligen en Shopify.
+
+### Validación
+
+- `node tests/am-commerce.test.mjs` aprobó 302 comprobaciones en Chromium y 31 escrituras de carrito locales, sin excepciones de navegador. Un subset final de 75 comprobaciones verificó también límites reales del viewport después de terminar la animación de apertura y generó capturas estables revisadas en 390/1440 px. Incluye fronteras monetarias/RTL, settings independientes, richtext/checkout en viewport bajo, tres órdenes, filtrado, ocho candidatos, 1,2 slides a 320/390/749/750/1440/1837 px, swipe, flechas, errores/reintento, cantidad/cache, altas, Quick Buy, doble envío, variante pendiente, fuentes retiradas, reordenación, cierre y respuestas obsoletas. El carrusel real de sección no desbordó durante hover/foco en esos seis anchos.
+- La revisión aislada del lifecycle del upsell aprobó 13 comprobaciones de desconexión/reconexión, cancelación, invalidación y estilos. Schemas, defaults, JSONC y conservación de todas las traducciones anteriores en los 51 locales fueron comprobados localmente; sintaxis JavaScript y whitespace válidos.
+- Theme Check finalizó sin errores y con las 30 advertencias preexistentes. El validador adicional de la skill no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; se utilizó Shopify CLI local.
+- Sin publicación ni verificación del guardado en Theme Editor real: `shopify theme info --json` no pudo acceder a su almacenamiento local por EPERM. Las pruebas nuevas usan Liquid/assets reales y respuestas de tienda locales; no modifican el carrito remoto ni crean pedidos.
+
+### Reversión
+
+- Desactivar el upsell y vaciar el texto retira los componentes opcionales. Los controles del drawer permiten restaurar regalos abiertos y descuentos visibles. Revertir la sección media/carrusel y la rama `is_drawer` del progreso restaura su presentación anterior. No hay migraciones de datos ni nuevas propiedades en líneas de carrito.
+
 ## 2026-10-30 — Alineación de niveles y carga de regalos
 
 ### Corregido

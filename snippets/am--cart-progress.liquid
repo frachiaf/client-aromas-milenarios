@@ -1,8 +1,10 @@
 {% doc %}
   Renders up to three informational milestones using discounted cart totals.
+  @param {boolean} [is_drawer] - Centers milestones on a full-width drawer track when true; defaults to false.
 {% enddoc %}
 {% if settings.am_progress_enabled %}
   {% liquid
+    assign is_drawer = is_drawer | default: false
     assign slots = '1,2,3' | split: ','
     assign previous_threshold = 0
     assign count = 0
@@ -43,7 +45,17 @@
       assign progress = 100
       if completed < count
         assign segment_amount = segment_end | minus: segment_start
-        assign progress = cart.total_price | minus: segment_start | times: 1.0 | divided_by: segment_amount | plus: completed | times: 100.0 | divided_by: count | at_most: 100 | at_least: 0
+        assign segment_fraction = cart.total_price | minus: segment_start | times: 1.0 | divided_by: segment_amount
+        if is_drawer
+          if completed == 0
+            assign progress = segment_fraction | times: 50.0 | divided_by: count
+          else
+            assign progress = completed | minus: 0.5 | plus: segment_fraction | times: 100.0 | divided_by: count
+          endif
+        else
+          assign progress = segment_fraction | plus: completed | times: 100.0 | divided_by: count
+        endif
+        assign progress = progress | at_most: 100 | at_least: 0
       endif
       assign zero_amount = 0 | money | strip_html | escape
       if reached_slot != ''
@@ -77,7 +89,7 @@
         assign final_message = final_message | escape | replace: '{benefit}', benefit | replace: '{amount}', zero_amount
       endif
     %}
-    <div class="am-cart-progress">
+    <div class="am-cart-progress{% if is_drawer %} am-cart-progress--drawer{% endif %}">
       <div class="am-cart-progress__visual" style="--am-tier-count: {{ count }}">
       <ol class="am-cart-progress__steps">
         {% assign active_step = 0 %}

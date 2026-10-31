@@ -1,6 +1,35 @@
 import { Component } from '@theme/component';
 import { debounce, isClickedOutside, onAnimationEnd } from '@theme/utilities';
 
+const scrollLockOwners = new Set();
+/** @type {{ y: number, width: string, position: string, top: string } | null} */
+let scrollLockState = null;
+
+/** @param {DialogComponent} owner */
+function acquireScrollLock(owner) {
+  if (scrollLockOwners.size === 0) {
+    const { style } = document.body;
+    scrollLockState = { y: window.scrollY, width: style.width, position: style.position, top: style.top };
+    if (style.position !== 'fixed') {
+      style.width = '100%';
+      style.position = 'fixed';
+      style.top = `-${scrollLockState.y}px`;
+    }
+  }
+  scrollLockOwners.add(owner);
+}
+
+/** @param {DialogComponent} owner */
+function releaseScrollLock(owner) {
+  if (!scrollLockOwners.delete(owner) || scrollLockOwners.size > 0 || !scrollLockState) return;
+  const state = scrollLockState;
+  scrollLockState = null;
+  document.body.style.width = state.width;
+  document.body.style.position = state.position;
+  document.body.style.top = state.top;
+  if (state.position !== 'fixed') window.scrollTo({ top: state.y, behavior: 'instant' });
+}
+
 /**
  * A custom element that manages a dialog.
  *
@@ -15,6 +44,15 @@ export class DialogComponent extends Component {
   connectedCallback() {
     super.connectedCallback();
 
+    const { dialog } = this.refs;
+    if (dialog.open) {
+      acquireScrollLock(this);
+      if (!dialog.matches(':modal')) {
+        dialog.close();
+        dialog.showModal();
+      }
+    }
+
     if (this.minWidth || this.maxWidth) {
       window.addEventListener('resize', this.#handleResize);
     }
@@ -22,6 +60,9 @@ export class DialogComponent extends Component {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    queueMicrotask(() => {
+      if (!this.isConnected) releaseScrollLock(this);
+    });
     if (this.minWidth || this.maxWidth) {
       window.removeEventListener('resize', this.#handleResize);
     }
@@ -38,8 +79,6 @@ export class DialogComponent extends Component {
     }
   }, 50);
 
-  #previousScrollY = 0;
-
   /**
    * Shows the dialog.
    * @param {(() => boolean) | Event} [shouldOpen] - Optional guard, or a declarative trigger event.
@@ -49,17 +88,18 @@ export class DialogComponent extends Component {
 
     if (dialog.open) return;
 
-    const scrollY = window.scrollY;
-    this.#previousScrollY = scrollY;
-
     // Prevent layout thrashing by separating DOM reads from DOM writes
     requestAnimationFrame(() => {
       if (typeof shouldOpen === 'function' && !shouldOpen()) return;
-      document.body.style.width = '100%';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
+      if (dialog.open || !this.isConnected || !dialog.isConnected || dialog !== this.refs.dialog) return;
+      acquireScrollLock(this);
 
-      dialog.showModal();
+      try {
+        dialog.showModal();
+      } catch (error) {
+        releaseScrollLock(this);
+        throw error;
+      }
       this.dispatchEvent(new DialogOpenEvent());
 
       this.addEventListener('click', this.#handleClick);
@@ -93,12 +133,8 @@ export class DialogComponent extends Component {
       subtree: false,
     });
 
-    document.body.style.width = '';
-    document.body.style.position = '';
-    document.body.style.top = '';
-    window.scrollTo({ top: this.#previousScrollY, behavior: 'instant' });
-
     dialog.close();
+    releaseScrollLock(this);
     dialog.classList.remove('dialog-closing');
 
     this.dispatchEvent(new DialogCloseEvent());

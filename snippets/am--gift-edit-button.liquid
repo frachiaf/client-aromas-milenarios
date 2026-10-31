@@ -1,0 +1,7 @@
+{% doc %}
+  Renders the shared action that opens the gift-note editor.
+  @param {string} [label] - Merchant-defined label; defaults to the translated edit action.
+{% enddoc %}
+<button type="button" class="button-unstyled am-cart-gifts__edit" data-am-gift-edit>
+  {% if label != blank %}{{ label | escape }}{% else %}{{ 'am_commerce.edit' | t }}{% endif %}
+</button>

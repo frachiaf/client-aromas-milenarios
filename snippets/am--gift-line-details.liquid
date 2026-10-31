@@ -1,8 +1,10 @@
 {% doc %}
-  Renders translated note properties and its edit action.
+  Renders translated note properties and the cart-page edit action.
   @param {object} item - The managed gift-note cart line.
+  @param {boolean} [is_drawer] - Collapses long messages in the drawer; defaults to false.
+  @param {string} [section_id] - Owner section used for unique disclosure identifiers.
 {% enddoc %}
-<dl class="cart-items__properties am-gift-properties">
+<dl class="cart-items__properties am-gift-properties{% if is_drawer %} am-gift-properties--drawer{% endif %}">
   {% assign fields = 'From,To,Message' | split: ',' %}
   {% for field in fields %}
     {% if item.properties[field] != blank %}
@@ -15,10 +17,32 @@
           assign label = translation_key | t
         endif
       %}
-      <div><dt>{{ label | escape }}:</dt><dd>{{ item.properties[field] | escape | newline_to_br }}</dd></div>
+      {% if is_drawer and field == 'Message' %}
+        {% assign message_id = 'AMGiftMessage-' | append: section_id | append: '-' | append: item.key | handleize %}
+        <div class="am-gift-properties__message">
+          <dt>{{ label | escape }}:&nbsp;</dt>
+          <dd>
+            <am-gift-message
+              data-skip-subtree-update
+              data-message="{{ item.properties[field] | escape }}"
+              data-more="{{ 'am_commerce.message_more' | t | escape }}"
+              data-less="{{ 'am_commerce.message_less' | t | escape }}"
+            >
+              <div id="{{ message_id }}" class="am-gift-message__viewport" data-am-message-viewport>
+                <div class="am-gift-message__content is-collapsed" data-am-message-content>
+                  <span class="am-gift-message__text" data-am-message-text>{{- item.properties[field] | escape -}}</span>
+                  <button type="button" class="button-unstyled am-gift-message__toggle" data-am-message-toggle aria-expanded="false" aria-controls="{{ message_id }}" hidden><span class="am-gift-message__ellipsis" aria-hidden="true">…&nbsp;</span><span data-am-message-label>{{ 'am_commerce.message_more' | t }}</span></button>
+                </div>
+              </div>
+            </am-gift-message>
+          </dd>
+        </div>
+      {% else %}
+        <div><dt>{{ label | escape }}:{% if is_drawer %}&nbsp;{% endif %}</dt><dd>{{ item.properties[field] | escape | newline_to_br }}</dd></div>
+      {% endif %}
     {% endif %}
   {% endfor %}
 </dl>
-<button class="button-unstyled am-cart-gifts__edit" type="button" data-am-gift-edit>
-  {% if settings.am_gift_edit_label != blank %}{{ settings.am_gift_edit_label | escape }}{% else %}{{ 'am_commerce.edit' | t }}{% endif %}
-</button>
+{% unless is_drawer %}
+  {% render 'am--gift-edit-button', label: settings.am_gift_edit_label %}
+{% endunless %}

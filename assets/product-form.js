@@ -202,6 +202,10 @@ class ProductFormComponent extends Component {
   /** @type {Array<{variantId: string, quantity: number}>} */
   #addToCartQueue = [];
 
+  #upsellRequestPending = false;
+  /** @type {number | null} */
+  #upsellVariantQuantity = null;
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -287,7 +291,13 @@ class ProductFormComponent extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
+    if (this.#upsellRequestPending) return;
+
     if (this.#variantChangeInProgress) {
+      if (this.hasAttribute('data-am-cart-upsell')) {
+        if (this.#upsellVariantQuantity === null) this.#upsellVariantQuantity = this.#getQuantity();
+        return;
+      }
       const intendedVariantId = this.#getIntendedVariantId();
       const quantity = this.#getQuantity();
 
@@ -311,6 +321,44 @@ class ProductFormComponent extends Component {
   #getQuantity() {
     return Number(this.refs.quantitySelector?.getValue?.()) || Number(this.dataset.quantityDefault) || 1;
   }
+
+  /** @param {() => Promise<unknown>} task */
+  #runAddRequest(task) {
+    if (!this.hasAttribute('data-am-cart-upsell')) return task();
+    if (this.#upsellRequestPending) return Promise.resolve();
+
+    this.#upsellRequestPending = true;
+    this.setAttribute('aria-busy', 'true');
+    return import('@theme/am-cart-gifts')
+      .then(({ runCartMutation }) => runCartMutation(task))
+      .catch(this.#handleRequestError)
+      .finally(() => {
+        this.#upsellRequestPending = false;
+        this.removeAttribute('aria-busy');
+      });
+  }
+
+  /** @param {Event} event */
+  #dispatchCartEvent(event) {
+    const target = !this.isConnected && this.hasAttribute('data-am-cart-upsell') ? document : this;
+    target.dispatchEvent(event);
+  }
+
+  /** @param {unknown} error */
+  #handleRequestError = (error) => {
+    console.error(error);
+    if (!this.hasAttribute('data-am-cart-upsell')) return;
+    const message = this.dataset.amCartError;
+    if (!message) return;
+
+    const target = this.refs.addToCartTextError;
+    if (target) {
+      target.textContent = message;
+      target.classList.remove('hidden');
+    }
+    this.#setLiveRegionText(message);
+    this.#dispatchCartEvent(new CartErrorEvent(this.id, message, message));
+  };
 
   /**
    * @param {string} [overrideVariantId]
@@ -350,7 +398,9 @@ class ProductFormComponent extends Component {
           addToCartTextError.classList.remove('hidden');
 
           const textNode = addToCartTextError.childNodes[2];
-          if (textNode) {
+          if (this.hasAttribute('data-am-cart-upsell')) {
+            addToCartTextError.textContent = errorMessage;
+          } else if (textNode) {
             textNode.textContent = errorMessage;
           } else {
             const newTextNode = document.createTextNode(errorMessage);
@@ -397,7 +447,7 @@ class ProductFormComponent extends Component {
 
     const fetchCfg = fetchConfig('javascript', { body: formData });
 
-    fetch(Theme.routes.cart_add_url, {
+    return this.#runAddRequest(() => fetch(Theme.routes.cart_add_url, {
       ...fetchCfg,
       headers: {
         ...fetchCfg.headers,
@@ -407,7 +457,7 @@ class ProductFormComponent extends Component {
       .then((response) => response.json())
       .then(async (response) => {
         if (response.status) {
-          this.dispatchEvent(
+          this.#dispatchCartEvent(
             new CartErrorEvent(form.getAttribute('id') || '', response.message, response.description, response.errors)
           );
 
@@ -416,7 +466,9 @@ class ProductFormComponent extends Component {
 
           // Reuse the text node if the user is spam-clicking
           const textNode = addToCartTextError.childNodes[2];
-          if (textNode) {
+          if (this.hasAttribute('data-am-cart-upsell')) {
+            addToCartTextError.textContent = response.message;
+          } else if (textNode) {
             textNode.textContent = response.message;
           } else {
             const newTextNode = document.createTextNode(response.message);
@@ -436,10 +488,10 @@ class ProductFormComponent extends Component {
 
           // When we add more than the maximum amount of items to the cart, we need to dispatch a cart update event
           // because our back-end still adds the max allowed amount to the cart.
-          this.dispatchEvent(
+          this.#dispatchCartEvent(
             new CartAddEvent({}, this.id, {
               didError: true,
-              source: 'product-form-component',
+              source: this.hasAttribute('data-am-cart-upsell') ? 'am-cart-upsell' : 'product-form-component',
               itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault),
               productId: this.dataset.productId,
             })
@@ -473,9 +525,9 @@ class ProductFormComponent extends Component {
           // Fetch the updated cart to get the actual total quantity for this variant
           const cart = await this.#fetchAndUpdateCartQuantity();
 
-          this.dispatchEvent(
+          this.#dispatchCartEvent(
             new CartAddEvent(cart ?? undefined, id.toString(), {
-              source: 'product-form-component',
+              source: this.hasAttribute('data-am-cart-upsell') ? 'am-cart-upsell' : 'product-form-component',
               itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault),
               productId: this.dataset.productId,
               sections: response.sections,
@@ -483,14 +535,12 @@ class ProductFormComponent extends Component {
           );
         }
       })
-      .catch((error) => {
-        console.error(error);
-      })
+      .catch(this.#handleRequestError)
       .finally(() => {
         if (event) {
           cartPerformance.measureFromEvent('add:user-action', event);
         }
-      });
+      }));
   }
 
   /** @param {Array<{variantId: string, quantity: number}>} items */
@@ -517,7 +567,7 @@ class ProductFormComponent extends Component {
       sections: cartItemComponentsSectionIds.join(','),
     };
 
-    fetch(Theme.routes.cart_add_url, {
+    return this.#runAddRequest(() => fetch(Theme.routes.cart_add_url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -528,14 +578,16 @@ class ProductFormComponent extends Component {
       .then((response) => response.json())
       .then(async (response) => {
         if (response.status) {
-          this.dispatchEvent(
+          this.#dispatchCartEvent(
             new CartErrorEvent(this.id, response.message, response.description, response.errors)
           );
 
           if (addToCartTextError) {
             addToCartTextError.classList.remove('hidden');
             const textNode = addToCartTextError.childNodes[2];
-            if (textNode) {
+            if (this.hasAttribute('data-am-cart-upsell')) {
+              addToCartTextError.textContent = response.message;
+            } else if (textNode) {
               textNode.textContent = response.message;
             } else {
               addToCartTextError.appendChild(document.createTextNode(response.message));
@@ -548,10 +600,10 @@ class ProductFormComponent extends Component {
             }, ERROR_MESSAGE_DISPLAY_DURATION);
           }
 
-          this.dispatchEvent(
+          this.#dispatchCartEvent(
             new CartAddEvent({}, this.id, {
               didError: true,
-              source: 'product-form-component',
+              source: this.hasAttribute('data-am-cart-upsell') ? 'am-cart-upsell' : 'product-form-component',
               itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
               productId: this.dataset.productId,
             })
@@ -578,18 +630,16 @@ class ProductFormComponent extends Component {
         const cart = await this.#fetchAndUpdateCartQuantity();
 
         const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-        this.dispatchEvent(
+        this.#dispatchCartEvent(
           new CartAddEvent(cart ?? undefined, this.id, {
-            source: 'product-form-component',
+            source: this.hasAttribute('data-am-cart-upsell') ? 'am-cart-upsell' : 'product-form-component',
             itemCount: totalQuantity,
             productId: this.dataset.productId,
             sections: response.sections,
           })
         );
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch(this.#handleRequestError));
   }
 
   /**
@@ -652,6 +702,14 @@ class ProductFormComponent extends Component {
     variantId.value = event.detail.resource?.id ?? '';
 
     this.#variantChangeInProgress = false;
+
+    if (this.#upsellVariantQuantity !== null) {
+      const quantity = this.#upsellVariantQuantity;
+      this.#upsellVariantQuantity = null;
+      if (event.detail.resource?.available && variantId.value) {
+        this.#processAddToCart(variantId.value, quantity);
+      }
+    }
 
     if (this.#addToCartQueue.length > 0) {
       const queuedItems = [...this.#addToCartQueue];

@@ -1,0 +1,32 @@
+{%- doc -%}
+  Provides the persistent, lazy-loaded recommendations slot inside the cart drawer.
+
+  @example
+  {% render 'am--cart-upsell' %}
+{%- enddoc -%}
+
+{%- if settings.am_drawer_upsell_enabled and settings.am_drawer_upsell_collection != blank and cart != empty -%}
+  {% style %}
+    am-cart-upsell {
+      --am-upsell-card-background: {% if settings.am_drawer_upsell_card_background != blank %}{{ settings.am_drawer_upsell_card_background }}{% else %}initial{% endif %};
+      --am-upsell-card-text: {% if settings.am_drawer_upsell_card_text != blank %}{{ settings.am_drawer_upsell_card_text }}{% else %}initial{% endif %};
+      --am-upsell-button-background: {% if settings.am_drawer_upsell_button_background != blank %}{{ settings.am_drawer_upsell_button_background }}{% else %}initial{% endif %};
+      --am-upsell-button-text: {% if settings.am_drawer_upsell_button_text != blank %}{{ settings.am_drawer_upsell_button_text }}{% else %}initial{% endif %};
+    }
+  {% endstyle %}
+  {%- liquid
+    assign upsell_sort = settings.am_drawer_upsell_sort | default: 'best-selling'
+    assign upsell_url = settings.am_drawer_upsell_collection.url | sort_by: upsell_sort
+    assign upsell_url = upsell_url | append: '&section_id=am--cart-upsell'
+    assign cart_product_ids = cart.items | map: 'product_id' | uniq | sort | join: ','
+  -%}
+  <am-cart-upsell
+    data-skip-subtree-update
+    data-url="{{ upsell_url | escape }}"
+    data-product-ids="{{ cart_product_ids | escape }}"
+    data-service-product-ids="{{ settings.am_gift_wrapping_product.id }},{{ settings.am_gift_note_product.id }}"
+    data-heading="{{ settings.am_drawer_upsell_heading | escape }}"
+  ></am-cart-upsell>
+{%- elsif settings.am_drawer_upsell_enabled and request.design_mode and settings.am_drawer_upsell_collection == blank -%}
+  <p class="am-cart-upsell__editor-help">{{ 'am_commerce.upsell_choose_collection' | t }}</p>
+{%- endif -%}

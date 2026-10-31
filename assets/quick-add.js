@@ -273,6 +273,17 @@ export class QuickAddComponent extends Component {
 
     if (!productGrid || !modalContent) return;
 
+    const isCartUpsell = this.hasAttribute('data-am-cart-upsell');
+    this.#getQuickAddDialog()?.setCartUpsellSource(isCartUpsell ? this : null);
+    for (const form of productGrid.querySelectorAll('product-form-component')) {
+      form.toggleAttribute('data-am-cart-upsell', isCartUpsell);
+      if (isCartUpsell && this.dataset.amCartError) {
+        form.setAttribute('data-am-cart-error', this.dataset.amCartError);
+      } else {
+        form.removeAttribute('data-am-cart-error');
+      }
+    }
+
     if (isMobileBreakpoint()) {
       const productDetails = productGrid.querySelector('.product-details');
       const productFormComponent = productGrid.querySelector('product-form-component');
@@ -346,6 +357,13 @@ if (!customElements.get('quick-add-component')) {
 
 class QuickAddDialog extends DialogComponent {
   #abortController = new AbortController();
+  /** @type {HTMLElement | null} */
+  #cartUpsellSource = null;
+
+  /** @param {HTMLElement | null} source */
+  setCartUpsellSource(source) {
+    this.#cartUpsellSource = source;
+  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -386,6 +404,14 @@ class QuickAddDialog extends DialogComponent {
   };
 
   #handleDialogClose = () => {
+    if (this.#cartUpsellSource && !this.#cartUpsellSource.isConnected) {
+      const heading = document.querySelector('.cart-drawer__dialog[open] #cart-drawer-heading');
+      if (heading instanceof HTMLElement) {
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+      }
+    }
+    this.#cartUpsellSource = null;
     const iosVersion = getIOSVersion();
     /**
      * This is a patch to solve an issue with the UI freezing when the dialog is closed.

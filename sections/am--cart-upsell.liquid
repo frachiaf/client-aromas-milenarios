@@ -1,0 +1,73 @@
+{%- liquid
+  assign cart_product_ids = cart.items | map: 'product_id' | uniq
+  assign wrapping_product_id = settings.am_gift_wrapping_product.id
+  assign note_product_id = settings.am_gift_note_product.id
+  assign item_count = 0
+-%}
+
+{%- capture upsell_slides -%}
+  {%- if settings.am_drawer_upsell_enabled and collection != blank and collection.id == settings.am_drawer_upsell_collection.id -%}
+    {%- paginate collection.products by 50 -%}
+      {%- for upsell_product in collection.products limit: 50 -%}
+        {%- if upsell_product.available == false or cart_product_ids contains upsell_product.id or upsell_product.id == wrapping_product_id or upsell_product.id == note_product_id -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- assign item_count = item_count | plus: 1 -%}
+        <slideshow-slide
+          class="am-cart-upsell__slide"
+          ref="slides[]"
+          data-am-upsell-product-id="{{ upsell_product.id }}"
+          aria-hidden="{% if item_count == 1 %}false{% else %}true{% endif %}"
+        >
+          {%- render 'am--cart-upsell-card', product: upsell_product, section_id: section.id -%}
+        </slideshow-slide>
+        {%- if item_count == 8 -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- liquid
+  assign upsell_infinite = false
+  if item_count > 1
+    assign upsell_infinite = true
+  endif
+-%}
+
+<div data-am-cart-upsell-content data-product-count="{{ item_count }}" class="am-cart-upsell__content">
+  {%- if item_count > 0 -%}
+    {%- capture upsell_header -%}
+      <div class="am-cart-upsell__header">
+        <h3 class="am-cart-upsell__heading">
+          {%- if settings.am_drawer_upsell_heading != blank -%}
+            {{- settings.am_drawer_upsell_heading | escape -}}
+          {%- else -%}
+            {{- 'am_commerce.upsell_heading' | t -}}
+          {%- endif -%}
+        </h3>
+        {%- if item_count > 1 -%}
+          <div class="am-cart-upsell__arrows">
+            {%- render 'slideshow-arrow', action: 'previous', icon_style: 'chevron', icon_shape: 'none' -%}
+            {%- render 'slideshow-arrow', action: 'next', icon_style: 'chevron', icon_shape: 'none' -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endcapture -%}
+    {%- render 'slideshow',
+      class: 'am-cart-upsell__slideshow',
+      slides: upsell_slides,
+      header: upsell_header,
+      slide_count: item_count,
+      infinite: upsell_infinite,
+      autoplay: false,
+      show_arrows: false
+    -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:am_commerce.drawer_upsell_heading",
+  "settings": []
+}
+{% endschema %}

@@ -98,11 +98,11 @@
       "settings": {
         "am_product_card_style": "original",
         "media_position": "left",
-        "media_width": "medium",
+        "media_width": "wide",
         "media_height": "50svh",
         "section_width": "full-width",
         "extend_media": true,
-        "color_scheme": "scheme-5",
+        "color_scheme": "scheme-4",
         "padding-block-start": 0,
         "padding-block-end": 0
       }

@@ -17,7 +17,7 @@
           "static": true,
           "settings": {
             "media_type": "image",
-            "image": "shopify://shop_images/ChatGPT_Image_13_sept_2026_01_06_35_a.m._2.png",
+            "image": "{{ closest.collection.image }}",
             "link": "",
             "video_loop": true,
             "video_autoplay": false,
@@ -39,7 +39,7 @@
               "type": "text",
               "name": "Title",
               "settings": {
-                "text": "<h1>Perfumes</h1>",
+                "text": "<h1>{{ closest.collection.title }}</h1>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",

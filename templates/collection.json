@@ -82,9 +82,10 @@
         "section_width": "page-width",
         "section_height": "",
         "section_height_custom": 50,
-        "color_scheme": "",
+        "color_scheme": "scheme-4",
         "background_media": "image",
         "video_position": "cover",
+        "background_image": "{{ collection.image }}",
         "background_image_position": "cover",
         "border": "none",
         "border_width": 1,
@@ -183,6 +184,7 @@
           ]
         }
       },
+      "disabled": true,
       "name": "t:names.media_with_text",
       "settings": {
         "am_product_card_style": "original",

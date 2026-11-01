@@ -10,6 +10,15 @@
   if section.settings.custom_mobile_height
     assign height_property = '--section-min-height-desktop'
   endif
+
+  if section.settings.custom_mobile_layout
+    assign mobile_horizontal_alignment = section.settings.horizontal_alignment_mobile
+    assign mobile_vertical_alignment = section.settings.vertical_alignment_mobile
+    if section.settings.content_direction_mobile == 'column'
+      assign mobile_horizontal_alignment = section.settings.horizontal_alignment_column_mobile
+      assign mobile_vertical_alignment = section.settings.vertical_alignment_column_mobile
+    endif
+  endif
 %}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -55,7 +64,8 @@
       background_video_position: section.settings.video_position,
       background_image: section.settings.background_image,
       background_image_mobile: section.settings.background_image_mobile,
-      background_image_position: section.settings.background_image_position
+      background_image_position: section.settings.background_image_position,
+      background_image_position_mobile: section.settings.background_image_position_mobile
     %}
   </div>
 
@@ -73,11 +83,20 @@
         layout-panel-flex
         layout-panel-flex--{{ section.settings.content_direction }}
         section-content-wrapper
-        {% if section.settings.vertical_on_mobile %} mobile-column{% endif %}
+        {% if section.settings.custom_mobile_layout %}
+          section-content-wrapper--mobile-{{ section.settings.content_direction_mobile }}
+        {% elsif section.settings.vertical_on_mobile %}
+          mobile-column
+        {% endif %}
       "
       style="
         {% render 'layout-panel-style', settings: section.settings %}
         {% render 'spacing-style', settings: section.settings %}
+        {% if section.settings.custom_mobile_layout %}
+          --section-horizontal-alignment-mobile: {{ mobile_horizontal_alignment }};
+          --section-vertical-alignment-mobile: {{ mobile_vertical_alignment }};
+          {% render 'gap-style', value: section.settings.gap_mobile, name: 'section-gap-mobile' %}
+        {% endif %}
       "
       data-testid="section-content"
     >
@@ -96,6 +115,75 @@
 
     @media screen and (max-width: 749px) {
       --section-min-height: var(--section-min-height-mobile);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-section-content
+      > .section-content-wrapper:is(.section-content-wrapper--mobile-column, .section-content-wrapper--mobile-row) {
+      gap: var(--section-gap-mobile);
+
+      > :is(.menu, .text-block, .image-block, .button, .group-block) {
+        flex: 0 1 auto;
+      }
+
+      > .group-block {
+        height: var(--size-style-height, auto);
+      }
+    }
+
+    .custom-section-content > .section-content-wrapper.section-content-wrapper--mobile-column {
+      flex-flow: column nowrap;
+      align-items: var(--section-horizontal-alignment-mobile);
+      justify-content: var(--section-vertical-alignment-mobile);
+      height: 100%;
+
+      > .group-block--height-fill {
+        flex: 1;
+      }
+
+      > .group-block--height-custom {
+        flex-basis: var(--size-style-height);
+      }
+    }
+
+    .custom-section-content > .section-content-wrapper.section-content-wrapper--mobile-row {
+      flex-flow: row wrap;
+      align-items: var(--section-vertical-alignment-mobile);
+      justify-content: var(--section-horizontal-alignment-mobile);
+      height: auto;
+
+      > .menu {
+        flex: 1 1 min-content;
+      }
+
+      > .text-block {
+        flex: 1 1 var(--max-width--display-tight);
+      }
+
+      > .image-block {
+        flex: 1 1 var(--size-style-width-mobile-min);
+      }
+
+      > .button {
+        flex: 0 0 fit-content;
+      }
+
+      > .group-block--width-fit {
+        flex: 0;
+      }
+
+      > .group-block--width-fill {
+        flex: 1;
+      }
+
+      > .group-block--width-custom {
+        flex-basis: var(--size-style-width-mobile, var(--size-style-width));
+      }
+
+      > .group-block--height-fill {
+        height: calc(var(--section-min-height, auto) - var(--section-height-offset, 0px));
+      }
     }
   }
 

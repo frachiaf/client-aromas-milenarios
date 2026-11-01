@@ -280,6 +280,25 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-11-01 — Diseño y ajuste de fondo móvil de secciones genéricas
+
+### Añadido
+
+- Objetivo: configurar Dirección, Alineación, Posición y Separación de forma independiente en móvil para Cita Destacada y los demás presets del componente compartido. El grupo Diseño móvil incorpora `custom_mobile_layout`, falso inicialmente, dirección propia y controles de alineación/posición según el eje, incluidos Espacio entre en filas/columnas. Sus valores iniciales son Vertical, Izquierda, Arriba y 16 px; la separación permite 0–100 px y conserva el escalado nativo.
+- Archivos: `sections/section.liquid`, `sections/_blocks.liquid`, `snippets/section.liquid`, `snippets/background-media.liquid`, los 20 `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: hasta 749 px, la personalización activa reemplaza `vertical_on_mobile` y adapta las dimensiones/flexión de los hijos directos al eje elegido; el contenido interno de grupos anidados conserva su propio diseño. Desactivarla recupera el comportamiento anterior y desde 750 px se mantienen los ajustes de escritorio. La altura móvil permanece independiente. Ambos schemas llegan a 40 settings funcionales, sin advertencias nuevas de cantidad.
+- Objetivo: elegir Heredar escritorio, Cubrir o Ajustar bajo Multimedia en móvil cuando el fondo es Imagen. `background_image_position_mobile` hereda inicialmente y se transmite como parámetro opcional al snippet de fondo; la elección móvil se aplica también a la imagen de respaldo y al placeholder. Los otros consumidores conservan su presentación al omitir el parámetro y los videos mantienen su comportamiento. Se reutilizan las traducciones de diseño; Heredar escritorio tiene español e inglés propios y respaldo inglés en los demás locales. Sin JavaScript adicional ni cambios en presets, templates o configuraciones guardadas; se preservan los cambios de altura preparados anteriormente.
+
+### Validación
+
+- Chromium local con Liquid y CSS reales aprobó 2.225 comprobaciones sin excepciones: ambos schemas, defaults y visibilidad de controles, preservación de settings/presets/traducciones, seis alturas y fronteras 749/750 px, filas/columnas con todas las alineaciones/posiciones a 390/749/750/1440 px, gap 0/16/60/100 y su escalado, contenido largo y altura móvil independiente. Se comprobaron grupos con dimensiones fit/fill/custom, preservación del diseño de grupos anidados y sus fondos, las combinaciones de Cubrir/Ajustar/Heredar con ambas imágenes, una sola o ninguna, desactivación equivalente al renderer previo, aislamiento/reordenación de instancias y cambio de viewport. Se revisaron capturas de móvil/escritorio. La regresión de altura independiente aprobó además 541 comprobaciones. Todo el QA se ejecutó desde archivos temporales con respuestas locales, sin acceder a una tienda remota.
+- `shopify.cmd theme check --path . --output json` terminó con cero errores y las 30 advertencias preexistentes, sin diagnósticos en los cuatro Liquid modificados. Los schemas JSON y los 20 locales JSONC validaron; `git diff --check` aprobado. El validador adicional de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid y schemas.
+- El guardado, selección, configuración y reordenación en Theme Editor real siguen pendientes: `shopify.cmd theme info --json` vuelve a fallar con EPERM al acceder a la configuración local de la CLI. No se publicó el theme.
+
+### Reversión
+
+- Desactivar Personalizar diseño móvil y elegir Heredar escritorio recupera la presentación anterior, conservando la altura móvil independiente. Retirar los ocho settings nuevos, las variables/estilos de diseño, el parámetro/clases de ajuste móvil y la etiqueta de herencia elimina esta capacidad sin migrar datos administrados.
+
 ## 2026-11-01 — Altura móvil de Cita Destacada y secciones genéricas
 
 ### Añadido

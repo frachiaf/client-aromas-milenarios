@@ -607,6 +607,7 @@
     "contain": "Contain",
     // Pagination control showing current/total slide numbers (e.g. 1/5)
     "counter": "Counter",
+    "inherit_desktop": "Inherit desktop",
     "cover": "Cover",
     "crop_to_fit": "Crop to fit",
     "custom": "Custom",

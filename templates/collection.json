@@ -96,6 +96,7 @@
       },
       "name": "t:names.media_with_text",
       "settings": {
+        "am_product_card_style": "original",
         "media_position": "left",
         "media_width": "medium",
         "media_height": "50svh",
@@ -277,8 +278,9 @@
         }
       },
       "settings": {
+        "am_product_card_style": "original",
         "layout_type": "grid",
-        "product_card_size": "medium",
+        "product_card_size": "large",
         "mobile_product_card_size": "small",
         "enable_infinite_scroll": true,
         "products_per_page": 24,

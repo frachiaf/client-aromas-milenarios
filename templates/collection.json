@@ -278,7 +278,7 @@
         }
       },
       "settings": {
-        "am_product_card_style": "original",
+        "am_product_card_style": "circular",
         "layout_type": "grid",
         "product_card_size": "large",
         "mobile_product_card_size": "small",

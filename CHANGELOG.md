@@ -280,6 +280,24 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-11-01 — Altura móvil de Cita Destacada y secciones genéricas
+
+### Añadido
+
+- Objetivo: configurar una altura móvil independiente en Cita Destacada y los demás presets del componente genérico compartido. Ambos schemas incorporan `custom_mobile_height`, desactivado por defecto, el selector `section_height_mobile` con los seis modos nativos y un rango `section_height_custom_mobile` de 0–100%, paso 1 y valor inicial 50%.
+- Archivos: `sections/section.liquid`, `sections/_blocks.liquid`, `snippets/section.liquid`, los 20 `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: al activar Personalizar altura móvil aparece el selector, inicialmente Mediana; el rango solo aparece para Personalizada. Hasta 749 px se aplica el mínimo móvil y desde 750 px se conserva escritorio. Automática elimina el mínimo heredado, los tamaños pequeños/medianos/grandes reutilizan los tokens responsive y Pantalla completa/Personalizada usan `svh`. El contenido puede ampliar la sección y conserva la compensación del header transparente. Se reutilizan traducciones existentes; la nueva etiqueta tiene español e inglés propios y respaldo inglés en los demás locales. Sin JavaScript adicional, cambios de presets ni modificaciones de templates o configuraciones guardadas.
+
+### Validación
+
+- Chromium local con Liquid y estilos reales aprobó 519 comprobaciones: schemas y referencias, conservación exacta de settings/presets/traducciones anteriores, visibilidad condicional evaluada con Liquid, seis alturas a 390/749/750/1440 px, extremos 0/50/100%, contenido largo, fondo móvil, Cover/Fit, overlay, header transparente y ausencia de overflow. La desactivación coincide con el renderer anterior; dos instancias conservan sus alturas después de reordenar el DOM y el cambio de viewport aplica el ajuste correspondiente. Se revisaron capturas de móvil/escritorio y no hubo excepciones de navegador. El QA temporal no añade archivos al repositorio ni accede a una tienda remota.
+- `shopify.cmd theme check --path . --output json` terminó con cero errores y las 30 advertencias preexistentes, sin diagnósticos en los archivos modificados. El validador adicional de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid y schemas. `git diff --check` aprobado.
+- El guardado, selección, reordenación y actualización en Theme Editor real siguen pendientes: `shopify.cmd theme info --json` falla con EPERM al acceder a la configuración local de la CLI. No se publicó el theme.
+
+### Reversión
+
+- Desactivar Personalizar altura móvil recupera la presentación anterior. Retirar los tres settings, sus variables/clase/estilos y la nueva etiqueta elimina la capacidad sin migrar datos administrados.
+
 ## 2026-11-01 — Fondo móvil de Cita Destacada y secciones genéricas
 
 ### Añadido

@@ -241,6 +241,56 @@
       "visible_if": "{{ section.settings.section_height == 'custom' }}"
     },
     {
+      "type": "checkbox",
+      "id": "custom_mobile_height",
+      "label": "t:settings.custom_mobile_height",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "section_height_mobile",
+      "label": "t:settings.mobile_height",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.auto"
+        },
+        {
+          "value": "small",
+          "label": "t:options.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        },
+        {
+          "value": "full-screen",
+          "label": "t:options.full_screen"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "medium",
+      "visible_if": "{{ section.settings.custom_mobile_height }}"
+    },
+    {
+      "type": "range",
+      "id": "section_height_custom_mobile",
+      "label": "t:settings.custom_height",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "unit": "%",
+      "visible_if": "{{ section.settings.custom_mobile_height and section.settings.section_height_mobile == 'custom' }}"
+    },
+    {
       "type": "header",
       "content": "t:content.appearance"
     },

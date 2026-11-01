@@ -5,9 +5,16 @@
   @param {string} children - The children of the section
 {%- enddoc -%}
 
+{% liquid
+  assign height_property = '--section-min-height'
+  if section.settings.custom_mobile_height
+    assign height_property = '--section-min-height-desktop'
+  endif
+%}
+
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
-  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}{% if section.settings.custom_mobile_height %} section--custom-mobile-height{% endif %}"
   data-testid="ui-test-section"
 
   {% if request.visual_preview_mode %}
@@ -16,11 +23,24 @@
 
   style="
     {% if section.settings.section_height == 'custom' %}
-      --section-min-height: {{ section.settings.section_height_custom }}svh;
+      {{ height_property }}: {{ section.settings.section_height_custom }}svh;
     {% elsif section.settings.section_height == 'full-screen' %}
-      --section-min-height: 100svh;
+      {{ height_property }}: 100svh;
     {% elsif section.settings.section_height != '' %}
-      --section-min-height: var(--section-height-{{ section.settings.section_height }});
+      {{ height_property }}: var(--section-height-{{ section.settings.section_height }});
+    {% endif %}
+
+    {% if section.settings.custom_mobile_height %}
+      {% case section.settings.section_height_mobile %}
+        {% when 'custom' %}
+          --section-min-height-mobile: {{ section.settings.section_height_custom_mobile }}svh;
+        {% when 'full-screen' %}
+          --section-min-height-mobile: 100svh;
+        {% when '' %}
+          --section-min-height-mobile: 0px;
+        {% else %}
+          --section-min-height-mobile: var(--section-height-{{ section.settings.section_height_mobile }});
+      {% endcase %}
     {% endif %}
 
     {% if section.settings.section_height != '' %}
@@ -69,6 +89,14 @@
 {% stylesheet %}
   .section-wrapper {
     --section-height-offset: 0px;
+  }
+
+  .section--custom-mobile-height {
+    --section-min-height: var(--section-min-height-desktop, 0px);
+
+    @media screen and (max-width: 749px) {
+      --section-min-height: var(--section-min-height-mobile);
+    }
   }
 
   .section[data-shopify-visual-preview] {

@@ -38,6 +38,7 @@ layout/theme.liquid
 ### Secciones y bloques genéricos
 
 - `sections/section.liquid` y `sections/_blocks.liquid` capturan `{% content_for 'blocks' %}` y delegan el contenedor visual a `snippets/section.liquid`.
+- Los dos schemas genéricos exponen `background_image_mobile` bajo Multimedia en móvil cuando el fondo es Imagen. Esto incluye Cita Destacada y los demás presets de la sección compartida. El wrapper transmite ambas imágenes a `background-media`, que usa `<picture>` hasta 749 px y conserva la imagen de escritorio como respaldo si falta la móvil. Si solo existe la móvil, sirve como respaldo en todos los tamaños; sin imágenes se conserva el placeholder. Cover/Fit, capas de color y contenido mantienen su comportamiento, sin JavaScript ni cambios en templates guardados.
 - `blocks/group.liquid` repite el patrón: captura bloques hijos y los entrega a `snippets/group.liquid`. Esto permite componer layouts anidados con `group`, `text`, `image`, `button` y otros bloques existentes.
 - Las secciones especializadas, como producto, colección, hero o header, pueden renderizar bloques estáticos mediante `{% content_for 'block' %}` y bloques configurables mediante `{% content_for 'blocks' %}`.
 - Los bloques estáticos y snippets nuevos deben declarar su contrato mediante LiquidDoc. Los bloques que participan del editor deben conservar sus atributos Shopify en el wrapper correspondiente.

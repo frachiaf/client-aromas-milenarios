@@ -280,6 +280,25 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-11-01 — Fondo móvil de Cita Destacada y secciones genéricas
+
+### Añadido
+
+- Objetivo: permitir una imagen de fondo móvil en Cita Destacada y los demás presets de la sección compartida. Los schemas genéricos incorporan `background_image_mobile`, opcional y visible bajo Multimedia en móvil únicamente con fondo de tipo Imagen.
+- Archivos: `sections/section.liquid`, `sections/_blocks.liquid`, `snippets/section.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el wrapper transmite la imagen al componente `background-media` existente. Hasta 749 px se usa la móvil, con respaldo en la de escritorio; desde 750 px se usa la de escritorio. Si solo hay una imagen móvil, sirve de respaldo en todos los tamaños. Sin imágenes se conserva el placeholder. Se mantienen Cover/Fit, capas de color, contenido y presets anteriores. Se reutilizan traducciones existentes, sin JavaScript/CSS adicional ni cambios en templates o configuraciones guardadas.
+
+### Validación
+
+- Ambos schemas se parsearon como JSON y validaron IDs únicos, selector sin default, visibilidad condicional y transmisión explícita del setting. La comparación con Git confirmó que todos los ajustes y presets anteriores permanecen iguales. Las etiquetas existen en los 20 locales de schema.
+- Chromium local con Liquid y estilos reales aprobó 271 comprobaciones: 64 combinaciones de ambos schemas, cuatro estados de imagen, Cover/Fit y anchos de 390/749/750/1440 px. Las cargas iniciales solicitaron únicamente la imagen seleccionada. Se verificaron cambios de viewport, modos Video/Ninguno, contenido/overlay, ausencia de overflow y recargas simuladas del editor al seleccionar, cambiar o retirar la imagen móvil. Las capturas de móvil/escritorio se revisaron y no hubo excepciones de navegador.
+- `shopify.cmd theme check --path . --output json` terminó sin errores y con 30 advertencias en archivos ajenos al cambio; los tres archivos Liquid modificados no reportaron diagnósticos. El validador de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid y schemas. `git diff --check` aprobado.
+- No se pudo verificar el guardado y los controles en Theme Editor real: `shopify theme info --json` falla por EPERM al acceder a su configuración local. Las imágenes y respuestas del QA son locales; no se publicó el theme.
+
+### Reversión
+
+- Vaciar el selector móvil recupera el fondo de escritorio. Retirar los dos selectores, sus headers y el parámetro del wrapper elimina la capacidad sin migrar datos.
+
 ## 2026-10-31 — Borde condicional de regalos en el drawer
 
 ### Corregido

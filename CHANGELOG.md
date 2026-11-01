@@ -280,6 +280,23 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-10-31 — Borde condicional de regalos en el drawer
+
+### Corregido
+
+- Objetivo: ocultar el borde superior de «Convertir en regalo» en el drawer cuando no hay descuentos de orden aplicados. `cart-actions--without-top-border` se agrega únicamente si `is_drawer` es verdadero, hay contenido de regalos y `cart.cart_level_discount_applications` está vacío.
+- Archivos: `snippets/cart-summary.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: los descuentos de orden por código o automáticos conservan el separador bajo el subtotal; los descuentos exclusivos de producto no lo activan. Cada render AJAX actualiza la condición. Se conservan el borde inferior, los separadores internos, la página de carrito y el drawer sin regalos. Sin JavaScript adicional ni cambios de settings, traducciones o JSON administrados.
+
+### Validación
+
+- Chromium local con Liquid y assets reales aprobó 59 comprobaciones a 390/1440 px, sin excepciones de navegador: ausencia de descuentos, descuentos de orden por código/automáticos, descuento exclusivo de producto, regalos abiertos/cerrados, nota general y descuentos visibles, página de carrito y drawer sin regalos. Aplicar y quitar el código mediante los controles reales completó cuatro escrituras de carrito locales y actualizó el borde sin recargar. Se revisaron las cuatro capturas con/sin descuento en ambos anchos. No se accedió a una tienda remota.
+- `shopify.cmd theme check --path . --output json` terminó sin errores y con las 29 advertencias preexistentes. El validador de la skill Shopify no pudo iniciar por la dependencia ausente `@shopify/theme-check-common`; Theme Check cubrió Liquid. `git diff --check` aprobado.
+
+### Reversión
+
+- Retirar la clase condicional y su regla `border-block-start: 0` restaura el borde superior permanente; no hay migraciones.
+
 ## 2026-10-31 — Textos de regalos y ajuste de imágenes de Quick Buy
 
 ### Añadido

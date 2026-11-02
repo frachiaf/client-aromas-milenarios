@@ -59,6 +59,76 @@
     "header_section": {
       "type": "header",
       "blocks": {
+        "am_header_menu_image_4W4VxH": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-e51c733d-1089-49cc-a4ad-8b990cdf29ff.png",
+            "menu_item_text": "experiencia milenaria",
+            "position_desktop": "top",
+            "position_mobile": "left",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
+        "am_header_menu_image_NLbHcr": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-c16f3da4-3863-4aa3-91a4-fc61a561606b.png",
+            "menu_item_text": "velas",
+            "position_desktop": "top",
+            "position_mobile": "left",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
+        "am_header_menu_image_ULj6dj": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-6189af30-8213-4a5a-8da2-daeccdc42d8d.png",
+            "menu_item_text": "home & health",
+            "position_desktop": "top",
+            "position_mobile": "left",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
+        "am_header_menu_image_hY8Bgi": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-be65a6d0-21f9-4e13-b40a-46850aa63aff.png",
+            "menu_item_text": "perfumes",
+            "position_desktop": "top",
+            "position_mobile": "left",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
+        "am_header_menu_image_kQjhN8": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-0f133984-461d-4a43-8a16-4c9bfeb17a91.png",
+            "menu_item_text": "shop",
+            "position_desktop": "top",
+            "position_mobile": "left",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
         "header-logo": {
           "type": "_header-logo",
           "static": true,
@@ -92,6 +162,13 @@
           "blocks": {}
         }
       },
+      "block_order": [
+        "am_header_menu_image_4W4VxH",
+        "am_header_menu_image_NLbHcr",
+        "am_header_menu_image_ULj6dj",
+        "am_header_menu_image_hY8Bgi",
+        "am_header_menu_image_kQjhN8"
+      ],
       "settings": {
         "logo_position": "center",
         "menu_position": "left",

@@ -8,6 +8,9 @@
  * ------------------------------------------------------------
  */
 {
+  "am_header": {
+    "menu_image_help": "Choose an image and enter the full name of a main menu item. Check the name if no image appears. When blocks match the same name, only the first valid block is used."
+  },
   "am_commerce": {
     "tier_gift_free": "FREE",
     "tier_gift": "Gift",

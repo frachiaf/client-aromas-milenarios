@@ -1,0 +1,194 @@
+{% liquid
+  assign block_settings = block.settings
+  assign image_size = block_settings.size_desktop | at_least: block_settings.size_mobile
+  assign image_width = image_size | times: 2
+  assign image_sizes = image_size | append: 'px'
+  assign position_desktop = block_settings.position_desktop | default: 'top'
+  assign position_mobile = block_settings.position_mobile | default: 'top'
+  assign image_config = block_settings.image.src | append: '|' | append: block_settings.size_desktop | append: '|' | append: block_settings.size_mobile | append: '|' | append: block_settings.text_gap | append: '|' | append: position_desktop | append: '|' | append: position_mobile | url_encode
+%}
+
+<div
+  class="am-header-menu-image-source"
+  data-am-header-image-source="{{ block.id }}"
+  data-am-menu-title="{{ block_settings.menu_item_text | escape }}"
+  data-am-image-config="{{ image_config }}"
+  hidden
+  {{ block.shopify_attributes }}
+>
+  {% if block_settings.image != blank %}
+    <template id="AMHeaderMenuImage-{{ block.id }}-{{ image_config }}">
+      <span
+        class="am-header-menu-image"
+        data-am-header-menu-image="{{ block.id }}"
+        data-am-position-desktop="{{ position_desktop }}"
+        data-am-position-mobile="{{ position_mobile }}"
+        style="--am-menu-image-desktop: {{ block_settings.size_desktop }}px; --am-menu-image-mobile: {{ block_settings.size_mobile }}px; --am-menu-image-gap: {{ block_settings.text_gap }}px;"
+        {{ block.shopify_attributes }}
+      >
+        {{
+          block_settings.image
+          | image_url: width: image_width
+          | image_tag: widths: '32, 48, 64, 96, 120, 160, 240', sizes: image_sizes, alt: '', loading: 'eager'
+        }}
+      </span>
+    </template>
+  {% endif %}
+  {% if request.design_mode %}
+    <p>{{ 'am_header.menu_image_help' | t }}</p>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  am-header-menu-images {
+    display: contents;
+  }
+
+  .am-header-menu-image-source:not([hidden]) {
+    padding: var(--padding-sm);
+    text-align: center;
+    border: 1px dashed currentColor;
+  }
+
+  [data-am-header-menu-label]:has(> .am-header-menu-image) {
+    --am-menu-image-direction: column;
+    --am-menu-image-direction-mobile: column;
+    --am-menu-image-justify: center;
+    --am-menu-image-justify-mobile: center;
+    --am-menu-image-text-align: center;
+    --am-menu-image-text-align-mobile: center;
+
+    display: flex;
+    flex-direction: var(--am-menu-image-direction);
+    align-items: center;
+    justify-content: var(--am-menu-image-justify);
+    text-align: var(--am-menu-image-text-align);
+    min-inline-size: 0;
+  }
+
+  [data-am-header-menu-label]:has(> [data-am-position-desktop='left']) {
+    --am-menu-image-direction: row;
+    --am-menu-image-justify: flex-start;
+    --am-menu-image-text-align: start;
+  }
+
+  [data-am-header-menu-label]:has(> [data-am-position-desktop='right']) {
+    --am-menu-image-direction: row-reverse;
+    --am-menu-image-justify: flex-end;
+    --am-menu-image-text-align: start;
+  }
+
+  [data-am-header-menu-label]:has(> [data-am-position-mobile='left']) {
+    --am-menu-image-direction-mobile: row;
+    --am-menu-image-justify-mobile: flex-start;
+    --am-menu-image-text-align-mobile: start;
+  }
+
+  [data-am-header-menu-label]:has(> [data-am-position-mobile='right']) {
+    --am-menu-image-direction-mobile: row-reverse;
+    --am-menu-image-justify-mobile: flex-end;
+    --am-menu-image-text-align-mobile: start;
+  }
+
+  :is(.header__drawer, .menu-list--mobile) [data-am-header-menu-label]:has(> .am-header-menu-image) {
+    flex-direction: var(--am-menu-image-direction-mobile);
+    justify-content: var(--am-menu-image-justify-mobile);
+    text-align: var(--am-menu-image-text-align-mobile);
+  }
+
+  .menu-drawer__menu-item--mainlist > [data-am-header-menu-label]:has(> .am-header-menu-image) {
+    flex: 1;
+  }
+
+  .am-header-menu-image {
+    --am-menu-image-size: var(--am-menu-image-desktop);
+    --am-menu-image-space-block: var(--am-menu-image-gap);
+    --am-menu-image-space-start: 0px;
+    --am-menu-image-space-end: 0px;
+    --am-menu-image-space-block-mobile: var(--am-menu-image-gap);
+    --am-menu-image-space-start-mobile: 0px;
+    --am-menu-image-space-end-mobile: 0px;
+
+    display: block;
+    flex: none;
+    inline-size: var(--am-menu-image-size);
+    block-size: var(--am-menu-image-size);
+    margin-block: 0 var(--am-menu-image-space-block);
+    margin-inline: var(--am-menu-image-space-start) var(--am-menu-image-space-end);
+  }
+
+  .am-header-menu-image[data-am-position-desktop='left'] {
+    --am-menu-image-space-block: 0px;
+    --am-menu-image-space-end: var(--am-menu-image-gap);
+  }
+
+  .am-header-menu-image[data-am-position-desktop='right'] {
+    --am-menu-image-space-block: 0px;
+    --am-menu-image-space-start: var(--am-menu-image-gap);
+  }
+
+  .am-header-menu-image[data-am-position-mobile='left'] {
+    --am-menu-image-space-block-mobile: 0px;
+    --am-menu-image-space-end-mobile: var(--am-menu-image-gap);
+  }
+
+  .am-header-menu-image[data-am-position-mobile='right'] {
+    --am-menu-image-space-block-mobile: 0px;
+    --am-menu-image-space-start-mobile: var(--am-menu-image-gap);
+  }
+
+  .am-header-menu-image > img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+
+  .header__drawer .am-header-menu-image,
+  .menu-list--mobile .am-header-menu-image {
+    --am-menu-image-size: var(--am-menu-image-mobile);
+    --am-menu-image-space-block: var(--am-menu-image-space-block-mobile);
+    --am-menu-image-space-start: var(--am-menu-image-space-start-mobile);
+    --am-menu-image-space-end: var(--am-menu-image-space-end-mobile);
+  }
+
+  @media screen and (max-width: 749px) {
+    [data-am-header-menu-label]:has(> .am-header-menu-image) {
+      flex-direction: var(--am-menu-image-direction-mobile);
+      justify-content: var(--am-menu-image-justify-mobile);
+      text-align: var(--am-menu-image-text-align-mobile);
+    }
+
+    .am-header-menu-image[data-am-position-desktop] {
+      --am-menu-image-size: var(--am-menu-image-mobile);
+      --am-menu-image-space-block: var(--am-menu-image-space-block-mobile);
+      --am-menu-image-space-start: var(--am-menu-image-space-start-mobile);
+      --am-menu-image-space-end: var(--am-menu-image-space-end-mobile);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:am_header.menu_image",
+  "tag": null,
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "t:settings.image" },
+    { "type": "text", "id": "menu_item_text", "label": "t:am_header.menu_item_text", "info": "t:am_header.menu_item_text_info" },
+    { "type": "select", "id": "position_desktop", "label": "t:am_header.position_desktop", "options": [
+      { "value": "top", "label": "t:options.top" },
+      { "value": "left", "label": "t:options.left" },
+      { "value": "right", "label": "t:options.right" }
+    ], "default": "top" },
+    { "type": "select", "id": "position_mobile", "label": "t:am_header.position_mobile", "options": [
+      { "value": "top", "label": "t:options.top" },
+      { "value": "left", "label": "t:options.left" },
+      { "value": "right", "label": "t:options.right" }
+    ], "default": "top" },
+    { "type": "range", "id": "size_desktop", "label": "t:am_header.size_desktop", "min": 16, "max": 120, "step": 2, "unit": "px", "default": 48 },
+    { "type": "range", "id": "size_mobile", "label": "t:am_header.size_mobile", "min": 16, "max": 120, "step": 2, "unit": "px", "default": 32 },
+    { "type": "range", "id": "text_gap", "label": "t:am_header.text_gap", "min": 0, "max": 32, "step": 1, "unit": "px", "default": 6 }
+  ],
+  "presets": [{ "name": "t:am_header.menu_image" }]
+}
+{% endschema %}

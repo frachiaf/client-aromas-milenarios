@@ -48,7 +48,7 @@
                     aria-current="page"
                   {% endif %}
                 >
-                  {{- link.title -}}
+                  <span data-am-header-menu-label data-am-menu-title="{{ link.title | escape }}">{{- link.title -}}</span>
                 </a>
               </li>
             {% endfor %}
@@ -106,7 +106,7 @@
             {% endif %}
             ref="menuitem"
           >
-            <span class="menu-list__link-title">{{- link.title -}}</span>
+            <span class="menu-list__link-title" data-am-header-menu-label data-am-menu-title="{{ link.title | escape }}">{{- link.title -}}</span>
           </a>
           {%- if link.links != blank -%}
             <div class="menu-list__submenu{{ color_scheme_classes }}" ref="submenu[]">

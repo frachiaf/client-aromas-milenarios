@@ -280,6 +280,63 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-11-02 — Centrado exclusivo para imágenes arriba del menú
+
+### Corregido
+
+- Objetivo: centrar imagen y texto únicamente cuando la posición activa es Arriba. Izquierda y Derecha alinean el conjunto y las líneas del texto al inicio del ítem, manteniendo el centrado vertical entre imagen y texto.
+- Archivos: `blocks/_am--header-menu-image.liquid`, `tests/am-header-menu-images.test.mjs`, `docs/theme-architecture.md` y este changelog.
+- Impacto: escritorio y móvil resuelven la alineación de forma independiente, incluidos drawer y barra móvil. Derecha compensa su dirección invertida con justificación al final del eje para conservar el anclaje al inicio del ítem. Se mantienen tamaños, separación, controles de submenús, asociaciones y atributos del editor; no hay settings nuevos ni cambios en datos administrados.
+
+### Validación
+
+- `node tests/am-header-menu-images.test.mjs` aprobó 127 comprobaciones locales en Chromium sin excepciones: alineación física lateral y centrado en Arriba dentro de las nueve combinaciones por dispositivo, contenedores de 240 px y texto de dos líneas en escritorio, drawer y barra móvil. Conserva las verificaciones de hidratación, overflow y controles nativos. No se probó un Theme Editor remoto.
+- `shopify.cmd theme check --path . --output json` terminó sin errores y con las 30 advertencias preexistentes, sin observaciones sobre el bloque.
+- El validador oficial de Shopify aprobó el bloque actualizado. `node --check` y `git diff --check` aprobaron; se conservaron los cambios pendientes anteriores.
+
+### Reversión
+
+- Restaurar la justificación y el centrado de texto comunes del bloque recupera el centrado de todas las posiciones sin modificar la configuración guardada.
+
+## 2026-11-02 — Posición de imágenes del menú por dispositivo
+
+### Añadido
+
+- Objetivo: los bloques Imagen de ítem del menú permiten elegir Arriba, Izquierda o Derecha de forma independiente en escritorio y móvil mediante `position_desktop` y `position_mobile`.
+- Archivos: `blocks/_am--header-menu-image.liquid`, los 20 `locales/*.schema.json`, `tests/am-header-menu-images.test.mjs`, `docs/theme-architecture.md` y este changelog.
+- Impacto: Arriba conserva el diseño anterior y es el respaldo para bloques existentes sin los settings nuevos. Las posiciones laterales centran imagen y texto verticalmente, reutilizando la separación actual en el eje horizontal sin márgenes duplicados. El drawer y la barra móvil usan la posición móvil, incluso si el drawer sustituye al menú en una pantalla grande. Los controles de submenús y los atributos del editor conservan su ubicación y función. No cambian la asociación por nombre, los tamaños, los datos administrados ni la publicación del theme.
+- Ambas posiciones forman parte de la clave del template para que los cambios aislados de posición se actualicen mediante la hidratación nativa, sin modificar el controlador JavaScript.
+
+### Validación
+
+- `node tests/am-header-menu-images.test.mjs` aprobó 118 comprobaciones locales en Chromium, sin excepciones de navegador: las nueve combinaciones por dispositivo, posición real y centrado, separación cero/máxima, tamaños de 16/120 px, medios SVG/PNG de distintas proporciones, drawer táctil de escritorio, barra móvil, controles de submenús, fallback de settings ausentes, overflow y cambios de posición mediante hidratación. Se conserva la cobertura previa de asociaciones y editor; se revisaron capturas de las posiciones laterales. No se probó un Theme Editor remoto.
+- `shopify.cmd theme check --path . --output json` terminó sin errores y con las 30 advertencias preexistentes, sin observaciones sobre el bloque modificado.
+- El validador oficial de Shopify aprobó los 21 archivos funcionales de esta ampliación. Los locales conservan todas las traducciones anteriores; `node --check` y `git diff --check` aprobaron.
+
+### Reversión
+
+- Elegir Arriba en ambos selectores recupera el diseño previo. Retirar los dos settings, sus atributos, estilos y participación en la clave del template elimina la capacidad sin migrar configuraciones guardadas.
+
+## 2026-11-02 — Imágenes asociadas a ítems del header
+
+### Añadido
+
+- Objetivo: agregar desde Header un bloque Imagen de ítem del menú, con un único `image_picker` para imágenes/SVG y un nombre que se compara completo, ignorando mayúsculas y espacios en los extremos. La imagen queda arriba y centrada en escritorio, drawer y barra móvil opcional. Cada bloque permite tamaños de 16–120 px por dispositivo (48/32 px iniciales) y separación de 0–32 px (6 px iniciales), sin recortar ni deformar el medio.
+- Archivos: nuevos `blocks/_am--header-menu-image.liquid`, `assets/am--header-menu-images.js` y `tests/am-header-menu-images.test.mjs`; integración en `sections/header.liquid`, `blocks/_header-menu.liquid` y `snippets/header-drawer.liquid`; los 51 locales, guía técnica y este changelog.
+- Impacto: solo se decoran ítems de primer nivel; los enlaces y controles originales conservan su interacción y atributos accesibles. Los ítems trasladados a Más conservan su imagen. El primer bloque válido por orden gana una coincidencia repetida y un nombre repetido en el menú recibe la imagen en todas sus apariciones. Los bloques incompletos, sin coincidencia o duplicados muestran una ayuda seleccionable solo en el editor. No se modifican templates, section groups ni ajustes guardados, y no se publica el theme.
+- La sincronización es idempotente y conserva nodos sin cambios; responde a edición, eliminación, reordenación, hidratación y reemplazos del header. El ID de cada template incluye su configuración para que el morph nativo pueda reemplazarlo al cambiar imagen o tamaño. Se reutilizan el evento `reflow` con su contrato `detail: {}` y el recálculo de alturas. La selección del editor permite revelar el bloque dentro del drawer o Más.
+
+### Validación
+
+- `node tests/am-header-menu-images.test.mjs` aprobó 44 comprobaciones con Liquid, estilos y módulos reales en Chromium: SVG/PNG, coincidencias exactas, prioridad de duplicados, nombres repetidos, ayudas del editor, conservación de nodos, cambios de viewport, dimensiones extremas, drawer plano/acordeón/tres niveles, foco de teclado, overflow, selección, hidratación nativa y recargas. Las capturas de escritorio y drawer se revisaron; no hubo excepciones de navegador. Son fixtures locales; no se accedió a una tienda ni se probó el Theme Editor remoto.
+- Los 51 locales se parsearon como JSON con comentarios y se comprobaron los settings y defaults del bloque. `node --check` aprobó el módulo y la suite; `git diff --check` no reportó problemas.
+- `shopify.cmd theme check --path . --output json` terminó con código 0, sin errores y con 30 advertencias en archivos ajenos a este cambio.
+- El validador oficial de Shopify aprobó los 56 archivos funcionales modificados o añadidos, incluidos los 51 locales.
+
+### Reversión
+
+- Retirar el bloque, su controlador, los marcadores de etiquetas y la integración del schema/render del header elimina la capacidad sin migrar datos guardados. Las asociaciones se administran desde el Theme Editor; quitar todos los bloques restaura la navegación sin imágenes.
+
 ## 2026-11-01 — Diseño y ajuste de fondo móvil de secciones genéricas
 
 ### Añadido

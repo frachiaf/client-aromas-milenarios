@@ -8,6 +8,9 @@
  * ------------------------------------------------------------
  */
 {
+  "am_header": {
+    "menu_image_help": "Elegí una imagen y escribí el nombre completo de un ítem del menú principal. Si no aparece la imagen, revisá el nombre. Si varios bloques coinciden, se usa solo el primero válido."
+  },
   "am_commerce": {
     "tier_gift_free": "GRATIS",
     "tier_gift": "Regalo",

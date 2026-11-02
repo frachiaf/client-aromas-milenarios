@@ -400,12 +400,23 @@
       {{ navigation_bar }}
     </div>
   {% endif %}
+
+  <am-header-menu-images
+    data-hydration-key="am-header-menu-images"
+    {% if request.design_mode %}data-design-mode{% endif %}
+  >
+    {% content_for 'blocks' %}
+  </am-header-menu-images>
 </header-component>
 
 <script
   src="{{ 'header.js' | asset_url }}"
   type="module"
 ></script>
+
+{% if section.blocks.size > 0 or request.design_mode %}
+  <script src="{{ 'am--header-menu-images.js' | asset_url }}" type="module"></script>
+{% endif %}
 
 {% stylesheet %}
   body {
@@ -1129,6 +1140,7 @@
   "name": "t:names.header",
   "tag": "header",
   "class": "header-section",
+  "blocks": [{ "type": "_am--header-menu-image" }],
   "settings": [
     {
       "type": "header",

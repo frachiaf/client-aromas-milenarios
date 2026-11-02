@@ -8,6 +8,16 @@
  * ------------------------------------------------------------
  */
 {
+  "am_header": {
+    "menu_image": "Menu item image",
+    "menu_item_text": "Menu item name",
+    "menu_item_text_info": "Enter the full name of a main menu item. Matching ignores capitalization and spaces at the beginning or end. The first valid matching block is used.",
+    "size_desktop": "Image size on desktop",
+    "size_mobile": "Image size on mobile",
+    "text_gap": "Space between image and text",
+    "position_desktop": "Image position on desktop",
+    "position_mobile": "Image position on mobile"
+  },
   "am_commerce": {
     "tier_gift_line_label": "Gift label in cart",
     "tier_gift_line_label_info": "Text for this tier only. Leave blank to use the translated Gift label.",

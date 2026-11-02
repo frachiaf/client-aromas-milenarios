@@ -8,6 +8,16 @@
  * ------------------------------------------------------------
  */
 {
+  "am_header": {
+    "menu_image": "Imagen de ítem del menú",
+    "menu_item_text": "Nombre del ítem",
+    "menu_item_text_info": "Escribí el nombre completo de un ítem del menú principal. Se ignoran mayúsculas y espacios al principio o al final. Se usa el primer bloque válido que coincida.",
+    "size_desktop": "Tamaño de imagen en escritorio",
+    "size_mobile": "Tamaño de imagen en móvil",
+    "text_gap": "Separación entre imagen y texto",
+    "position_desktop": "Posición en escritorio",
+    "position_mobile": "Posición en móvil"
+  },
   "am_commerce": {
     "tier_gift_line_label": "Etiqueta del regalo en el carrito",
     "tier_gift_line_label_info": "Texto exclusivo de este nivel. Dejar vacío para usar «Regalo» traducido.",

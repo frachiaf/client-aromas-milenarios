@@ -576,7 +576,7 @@
                 "color_scheme": "scheme-5",
                 "background_media": "video",
                 "video": "shopify://files/videos/grok-video-e787a793-e2b4-44ae-b586-0cd720b20f05 (1).mp4",
-                "video_position": "cover",
+                "video_position": "contain",
                 "background_image_position": "cover",
                 "border": "none",
                 "border_width": 1,

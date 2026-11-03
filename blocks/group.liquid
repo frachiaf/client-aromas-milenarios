@@ -293,6 +293,13 @@
       "default": "none"
     },
     {
+      "type": "text",
+      "id": "background_focal_point",
+      "label": "t:settings.background_focal_point",
+      "info": "t:info.background_focal_point",
+      "visible_if": "{{ block.settings.background_media == 'image' or block.settings.background_media == 'video' }}"
+    },
+    {
       "type": "video",
       "id": "video",
       "label": "t:settings.video",

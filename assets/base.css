@@ -646,6 +646,7 @@ p:empty {
 .background-image-container img,
 .background-image-container svg {
   object-fit: cover;
+  object-position: var(--background-focal-point, center);
   width: 100%;
   height: 100%;
 }
@@ -1156,10 +1157,12 @@ results-list[initialized] {
 
 .video-background--cover * {
   object-fit: cover;
+  object-position: var(--background-focal-point, center);
 }
 
 .video-background--contain * {
   object-fit: contain;
+  object-position: var(--background-focal-point, center);
 }
 
 .text-block {

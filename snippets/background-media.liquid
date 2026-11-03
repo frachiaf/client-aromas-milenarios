@@ -8,13 +8,40 @@
   @param {object} [background_image_mobile] - The mobile background image
   @param {string} [background_image_position] - The background image position
   @param {string} [background_image_position_mobile] - Optional mobile image fit: cover, fit, or inherit
+  @param {string} [background_focal_point] - Optional visible area. Accepts center, top, bottom, left, right, and those keyword pairs in either order. Empty or unknown values keep the center.
   @param {string} [placeholder] - The placeholder
   @param {object} [block] - The block object
   @param {object} [section] - The section object
 
   @example
-  {% render 'background-media', background_media: background_media, background_video: background_video, background_video_position: background_video_position, background_image: background_image, background_image_mobile: background_image_mobile, background_image_position: background_image_position, background_image_position_mobile: background_image_position_mobile, placeholder: placeholder %}
+  {% render 'background-media', background_media: background_media, background_video: background_video, background_video_position: background_video_position, background_image: background_image, background_image_mobile: background_image_mobile, background_image_position: background_image_position, background_image_position_mobile: background_image_position_mobile, background_focal_point: background_focal_point, placeholder: placeholder %}
 {%- enddoc -%}
+
+{% liquid
+  assign focal_point = background_focal_point | default: '' | downcase | strip | replace: '  ', ' ' | replace: '  ', ' ' | replace: '  ', ' '
+  case focal_point
+    when 'center', 'center center'
+      assign safe_focal_point = 'center'
+    when 'top', 'top center', 'center top'
+      assign safe_focal_point = 'top'
+    when 'bottom', 'bottom center', 'center bottom'
+      assign safe_focal_point = 'bottom'
+    when 'left', 'left center', 'center left'
+      assign safe_focal_point = 'left'
+    when 'right', 'right center', 'center right'
+      assign safe_focal_point = 'right'
+    when 'top left', 'left top'
+      assign safe_focal_point = 'top left'
+    when 'top right', 'right top'
+      assign safe_focal_point = 'top right'
+    when 'bottom left', 'left bottom'
+      assign safe_focal_point = 'bottom left'
+    when 'bottom right', 'right bottom'
+      assign safe_focal_point = 'bottom right'
+    else
+      assign safe_focal_point = ''
+  endcase
+%}
 
 {% if background_media == 'video' %}
   {% liquid
@@ -23,6 +50,9 @@
   {%- if background_video != blank -%}
     <video-background-component
       class="{{ video_classes }}"
+      {% if safe_focal_point != blank %}
+        style="--background-focal-point: {{ safe_focal_point }}"
+      {% endif %}
     >
       {% liquid
         assign media_width_desktop = 100 | append: 'vw'
@@ -52,7 +82,12 @@
       </video>
     </video-background-component>
   {%- else -%}
-    <div class="{{ video_classes }}">
+    <div
+      class="{{ video_classes }}"
+      {% if safe_focal_point != blank %}
+        style="--background-focal-point: {{ safe_focal_point }}"
+      {% endif %}
+    >
       {%- assign placeholder_name = placeholder | default: 'hero-apparel-2' -%}
       {%- if placeholder_name == blank -%}
         {%- assign placeholder_name = 'hero-apparel-2' -%}
@@ -101,7 +136,12 @@
         assign loading = 'eager'
       endif
     %}
-    <picture class="background-image-container{% if background_image_position == 'fit' %} background-image-fit{% endif %}{{ mobile_image_class }}">
+    <picture
+      class="background-image-container{% if background_image_position == 'fit' %} background-image-fit{% endif %}{{ mobile_image_class }}"
+      {% if safe_focal_point != blank %}
+        style="--background-focal-point: {{ safe_focal_point }}"
+      {% endif %}
+    >
       {%- if background_image != blank and background_image_mobile != blank -%}
         <source
           media="(max-width: 749px)"
@@ -118,7 +158,12 @@
       }}
     </picture>
   {%- else -%}
-    <div class="background-image-container{% if background_image_position == 'fit' %} background-image-fit{% endif %}{{ mobile_image_class }}">
+    <div
+      class="background-image-container{% if background_image_position == 'fit' %} background-image-fit{% endif %}{{ mobile_image_class }}"
+      {% if safe_focal_point != blank %}
+        style="--background-focal-point: {{ safe_focal_point }}"
+      {% endif %}
+    >
       {%- assign placeholder_name = placeholder | default: 'hero-apparel-2' -%}
       {%- if placeholder_name == blank -%}
         {%- assign placeholder_name = 'hero-apparel-2' -%}

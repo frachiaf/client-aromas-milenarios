@@ -576,6 +576,7 @@
                 "color_scheme": "scheme-5",
                 "background_media": "video",
                 "video": "{{ closest.product.metafields.custom.video_pdp.value }}",
+                "background_focal_point": "{{ closest.product.metafields.custom.video_pdp_object_position.value }}",
                 "video_position": "cover",
                 "background_image_position": "cover",
                 "border": "none",

@@ -8,6 +8,36 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Modificado
 
+- Objetivo (2026-11-02): el grupo Benefits de la PDP usa el metafield `custom.video_pdp_object_position` como zona visible del video de fondo.
+- Archivos: `templates/product.json`, `templates/product.velas.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: se agregó solo `background_focal_point` junto al video existente, sin reformatear el resto del JSON. Si el metafield trae `top`, el video y su imagen usan ese encuadre. Si la definición no es legible en la tienda online, Liquid recibe vacío y el recorte sigue centrado.
+
+### Validación
+
+- Ambos templates conservan el comentario de cabecera de Shopify. El preview de `/products/spray-ambiente-textil-floral-fresco` renderiza el grupo Benefits con su video, pero `custom.video_pdp` sí tiene valor y `custom.video_pdp_object_position` llega vacío. Por eso `video-background-component` no incluye `--background-focal-point`.
+
+### Reversión
+
+- Quitar `background_focal_point` de los dos grupos Benefits devuelve la conexión anterior. No cambia el schema ni el recorte por defecto.
+
+### Modificado
+
+- Objetivo (2026-11-02): elegir qué zona del fondo de imagen o video de `Grupo` queda visible, con el valor conectado a un metafield de producto.
+- Archivos: `blocks/group.liquid`, `snippets/group.liquid`, `snippets/background-media.liquid`, `assets/base.css`, `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el setting de texto `background_focal_point` aparece solo cuando el fondo es imagen o video y queda vacío por defecto. Acepta `center`, `top`, `bottom`, `left`, `right` y los pares de esas palabras, también en orden invertido. Un valor válido aplica `object-position` a la imagen, al video y al placeholder, en escritorio y móvil. Vacío o desconocido conserva el centro. El theme no fija namespace ni modifica templates. Los demás fondos que reutilizan el snippet no cambian.
+
+### Validación
+
+- El schema del bloque se parseó como JSON: el setting es `text`, no tiene default y solo se muestra con fondo de imagen o video. Una comprobación de la lista blanca aceptó centro, pares invertidos y espacios internos, y rechazó porcentajes y valores desconocidos.
+- `shopify.cmd theme check --path .` inspeccionó 336 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La CLI puede cerrar con su aserción interna de Node después del resumen.
+- No había preview local: no se inició `shopify theme dev` para evitar subir el theme a una tienda no identificada. Queda por comprobar en el editor la conexión del metafield sobre el grupo de beneficios de la PDP.
+
+### Reversión
+
+- Retirar `background_focal_point`, su parámetro, la variable `--background-focal-point` y las reglas `object-position` restaura el recorte centrado. No hay migración ni cambios en templates.
+
+### Modificado
+
 - Objetivo (2026-09-30): ajustar la altura y el contenido de las cards de `AM Medio + Carrusel 60/40` para que queden centradas y más bajas que el medio principal, sin recortar textos largos.
 - Archivos: `sections/am--media-product-carousel.liquid`, `blocks/am--media-carousel-card.liquid` y `CHANGELOG.md`.
 - Impacto: el editor dispone de altura de cards en escritorio (50–90% del medio, 75% inicial) y móvil/tablet (260–520 px, 360 px inicial), padding textual (0–40 px, 16 px inicial) y fondo/texto opcionales compartidos por productos y bloques. Las imágenes llegan al borde y las cards crecen si el contenido supera la altura elegida. Los estilos del carrusel externo ya no añaden espacio al carrusel interno de productos; el solapamiento se calcula con una unidad de ancho de sección válida en el navegador. Los componentes nativos de producto, Quick Add y navegación se conservan.

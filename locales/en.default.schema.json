@@ -352,6 +352,7 @@
     "video_alt_text": "Describe the video for assistive tech users",
     "video_autoplay": "Videos will be muted by default",
     "video_external": "Use a YouTube or Vimeo URL",
+    "background_focal_point": "Connect a single-line product metafield using the dynamic source button. Values: center, top, bottom, left, right, top left, top center, top right, center left, center right, bottom left, bottom center, and bottom right. Empty uses the center.",
     "pills_usage": "Used for applied filters, discount codes, and search suggestions",
     "media_type_info": "Features are populated from your menu links"
   },
@@ -906,6 +907,7 @@
     "background_overlay": "Background overlay",
     "badge_corner_radius": "Corner radius",
     "background_media": "Background media",
+    "background_focal_point": "Visible area",
     "badge_position": "Position on cards",
     // Color scheme setting for sale badges on product cards
     "badge_sale_color_scheme": "Sale",

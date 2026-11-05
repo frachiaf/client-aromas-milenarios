@@ -1227,12 +1227,12 @@
             "caption_product": "",
             "animate_hotspots": true,
             "hotspot_1_enabled": true,
-            "hotspot_1_product": "spray-ambiente-textil-celta",
+            "hotspot_1_product": "set-bano",
             "hotspot_1_text": "",
             "hotspot_1_url": "",
-            "hotspot_1_x_position": 60,
-            "hotspot_1_y_position": 41,
-            "hotspot_2_enabled": true,
+            "hotspot_1_x_position": 64,
+            "hotspot_1_y_position": 65,
+            "hotspot_2_enabled": false,
             "hotspot_2_product": "vela-oceano",
             "hotspot_2_text": "",
             "hotspot_2_url": "",
@@ -1243,7 +1243,13 @@
             "hotspot_3_text": "",
             "hotspot_3_url": "",
             "hotspot_3_x_position": 60,
-            "hotspot_3_y_position": 63
+            "hotspot_3_y_position": 63,
+            "hotspot_4_enabled": false,
+            "hotspot_4_product": "",
+            "hotspot_4_text": "",
+            "hotspot_4_url": "",
+            "hotspot_4_x_position": 40,
+            "hotspot_4_y_position": 75
           }
         },
         "slide_dii6KR": {
@@ -1273,7 +1279,13 @@
             "hotspot_3_text": "",
             "hotspot_3_url": "",
             "hotspot_3_x_position": 60,
-            "hotspot_3_y_position": 44
+            "hotspot_3_y_position": 44,
+            "hotspot_4_enabled": false,
+            "hotspot_4_product": "",
+            "hotspot_4_text": "",
+            "hotspot_4_url": "",
+            "hotspot_4_x_position": 40,
+            "hotspot_4_y_position": 75
           }
         },
         "slide_zxwfik": {
@@ -1303,7 +1315,13 @@
             "hotspot_3_text": "",
             "hotspot_3_url": "",
             "hotspot_3_x_position": 75,
-            "hotspot_3_y_position": 50
+            "hotspot_3_y_position": 50,
+            "hotspot_4_enabled": false,
+            "hotspot_4_product": "",
+            "hotspot_4_text": "",
+            "hotspot_4_url": "",
+            "hotspot_4_x_position": 40,
+            "hotspot_4_y_position": 75
           }
         },
         "slide_7j7AgB": {
@@ -1333,7 +1351,13 @@
             "hotspot_3_text": "",
             "hotspot_3_url": "",
             "hotspot_3_x_position": 67,
-            "hotspot_3_y_position": 67
+            "hotspot_3_y_position": 67,
+            "hotspot_4_enabled": false,
+            "hotspot_4_product": "",
+            "hotspot_4_text": "",
+            "hotspot_4_url": "",
+            "hotspot_4_x_position": 40,
+            "hotspot_4_y_position": 75
           }
         }
       },

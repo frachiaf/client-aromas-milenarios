@@ -6,6 +6,22 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Añadido
+
+- Objetivo (2026-11-05): cada diapositiva de `AM Presentación numerada` puede activar un cuarto hotspot de producto, con el mismo contrato que los tres existentes.
+- Archivos: `sections/am--numbered-slideshow.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el grupo queda desactivado por defecto, en 40% horizontal y 75% vertical. Las instancias actuales no muestran el cuarto hotspot ni requieren editar templates JSON. El producto sigue siendo obligatorio en storefront y el selector permanece visible porque Shopify no admite `visible_if` en settings `product`.
+
+### Validación
+
+- El schema del bloque se parseó como JSON: 39 entradas, IDs `hotspot_4_*` únicos, checkbox desactivado y posición inicial 40%/75%. El selector de producto no usa `visible_if`. El render recorre `(1..4)`. No se modificaron templates ni assets.
+- `shopify.cmd theme check --path .` inspeccionó 337 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La sección no aparece entre las advertencias.
+- El preview local de la home renderizó las cuatro diapositivas con 2, 3, 1 y 3 hotspots, igual que la configuración ya guardada. Ninguna mostró un cuarto punto. No se activó el setting en el editor para no escribir `templates/index.json`.
+
+### Reversión
+
+- Retirar el grupo Hotspot 4, su inclusión en las condiciones de render y el rango `(1..4)` restaura el límite de tres hotspots. No hay migración ni cambios en datos administrados por Shopify.
+
 ### Modificado
 
 - Objetivo (2026-11-02): el grupo Benefits de la PDP usa el metafield `custom.video_pdp_object_position` como zona visible del video de fondo.

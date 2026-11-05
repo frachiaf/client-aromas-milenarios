@@ -21,7 +21,7 @@
   assign hotspot_color_scheme = section.settings.color_scheme | default: 'scheme-1'
 
   for block in slider_items
-    if block.settings.hotspot_1_enabled or block.settings.hotspot_2_enabled or block.settings.hotspot_3_enabled
+    if block.settings.hotspot_1_enabled or block.settings.hotspot_2_enabled or block.settings.hotspot_3_enabled or block.settings.hotspot_4_enabled
       assign has_hotspots = true
       break
     endif
@@ -54,7 +54,7 @@
         {%- for block in slider_items -%}
           {%- liquid
             assign slide_has_hotspots = false
-            if block.settings.hotspot_1_enabled or block.settings.hotspot_2_enabled or block.settings.hotspot_3_enabled
+            if block.settings.hotspot_1_enabled or block.settings.hotspot_2_enabled or block.settings.hotspot_3_enabled or block.settings.hotspot_4_enabled
               assign slide_has_hotspots = true
             endif
           -%}
@@ -85,7 +85,7 @@
                   data-hotspot-hover-image
                 >
                 <div class="hotspots-container">
-                  {%- for hotspot_number in (1..3) -%}
+                  {%- for hotspot_number in (1..4) -%}
                     {%- liquid
                       assign enabled_key = 'hotspot_' | append: hotspot_number | append: '_enabled'
                       assign product_key = 'hotspot_' | append: hotspot_number | append: '_product'
@@ -338,7 +338,15 @@
         { "type": "url", "id": "hotspot_3_url", "label": "Enlace alternativo", "info": "Solo reemplaza el enlace de la card; Quick Buy usa el producto.", "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
         { "type": "image_picker", "id": "hotspot_3_hover_image", "label": "Imagen al pasar el cursor", "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
         { "type": "range", "id": "hotspot_3_x_position", "label": "Posición horizontal", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 75, "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
-        { "type": "range", "id": "hotspot_3_y_position", "label": "Posición vertical", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "visible_if": "{{ block.settings.hotspot_3_enabled }}" }
+        { "type": "range", "id": "hotspot_3_y_position", "label": "Posición vertical", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "visible_if": "{{ block.settings.hotspot_3_enabled }}" },
+        { "type": "header", "content": "Hotspot 4" },
+        { "type": "checkbox", "id": "hotspot_4_enabled", "label": "Activar hotspot 4", "default": false },
+        { "type": "product", "id": "hotspot_4_product", "label": "Producto" },
+        { "type": "text", "id": "hotspot_4_text", "label": "Título alternativo", "info": "Si está vacío, usa el título del producto.", "visible_if": "{{ block.settings.hotspot_4_enabled }}" },
+        { "type": "url", "id": "hotspot_4_url", "label": "Enlace alternativo", "info": "Solo reemplaza el enlace de la card; Quick Buy usa el producto.", "visible_if": "{{ block.settings.hotspot_4_enabled }}" },
+        { "type": "image_picker", "id": "hotspot_4_hover_image", "label": "Imagen al pasar el cursor", "visible_if": "{{ block.settings.hotspot_4_enabled }}" },
+        { "type": "range", "id": "hotspot_4_x_position", "label": "Posición horizontal", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 40, "visible_if": "{{ block.settings.hotspot_4_enabled }}" },
+        { "type": "range", "id": "hotspot_4_y_position", "label": "Posición vertical", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 75, "visible_if": "{{ block.settings.hotspot_4_enabled }}" }
       ]
     },
     {

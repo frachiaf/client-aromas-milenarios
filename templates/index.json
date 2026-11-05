@@ -1841,7 +1841,7 @@
               "name": "t:names.button",
               "settings": {
                 "label": "Descubrí el tuyo",
-                "link": "shopify://collections/all",
+                "link": "shopify://collections/difusores",
                 "open_in_new_tab": false,
                 "style_class": "button",
                 "width": "fit-content",

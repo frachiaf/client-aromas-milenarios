@@ -121,6 +121,25 @@
           </li>
         {%- endfor -%}
       </ul>
+
+      {%- if section.settings.autoplay and slider_items.size > 1 -%}
+        <button
+          type="button"
+          class="am--numbered-slideshow__playback"
+          data-am-playback
+          aria-pressed="false"
+          aria-label="{{ 'accessibility.slideshow_pause' | t }}"
+          data-pause-label="{{ 'accessibility.slideshow_pause' | t }}"
+          data-play-label="{{ 'accessibility.slideshow_play' | t }}"
+        >
+          <span class="am--numbered-slideshow__playback-icon am--numbered-slideshow__playback-icon--pause" aria-hidden="true">
+            {{ 'icon-pause.svg' | inline_asset_content }}
+          </span>
+          <span class="am--numbered-slideshow__playback-icon am--numbered-slideshow__playback-icon--play" aria-hidden="true">
+            {{ 'icon-play.svg' | inline_asset_content }}
+          </span>
+        </button>
+      {%- endif -%}
     </div>
 
     {%- if slider_items.size > 0 -%}

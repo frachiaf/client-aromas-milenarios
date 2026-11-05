@@ -10,8 +10,11 @@
       this.controls = [...this.querySelectorAll('[data-am-control]')];
       this.captions = [...this.querySelectorAll('[data-am-caption]')];
       this.progress = this.querySelector('[data-am-progress]');
+      this.playbackButton = this.querySelector('[data-am-playback]');
       this.currentIndex = Math.max(0, this.slides.findIndex((slide) => slide.classList.contains('am--is-active')));
-      this.autoplay = this.dataset.amAutoplay === 'true' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.autoplay = this.dataset.amAutoplay === 'true';
+      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.userPaused = this.autoplay && this.reducedMotion;
       this.loop = this.dataset.amLoop === 'true';
       this.interval = Math.max(1000, Number(this.dataset.amInterval) || 8000);
 
@@ -19,6 +22,8 @@
         control.addEventListener('click', () => this.goTo(index, true), { signal: this.abortController.signal });
         control.addEventListener('keydown', (event) => this.onControlKeydown(event, index), { signal: this.abortController.signal });
       });
+      this.playbackButton?.addEventListener('click', () => this.togglePlayback(), { signal: this.abortController.signal });
+      this.updatePlaybackButton();
 
       this.addEventListener('mouseenter', () => this.pause(), { signal: this.abortController.signal });
       this.addEventListener('mouseleave', () => this.play(), { signal: this.abortController.signal });
@@ -98,10 +103,26 @@
     }
 
     play() {
-      if (!this.autoplay || this.slides.length < 2 || document.hidden) return;
+      if (!this.autoplay || this.userPaused || this.slides.length < 2 || document.hidden) return;
       this.pause(false);
       this.restartProgress();
       this.timer = window.setInterval(() => this.next(), this.interval);
+    }
+
+    togglePlayback() {
+      this.userPaused = !this.userPaused;
+      this.updatePlaybackButton();
+      if (this.userPaused) this.pause();
+      else this.play();
+    }
+
+    updatePlaybackButton() {
+      if (!this.playbackButton) return;
+      this.playbackButton.setAttribute('aria-pressed', String(this.userPaused));
+      this.playbackButton.setAttribute(
+        'aria-label',
+        this.userPaused ? this.playbackButton.dataset.playLabel : this.playbackButton.dataset.pauseLabel
+      );
     }
 
     pause(resetProgress = true) {
@@ -117,7 +138,7 @@
       if (!this.progress) return;
       this.progress.style.transition = 'none';
       this.progress.style.width = '0%';
-      if (!this.autoplay) return;
+      if (!this.autoplay || this.userPaused) return;
       requestAnimationFrame(() => requestAnimationFrame(() => {
         this.progress.style.transition = `width ${this.interval}ms linear`;
         this.progress.style.width = '100%';

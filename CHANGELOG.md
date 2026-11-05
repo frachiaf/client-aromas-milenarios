@@ -8,6 +8,22 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Añadido
 
+- Objetivo (2026-11-05): `AM Presentación numerada` ofrece un botón para pausar o reanudar la reproducción automática desde la esquina inferior derecha de la diapositiva.
+- Archivos: `sections/am--numbered-slideshow.liquid`, `assets/am--numbered-slideshow.css`, `assets/am--numbered-slideshow.js`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el botón aparece solo con autoplay activo y al menos dos diapositivas. Usa las etiquetas existentes de pausa y reproducción. La pausa manual no se reanuda al salir el puntero; el hover, el foco y una pestaña oculta siguen pudiendo pausar de forma temporal. Con movimiento reducido el control arranca en pausa y solo avanza si la persona lo pide. La fila de info distribuye su contenido con `space-between`.
+
+### Validación
+
+- `shopify theme check --path .` inspeccionó 337 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La sección no aparece entre las advertencias. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+- Una página local con el CSS y el JS reales comprobó, en 1280 px y 390 px, el botón de 36 px a 12 px del borde inferior derecho. El hover pausa y al salir reanuda; la pausa manual se mantiene al salir y el segundo clic reanuda. Con movimiento reducido arranca en pausa y solo avanza si se pulsa reproducir. La fila de info usa `space-between`.
+- La home local tiene `autoplay` desactivado en esta sección, así que el botón no se renderiza ahí. No se modificó `templates/index.json`.
+
+### Reversión
+
+- Quitar el botón, su estilo, `userPaused` y `justify-content: space-between` restaura el autoplay anterior. No hay cambios en templates ni en datos del editor.
+
+### Añadido
+
 - Objetivo (2026-11-05): cada diapositiva de `AM Presentación numerada` puede activar un cuarto hotspot de producto, con el mismo contrato que los tres existentes.
 - Archivos: `sections/am--numbered-slideshow.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
 - Impacto: el grupo queda desactivado por defecto, en 40% horizontal y 75% vertical. Las instancias actuales no muestran el cuarto hotspot ni requieren editar templates JSON. El producto sigue siendo obligatorio en storefront y el selector permanece visible porque Shopify no admite `visible_if` en settings `product`.

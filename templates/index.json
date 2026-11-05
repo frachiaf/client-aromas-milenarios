@@ -1380,7 +1380,7 @@
         "background_color": "#eaeaea",
         "text_color": "",
         "use_roman_numerals": true,
-        "autoplay": false,
+        "autoplay": true,
         "loop": true,
         "autoplay_slide_duration": 8,
         "progress_color": "",

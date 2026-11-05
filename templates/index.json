@@ -2144,7 +2144,7 @@
                   "name": "t:names.button",
                   "settings": {
                     "label": "Ver más",
-                    "link": "#",
+                    "link": "shopify://collections/perfume-corporal",
                     "open_in_new_tab": false,
                     "style_class": "button",
                     "width": "fit-content",
@@ -2434,7 +2434,7 @@
                   "name": "t:names.button",
                   "settings": {
                     "label": "Ver más",
-                    "link": "shopify://collections/all",
+                    "link": "shopify://collections/cremas",
                     "open_in_new_tab": false,
                     "style_class": "button",
                     "width": "fit-content",

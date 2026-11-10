@@ -162,6 +162,11 @@
       if settings.product_card_carousel == false
         assign slideshow_attributes = slideshow_attributes | append: ' disabled="true"'
       endif
+
+      assign media_arrow_shape = 'none'
+      if settings.am_media_arrow_rounded_background
+        assign media_arrow_shape = 'circle'
+      endif
     %}
     <a
       class="contents"
@@ -175,6 +180,7 @@
         slides: slides,
         slide_count: media_list_to_show.size,
         show_arrows: show_arrows,
+        icon_shape: media_arrow_shape,
         attributes: slideshow_attributes
       %}
     </a>
@@ -393,6 +399,32 @@
     @container (max-width: 249px) {
       padding-inline: 0 var(--padding-sm);
     }
+  }
+
+  .card-gallery slideshow-arrows .slideshow-control.slideshow-control--shape-circle {
+    width: var(--minimum-touch-target);
+    height: var(--minimum-touch-target);
+    min-width: var(--minimum-touch-target);
+    min-height: var(--minimum-touch-target);
+    padding: 0;
+    margin-inline: var(--padding-xs);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+  }
+
+  @media screen and (min-width: 750px) {
+    .card-gallery slideshow-arrows .slideshow-control.slideshow-control--shape-circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .card-gallery slideshow-arrows .slideshow-control.slideshow-control--shape-circle:hover {
+    background-color: var(--color-primary-button-hover-background);
+    color: var(--color-primary-button-hover-text);
   }
 
   /*

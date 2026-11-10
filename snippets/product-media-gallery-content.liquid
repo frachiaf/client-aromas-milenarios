@@ -91,6 +91,11 @@
   endif
 
   assign icons_position = 'center'
+  assign media_arrow_shape = 'none'
+
+  if settings.am_media_arrow_rounded_background
+    assign media_arrow_shape = 'circle'
+  endif
 
   # Put the icons on the opposite side of the pagination controls
   if block_settings.slideshow_controls_position == 'on_media'
@@ -443,7 +448,7 @@
 
     {% if render_slideshow_arrows %}
       {% capture slideshow_arrows %}
-        {% render 'slideshow-arrows', class: 'mobile:hidden', icon_style: block_settings.icons_style %}
+        {% render 'slideshow-arrows', class: 'mobile:hidden', icon_style: block_settings.icons_style, icon_shape: media_arrow_shape %}
       {% endcapture %}
     {% endif %}
 
@@ -1040,6 +1045,32 @@
   .media-gallery--carousel slideshow-arrows .slideshow-control {
     padding-inline: 0 var(--padding-md);
     opacity: 1;
+  }
+
+  .media-gallery--carousel slideshow-arrows .slideshow-control.slideshow-control--shape-circle {
+    width: var(--minimum-touch-target);
+    height: var(--minimum-touch-target);
+    min-width: var(--minimum-touch-target);
+    min-height: var(--minimum-touch-target);
+    padding: 0;
+    margin-inline: var(--padding-xs);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+  }
+
+  @media screen and (min-width: 750px) {
+    .media-gallery--carousel slideshow-arrows .slideshow-control.slideshow-control--shape-circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .media-gallery--carousel slideshow-arrows .slideshow-control.slideshow-control--shape-circle:hover {
+    background-color: var(--color-primary-button-hover-background);
+    color: var(--color-primary-button-hover-text);
   }
 
   @media screen and (max-width: 749px) {

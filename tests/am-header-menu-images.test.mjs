@@ -70,7 +70,7 @@ for (const file of fs.readdirSync(path.join(root, 'locales'))) {
   if (!file.endsWith('.json')) continue;
   const data = json(read('locales/' + file));
   if (file.endsWith('.schema.json')) {
-    for (const key of ['menu_image', 'menu_item_text', 'menu_item_text_info', 'size_desktop', 'size_mobile', 'text_gap', 'position_desktop', 'position_mobile']) {
+    for (const key of ['menu_image', 'menu_item_level', 'menu_item_level_main', 'menu_item_level_sub', 'menu_item_text', 'menu_item_text_info', 'size_desktop', 'size_mobile', 'text_gap', 'position_desktop', 'position_mobile']) {
       assert.ok(data.am_header[key], `${file}: ${key}`);
     }
   } else assert.ok(data.am_header.menu_image_help, file);
@@ -78,7 +78,10 @@ for (const file of fs.readdirSync(path.join(root, 'locales'))) {
 assert.deepEqual(schema('sections/header.liquid').blocks, [{ type: '_am--header-menu-image' }]);
 assert.equal(schema(imageBlock).tag, null);
 assert.equal(schema(imageBlock).presets.length, 1);
-assert.deepEqual(defaults(imageBlock), { image: undefined, menu_item_text: undefined, position_desktop: 'top', position_mobile: 'top', size_desktop: 48, size_mobile: 32, text_gap: 6 });
+assert.deepEqual(defaults(imageBlock), { image: undefined, menu_item_text: undefined, menu_item_level: 'main', position_desktop: 'top', position_mobile: 'top', size_desktop: 48, size_mobile: 32, text_gap: 6 });
+assert.deepEqual(schema(imageBlock).settings.find((setting) => setting.id === 'menu_item_level').options.map(({ value }) => value), ['main', 'sub']);
+assert.match(read(imageBlock), /at_least: 800/);
+assert.match(read(imageBlock), /widths: '32, 48, 64, 96, 120, 160, 240, 400, 600, 800'/);
 for (const id of ['position_desktop', 'position_mobile']) {
   assert.deepEqual(schema(imageBlock).settings.find((setting) => setting.id === id).options.map(({ value }) => value), ['top', 'left', 'right']);
 }
@@ -113,14 +116,17 @@ async function fixture(options = {}) {
   const images = options.empty ? [] : [
     ['shop', '  SHOP  ', '/square.svg'], ['entertaining', 'Entertaining', '/wide.png'], ['explore', 'explore', '/tall.svg'],
     ['unmatched', 'Shop al', '/square.svg'], ['empty', 'Shop', null], ['duplicate', 'Shop', '/tall.svg'],
+    ...(options.submenu ? [['child-shop', 'Shop', '/square.svg', 'sub'], ['grandchild', 'Explore', '/wide.png', 'sub']] : []),
   ];
   section.blocks = images.map(([id]) => ({ id }));
   context.fixture.images = '';
-  for (const [id, name, src] of images) {
+  for (const [id, name, src, level] of images) {
     const imageSettings = {
       ...defaults(imageBlock), menu_item_text: name, image: src ? { src } : null,
       ...(options.sizes || {}), ...(options.positions || {}),
     };
+    if (level) imageSettings.menu_item_level = level;
+    if (options.legacyLevel) delete imageSettings.menu_item_level;
     if (options.legacyPositions) {
       delete imageSettings.position_desktop;
       delete imageSettings.position_mobile;
@@ -369,6 +375,53 @@ try {
   await viewport(390); await pause(150);
   await evaluate(`document.querySelector('header-drawer summary').click()`); await pause(350);
   await check('legacy blocks without position settings keep top on mobile', allPositioned('header-drawer', 'top', 32));
+
+  const levelLabel = (level, name, surface = '') => `document.querySelector('${surface}${surface ? ' ' : ''}[data-am-menu-level="${level}"][data-am-menu-title="${name}"]')`;
+  await viewport(1440); await load({ levels: 3, submenu: true });
+  await check('main target does not decorate a submenu item with the same name', `${levelLabel('main', 'Shop', 'header-menu')}.querySelector('[data-am-header-menu-image]').dataset.amHeaderMenuImage==='shop' && ${levelLabel('sub', 'Shop', 'header-menu')}.querySelector('[data-am-header-menu-image="shop"]')===null`);
+  await check('submenu column image replaces the mega menu photo', `(()=>{
+    const label=${levelLabel('sub', 'Shop', 'header-menu')};
+    const link=label.closest('.mega-menu__link');
+    const image=link.querySelector(':scope > img.mega-menu__link-image[data-am-header-menu-image="child-shop"]');
+    const drawer=${levelLabel('sub', 'Shop', 'header-drawer')}.querySelector('[data-am-header-menu-image="child-shop"]');
+    return document.querySelectorAll('[data-am-header-menu-image="child-shop"]').length===2 && image?.parentElement===link && image.sizes==='(min-width: 990px) 25vw, 50vw' && !label.querySelector('[data-am-header-menu-image]') && drawer?.parentElement.dataset.amMenuLevel==='sub' && !document.querySelector('.menu-list--mobile [data-am-header-menu-image="child-shop"]');
+  })()`);
+  await check('nested mega menu links stay text only', `(()=>{
+    const label=${levelLabel('sub', 'Explore', 'header-menu')};
+    const drawer=${levelLabel('sub', 'Explore', 'header-drawer')}.querySelector('[data-am-header-menu-image="grandchild"]');
+    return ${levelLabel('main', 'Explore', 'header-menu')}.querySelector('[data-am-header-menu-image]').dataset.amHeaderMenuImage==='explore' && !label.closest('.mega-menu__link').querySelector('[data-am-header-menu-image]') && document.querySelectorAll('[data-am-header-menu-image="grandchild"]').length===1 && drawer?.parentElement.dataset.amMenuLevel==='sub' && drawer.parentElement.dataset.amMenuTitle==='Explore';
+  })()`);
+  await check('back and more stay undecorated alongside submenu images', `![...document.querySelectorAll('.menu-drawer__back-button,[slot="more"]')].some(node=>node.querySelector('[data-am-header-menu-image]'))`);
+  await evaluate(`(()=>{
+    const label=document.querySelector('header-menu [data-am-menu-level="sub"][data-am-menu-title="Shop"]');
+    const link=label.closest('.mega-menu__link');
+    link.querySelector('[data-am-header-menu-image]')?.remove();
+    const original=document.createElement('img');
+    original.className='mega-menu__link-image';
+    original.alt='collection';
+    original.src='/original.png';
+    original.setAttribute('sizes','320px');
+    original.dataset.amTestOriginal='1';
+    link.prepend(original);
+    const source=document.querySelector('[data-am-header-image-source="child-shop"]');
+    source.dataset.amImageConfig=(source.dataset.amImageConfig||'')+'-retry';
+  })()`);
+  await wait(`document.querySelector('header-menu img[data-am-test-original]')?.hidden===true`);
+  await check('submenu image hides the collection photo and copies its sizes', `(()=>{
+    const link=document.querySelector('header-menu [data-am-menu-level="sub"][data-am-menu-title="Shop"]').closest('.mega-menu__link');
+    const original=link.querySelector('img[data-am-test-original]');
+    const image=link.querySelector(':scope > img[data-am-header-menu-image="child-shop"]');
+    return original.hidden && original.hasAttribute('data-am-menu-image-original') && original.nextElementSibling===image && image.sizes==='320px' && !link.querySelector('.wrap-text [data-am-header-menu-image]');
+  })()`);
+  await evaluate(`document.querySelector('[data-am-header-image-source="child-shop"]').dataset.amMenuTitle='unused-name'`);
+  await wait(`document.querySelector('header-menu img[data-am-test-original]')?.hidden===false`);
+  await check('removing the submenu match restores the collection photo', `(()=>{
+    const link=document.querySelector('header-menu [data-am-menu-level="sub"][data-am-menu-title="Shop"]').closest('.mega-menu__link');
+    const original=link.querySelector('img[data-am-test-original]');
+    return original.hidden===false && !original.hasAttribute('data-am-menu-image-original') && !link.querySelector('[data-am-header-menu-image]');
+  })()`);
+  await load({ levels: 3, submenu: true, legacyLevel: true });
+  await check('a missing level setting still targets main items', `${levelLabel('main', 'Shop', 'header-menu')}.querySelector('[data-am-header-menu-image="shop"]')!==null && document.querySelector('[data-am-menu-level="sub"] [data-am-header-menu-image]')===null`);
 
   await viewport(1440); await load();
   for (const [desktop, mobile] of [['left', 'right'], ['right', 'left'], ['top', 'top']]) {

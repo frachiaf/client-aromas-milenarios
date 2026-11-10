@@ -1,17 +1,22 @@
 {% liquid
   assign block_settings = block.settings
   assign image_size = block_settings.size_desktop | at_least: block_settings.size_mobile
-  assign image_width = image_size | times: 2
+  assign image_width = image_size | times: 2 | at_least: 800
   assign image_sizes = image_size | append: 'px'
   assign position_desktop = block_settings.position_desktop | default: 'top'
   assign position_mobile = block_settings.position_mobile | default: 'top'
-  assign image_config = block_settings.image.src | append: '|' | append: block_settings.size_desktop | append: '|' | append: block_settings.size_mobile | append: '|' | append: block_settings.text_gap | append: '|' | append: position_desktop | append: '|' | append: position_mobile | url_encode
+  assign menu_item_level = block_settings.menu_item_level | default: 'main'
+  unless menu_item_level == 'sub'
+    assign menu_item_level = 'main'
+  endunless
+  assign image_config = block_settings.image.src | append: '|' | append: block_settings.size_desktop | append: '|' | append: block_settings.size_mobile | append: '|' | append: block_settings.text_gap | append: '|' | append: position_desktop | append: '|' | append: position_mobile | append: '|' | append: menu_item_level | url_encode
 %}
 
 <div
   class="am-header-menu-image-source"
   data-am-header-image-source="{{ block.id }}"
   data-am-menu-title="{{ block_settings.menu_item_text | escape }}"
+  data-am-menu-level="{{ menu_item_level }}"
   data-am-image-config="{{ image_config }}"
   hidden
   {{ block.shopify_attributes }}
@@ -29,7 +34,7 @@
         {{
           block_settings.image
           | image_url: width: image_width
-          | image_tag: widths: '32, 48, 64, 96, 120, 160, 240', sizes: image_sizes, alt: '', loading: 'eager'
+          | image_tag: widths: '32, 48, 64, 96, 120, 160, 240, 400, 600, 800', sizes: image_sizes, alt: '', loading: 'eager'
         }}
       </span>
     </template>
@@ -174,6 +179,10 @@
   "tag": null,
   "settings": [
     { "type": "image_picker", "id": "image", "label": "t:settings.image" },
+    { "type": "select", "id": "menu_item_level", "label": "t:am_header.menu_item_level", "options": [
+      { "value": "main", "label": "t:am_header.menu_item_level_main" },
+      { "value": "sub", "label": "t:am_header.menu_item_level_sub" }
+    ], "default": "main" },
     { "type": "text", "id": "menu_item_text", "label": "t:am_header.menu_item_text", "info": "t:am_header.menu_item_text_info" },
     { "type": "select", "id": "position_desktop", "label": "t:am_header.position_desktop", "options": [
       { "value": "top", "label": "t:options.top" },

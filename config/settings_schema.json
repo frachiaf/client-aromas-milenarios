@@ -2211,6 +2211,13 @@
         "id": "product_card_carousel",
         "label": "t:settings.product_card_carousel",
         "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "am_media_arrow_rounded_background",
+        "label": "t:am_commerce.media_arrow_rounded_background",
+        "info": "t:am_commerce.media_arrow_rounded_background_info",
+        "default": false
       }
     ]
   },

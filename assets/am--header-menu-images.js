@@ -6,7 +6,7 @@ class HeaderMenuImages extends HTMLElement {
   #observer = new MutationObserver(() => this.#schedule());
   #frame = 0;
   #layoutFrame = 0;
-  /** @type {Map<HTMLElement, {image: HTMLElement, signature: string}>} */
+  /** @type {Map<HTMLElement, {image: HTMLElement, signature: string, original: HTMLImageElement | null}>} */
   #placements = new Map();
 
   connectedCallback() {
@@ -17,7 +17,7 @@ class HeaderMenuImages extends HTMLElement {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['data-am-menu-title', 'data-am-image-config'],
+      attributeFilter: ['data-am-menu-title', 'data-am-menu-level', 'data-am-image-config'],
     });
     this.#header.addEventListener('shopify:block:select', this.#onBlockSelect);
     this.#schedule();
@@ -30,7 +30,7 @@ class HeaderMenuImages extends HTMLElement {
     this.#frame = 0;
     this.#layoutFrame = 0;
     this.#header?.removeEventListener('shopify:block:select', this.#onBlockSelect);
-    for (const { image } of this.#placements.values()) image.remove();
+    for (const placement of this.#placements.values()) releasePlacement(placement);
     this.#placements.clear();
     this.#header = null;
   }
@@ -48,13 +48,13 @@ class HeaderMenuImages extends HTMLElement {
     if (!this.#header) return;
 
     const labels = Array.from(this.#header.querySelectorAll('[data-am-header-menu-label]'));
-    const names = new Set(labels.map((label) => normalize(label.getAttribute('data-am-menu-title'))));
+    const names = new Set(labels.map((label) => menuKey(label.getAttribute('data-am-menu-level'), label.getAttribute('data-am-menu-title'))));
     /** @type {Map<string, {template: HTMLTemplateElement, signature: string}>} */
     const mappings = new Map();
 
     for (const source of this.querySelectorAll('[data-am-header-image-source]')) {
       if (!(source instanceof HTMLElement)) continue;
-      const name = normalize(source.dataset.amMenuTitle);
+      const name = menuKey(source.dataset.amMenuLevel, source.dataset.amMenuTitle);
       const template = source.querySelector('template');
       const valid = name && template?.content.querySelector('img') && !mappings.has(name);
 
@@ -68,7 +68,7 @@ class HeaderMenuImages extends HTMLElement {
     const currentLabels = new Set(labels);
     for (const [label, placement] of this.#placements) {
       if (!currentLabels.has(label)) {
-        placement.image.remove();
+        releasePlacement(placement);
         this.#placements.delete(label);
         changed = true;
       }
@@ -76,24 +76,54 @@ class HeaderMenuImages extends HTMLElement {
 
     for (const label of labels) {
       if (!(label instanceof HTMLElement)) continue;
-      const mapping = mappings.get(normalize(label.dataset.amMenuTitle));
+      const mapping = mappings.get(menuKey(label.dataset.amMenuLevel, label.dataset.amMenuTitle));
       const placement = this.#placements.get(label);
+      const columnLink = megaColumnLink(label);
 
-      if (mapping && placement?.signature === mapping.signature && placement.image.parentElement === label) continue;
+      if (
+        mapping &&
+        placement?.signature === mapping.signature &&
+        placement.image.isConnected &&
+        placement.image.parentElement === (columnLink || label)
+      ) {
+        continue;
+      }
 
+      if (placement) {
+        releasePlacement(placement);
+        this.#placements.delete(label);
+        changed = true;
+      }
       for (const image of label.querySelectorAll(':scope > [data-am-header-menu-image]')) {
         image.remove();
         changed = true;
       }
-      this.#placements.delete(label);
 
-      if (mapping) {
-        const image = mapping.template.content.firstElementChild?.cloneNode(true);
-        if (!(image instanceof HTMLElement)) continue;
+      if (!mapping || nestedMegaLink(label)) continue;
+
+      const image = columnLink ? columnImage(mapping.template, columnLink) : mapping.template.content.firstElementChild?.cloneNode(true);
+      if (!(image instanceof HTMLElement)) continue;
+      if (columnLink) {
+        const original = columnLink.querySelector(':scope > img.mega-menu__link-image:not([data-am-header-menu-image])');
+        if (original instanceof HTMLImageElement) {
+          if (original.sizes) image.sizes = original.sizes;
+          original.hidden = true;
+          original.setAttribute('data-am-menu-image-original', '');
+          original.after(image);
+        } else {
+          image.sizes = COLUMN_IMAGE_SIZES;
+          label.before(image);
+        }
+        this.#placements.set(label, {
+          image,
+          signature: mapping.signature,
+          original: original instanceof HTMLImageElement ? original : null,
+        });
+      } else {
         label.prepend(image);
-        this.#placements.set(label, { image, signature: mapping.signature });
-        changed = true;
+        this.#placements.set(label, { image, signature: mapping.signature, original: null });
       }
+      changed = true;
     }
 
     if (changed && !this.#layoutFrame) {
@@ -128,9 +158,63 @@ class HeaderMenuImages extends HTMLElement {
   };
 }
 
+const COLUMN_IMAGE_SIZES = '(min-width: 990px) 25vw, 50vw';
+
+/** @param {{image: HTMLElement, original: HTMLImageElement | null}} placement */
+function releasePlacement(placement) {
+  placement.image.remove();
+  if (!(placement.original instanceof HTMLImageElement)) return;
+  placement.original.hidden = false;
+  placement.original.removeAttribute('data-am-menu-image-original');
+}
+
+/**
+ * Column heading inside the mega menu. Nested links live in a list within the column.
+ * @param {HTMLElement} label
+ * @returns {HTMLElement | null}
+ */
+function megaColumnLink(label) {
+  if (label.dataset.amMenuLevel !== 'sub') return null;
+  const link = label.closest('.mega-menu__link');
+  const column = link?.closest('.mega-menu__column');
+  if (!(link instanceof HTMLElement) || !(column instanceof HTMLElement)) return null;
+  if (link.parentElement?.closest('ul')?.closest('.mega-menu__column') === column) return null;
+  return link;
+}
+
+/** @param {HTMLElement} label */
+function nestedMegaLink(label) {
+  return label.dataset.amMenuLevel === 'sub' && Boolean(label.closest('.mega-menu__link')) && !megaColumnLink(label);
+}
+
+/**
+ * @param {HTMLTemplateElement} template
+ * @param {HTMLElement} link
+ * @returns {HTMLImageElement | null}
+ */
+function columnImage(template, link) {
+  const source = template.content.querySelector('img');
+  const image = source?.cloneNode(true);
+  const marker = template.content.querySelector('[data-am-header-menu-image]');
+  if (!(image instanceof HTMLImageElement) || !(marker instanceof HTMLElement)) return null;
+  image.dataset.amHeaderMenuImage = marker.dataset.amHeaderMenuImage || '';
+  image.classList.add('mega-menu__link-image');
+  const editorBlock = marker.getAttribute('data-shopify-editor-block');
+  if (editorBlock) image.setAttribute('data-shopify-editor-block', editorBlock);
+  if (!link.querySelector(':scope > img.mega-menu__link-image:not([data-am-header-menu-image])')?.getAttribute('sizes')) {
+    image.sizes = COLUMN_IMAGE_SIZES;
+  }
+  return image;
+}
+
 /** @param {string | null | undefined} value */
 function normalize(value) {
   return (value || '').trim().toLowerCase();
+}
+
+/** @param {string | null | undefined} level @param {string | null | undefined} title */
+function menuKey(level, title) {
+  return `${level === 'sub' ? 'sub' : 'main'}|${normalize(title)}`;
 }
 
 /** @param {HTMLElement} element */

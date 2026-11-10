@@ -8,6 +8,39 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Añadido
 
+- Objetivo (2026-11-10): la imagen de un ítem del menú puede apuntar a un subítem, además del ítem principal.
+- Archivos: `blocks/_am--header-menu-image.liquid`, `assets/am--header-menu-images.js`, `blocks/_header-menu.liquid`, `snippets/header-drawer.liquid`, `snippets/mega-menu-list.liquid`, `tests/am-header-menu-images.test.mjs`, `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el selector Destino queda en Ítem principal. En el mega menú, la imagen de un subítem reemplaza `img.mega-menu__link-image` de la columna y no se agrega dentro de `.wrap-text`; los enlaces anidados quedan solo con texto. El drawer conserva la imagen cuadrada junto al nombre de hijos y nietos. Un principal y un subítem con el mismo nombre no comparten imagen. Volver, Más y la barra móvil no reciben imágenes de subítem. Los bloques ya guardados no cambian porque un nivel ausente sigue siendo principal. No se editó `sections/header-group.json`.
+
+### Validación
+
+- `node tests/am-header-menu-images.test.mjs` aprobó 134 comprobaciones locales en Chromium, sin excepciones. Cubre el destino principal, el reemplazo de la foto de columna, la copia de `sizes`, la restauración de la foto original, el nieto sin imagen en el mega menú, el drawer, Volver, Más y un setting de nivel ausente.
+- `shopify theme check --path .` inspeccionó 337 archivos sin errores y con 30 advertencias preexistentes en archivos ajenos a este cambio.
+- No se editó `sections/header-group.json` ni se probó el Theme Editor remoto.
+
+### Reversión
+
+- Quitar el selector, los marcadores `sub` y la clave nivel más nombre restaura la asociación solo con ítems principales. No hay migración ni cambios en datos administrados.
+
+### Añadido
+
+- Objetivo (2026-11-10): un ajuste global puede mostrar un fondo circular en las flechas que cambian la foto de las tarjetas de producto y de la galería de la PDP.
+- Archivos: `config/settings_schema.json`, `snippets/card-gallery.liquid`, `snippets/product-media-gallery-content.liquid`, `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: `am_media_arrow_rounded_background` queda en Tarjetas de producto y desactivado por defecto. Activado, esas flechas usan un círculo de 44 px con el fondo y el texto del botón principal del esquema de la sección, también en hover. No aparecen flechas nuevas ni cambia el resto de carruseles. No se modificaron templates ni `settings_data.json`.
+
+### Validación
+
+- El schema del ajuste y los 20 locales se parsearon. El checkbox no está en `settings_data.json`, así que el default `false` conserva las flechas actuales.
+- El validador Liquid aprobó `config/settings_schema.json`, los dos snippets y los 20 locales de schema.
+- `shopify theme check --path .` inspeccionó 337 archivos sin errores y con 30 advertencias preexistentes en archivos ajenos a este cambio. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+- Una página local con el CSS real de las galerías comprobó, en Chrome a 1280 px, el círculo de 44 px, el fondo y la flecha del botón principal, el hover, `mix-blend-mode: normal` y la flecha centrada. Sin la clase circular se conserva la flecha blanca. Con el viewport bajo 750 px, las flechas de la card y el contenedor de la PDP quedan ocultos. No había preview de la tienda, así que no se activó el ajuste en el Theme Editor.
+
+### Reversión
+
+- Quitar el checkbox, `icon_shape` condicional y las reglas del círculo restaura las flechas blancas. No hay migración ni datos administrados por Shopify.
+
+### Añadido
+
 - Objetivo (2026-11-05): `AM Presentación numerada` ofrece un botón para pausar o reanudar la reproducción automática desde la esquina inferior derecha de la diapositiva.
 - Archivos: `sections/am--numbered-slideshow.liquid`, `assets/am--numbered-slideshow.css`, `assets/am--numbered-slideshow.js`, `docs/theme-architecture.md` y `CHANGELOG.md`.
 - Impacto: el botón aparece solo con autoplay activo y al menos dos diapositivas. Usa las etiquetas existentes de pausa y reproducción. La pausa manual no se reanuda al salir el puntero; el hover, el foco y una pestaña oculta siguen pudiendo pausar de forma temporal. Con movimiento reducido el control arranca en pausa y solo avanza si la persona lo pide. La fila de info distribuye su contenido con `space-between`.

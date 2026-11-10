@@ -357,7 +357,7 @@
                 "swatches": {
                   "type": "swatches",
                   "settings": {
-                    "product_swatches_alignment": "flex-start",
+                    "product_swatches_alignment": "center",
                     "product_swatches_alignment_mobile": "flex-start",
                     "hide_padding": false,
                     "product_swatches_padding_top": 4,

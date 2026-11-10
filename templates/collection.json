@@ -92,7 +92,7 @@
         "custom_mobile_height": false,
         "section_height_mobile": "medium",
         "section_height_custom_mobile": 50,
-        "color_scheme": "scheme-4",
+        "color_scheme": "scheme-2",
         "background_media": "image",
         "video_position": "cover",
         "background_image": "{{ collection.image }}",

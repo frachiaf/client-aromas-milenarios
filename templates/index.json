@@ -1465,7 +1465,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>6 cuotas sin interés</p>",
+            "text": "<p>3 cuotas sin interés</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",

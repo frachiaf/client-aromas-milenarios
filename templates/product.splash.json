@@ -214,7 +214,7 @@
                 "align_baseline": false,
                 "horizontal_alignment_flex_direction_column": "flex-start",
                 "vertical_alignment_flex_direction_column": "center",
-                "gap": 32,
+                "gap": 15,
                 "width": "custom",
                 "custom_width": 80,
                 "width_mobile": "fill",
@@ -303,6 +303,19 @@
                     "products": "{{ closest.product.metafields.custom.pseudo_variantes.value }}",
                     "title_trim": "{{ closest.product.metafields.custom.texto_a_recortar_de_pseudo_variantes.value }}",
                     "option_label": "{{ closest.product.metafields.custom.label_de_pseudo_variante.value }}"
+                  },
+                  "blocks": {}
+                },
+                "am_product_tier_unlock_kwzkWA": {
+                  "type": "am--product-tier-unlock",
+                  "name": "t:am_pdp.product_tier_unlock",
+                  "settings": {
+                    "message": "",
+                    "highlight_color": "#D4AF37",
+                    "inherit_color_scheme": true,
+                    "color_scheme": "",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0
                   },
                   "blocks": {}
                 },
@@ -536,6 +549,7 @@
                 "am_product_highlights_3jRMDJ",
                 "variant_picker_KePPVa",
                 "am_product_siblings_ErLwYy",
+                "am_product_tier_unlock_kwzkWA",
                 "buy_buttons_6p8c63",
                 "accordion_WNYMan"
               ]

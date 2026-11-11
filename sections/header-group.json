@@ -59,11 +59,27 @@
     "header_section": {
       "type": "header",
       "blocks": {
+        "am_header_menu_image_aGNpMC": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-49f13fb7-89f1-4202-9f95-f6df9debaa64.jpg",
+            "menu_item_level": "sub",
+            "menu_item_text": "Antique",
+            "position_desktop": "top",
+            "position_mobile": "top",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
         "am_header_menu_image_4W4VxH": {
           "type": "_am--header-menu-image",
           "name": "t:am_header.menu_image",
           "settings": {
             "image": "shopify://shop_images/grok-image-e51c733d-1089-49cc-a4ad-8b990cdf29ff.png",
+            "menu_item_level": "main",
             "menu_item_text": "experiencias",
             "position_desktop": "top",
             "position_mobile": "left",
@@ -78,6 +94,7 @@
           "name": "t:am_header.menu_image",
           "settings": {
             "image": "shopify://shop_images/grok-image-c16f3da4-3863-4aa3-91a4-fc61a561606b.png",
+            "menu_item_level": "main",
             "menu_item_text": "velas",
             "position_desktop": "top",
             "position_mobile": "left",
@@ -92,6 +109,7 @@
           "name": "t:am_header.menu_image",
           "settings": {
             "image": "shopify://shop_images/grok-image-6189af30-8213-4a5a-8da2-daeccdc42d8d.png",
+            "menu_item_level": "main",
             "menu_item_text": "home & health",
             "position_desktop": "top",
             "position_mobile": "left",
@@ -106,6 +124,7 @@
           "name": "t:am_header.menu_image",
           "settings": {
             "image": "shopify://shop_images/grok-image-be65a6d0-21f9-4e13-b40a-46850aa63aff.png",
+            "menu_item_level": "main",
             "menu_item_text": "perfumes",
             "position_desktop": "top",
             "position_mobile": "left",
@@ -120,6 +139,7 @@
           "name": "t:am_header.menu_image",
           "settings": {
             "image": "shopify://shop_images/grok-image-0f133984-461d-4a43-8a16-4c9bfeb17a91.png",
+            "menu_item_level": "main",
             "menu_item_text": "shop",
             "position_desktop": "top",
             "position_mobile": "left",
@@ -163,6 +183,7 @@
         }
       },
       "block_order": [
+        "am_header_menu_image_aGNpMC",
         "am_header_menu_image_4W4VxH",
         "am_header_menu_image_NLbHcr",
         "am_header_menu_image_ULj6dj",

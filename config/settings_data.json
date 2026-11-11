@@ -61,6 +61,7 @@
     "currency_code_enabled_product_cards": false,
     "currency_code_enabled_cart_items": false,
     "quick_add_color_scheme": "scheme-1",
+    "am_media_arrow_rounded_background": true,
     "product_corner_radius": 0,
     "card_corner_radius": 0,
     "variant_button_radius": 100,

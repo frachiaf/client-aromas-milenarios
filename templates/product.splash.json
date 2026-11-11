@@ -296,6 +296,16 @@
                   },
                   "blocks": {}
                 },
+                "am_product_siblings_ErLwYy": {
+                  "type": "am--product-siblings",
+                  "name": "t:am_pdp.product_siblings",
+                  "settings": {
+                    "products": "{{ closest.product.metafields.custom.pseudo_variantes.value }}",
+                    "title_trim": "{{ closest.product.metafields.custom.texto_a_recortar_de_pseudo_variantes.value }}",
+                    "option_label": "{{ closest.product.metafields.custom.label_de_pseudo_variante.value }}"
+                  },
+                  "blocks": {}
+                },
                 "buy_buttons_6p8c63": {
                   "type": "buy-buttons",
                   "settings": {
@@ -525,6 +535,7 @@
                 "text_gA4fAL",
                 "am_product_highlights_3jRMDJ",
                 "variant_picker_KePPVa",
+                "am_product_siblings_ErLwYy",
                 "buy_buttons_6p8c63",
                 "accordion_WNYMan"
               ]

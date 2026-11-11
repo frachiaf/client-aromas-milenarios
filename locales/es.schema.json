@@ -129,7 +129,10 @@
     "sibling_trim": "Texto a quitar del título",
     "sibling_trim_help": "Se quita del título de cada producto antes de mostrar la pill. Distingue mayúsculas. Si el resultado queda vacío, se muestra el título completo.",
     "sibling_label": "Etiqueta",
-    "sibling_label_help": "Nombre opcional del grupo, como el de una opción de variante. Vacío no muestra leyenda."
+    "sibling_label_help": "Nombre opcional del grupo, como el de una opción de variante. Vacío no muestra leyenda.",
+    "product_tier_unlock": "AM Desbloqueo de nivel",
+    "tier_unlock_message_help": "Usá {benefit} para la etiqueta del próximo nivel. Vacío usa el texto traducido.",
+    "tier_unlock_highlight": "Color del brillo"
   },
   "names": {
     "404": "404",

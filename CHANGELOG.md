@@ -6,6 +6,23 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Añadido
+
+- Objetivo (2026-11-11): la info principal de la PDP puede mostrar un texto con brillo cuando agregar el producto desbloquea el próximo nivel de la barra.
+- Archivos: `blocks/am--product-tier-unlock.liquid`, `assets/am--tier-unlock.js`, `snippets/scripts.liquid`, `blocks/_product-details.liquid`, `tests/am-tier-unlock.test.mjs`, `locales/*.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el bloque `AM Desbloqueo de nivel` se agrega desde el editor en los detalles o en Main information. No se modificaron templates. El texto usa `{benefit}` con la etiqueta del próximo nivel; vacío, usa la traducción. Se ve solo en la PDP principal si la barra es válida, la moneda coincide y el total del carrito más el precio de venta de la variante por la cantidad elegida alcanza ese nivel. El umbral se considera alcanzado con `>=`, igual que la barra. Si se cruzan varios niveles, nombra solo el próximo. No aplica descuentos de carrito. Un regalo reservado no lo renderiza. Quick Buy y el producto destacado no lo muestran. Cambiar cantidad, variante o carrito recalcula el mensaje. El texto es negrita y cursiva. El barrido vuelve cada letra del color de brillo, `#D4AF37` por defecto, solo un instante. Con movimiento reducido no hay barrido y el texto queda en el color de primer plano. En el editor, si no corresponde, queda una ayuda seleccionable.
+
+### Validación
+
+- `node tests/am-tier-unlock.test.mjs` cubrió el cálculo y un render Liquid real: umbral exacto, cantidad, nivel siguiente, salto de dos niveles, barra completa, moneda distinta, regalo reservado, agotado, editor y preview.
+- En Chrome, a 1280 px y 390 px, una unidad por debajo del próximo umbral no mostró el texto y dos unidades mostraron el mensaje con el barrido. Fuera de la PDP el host quedó oculto. El mensaje visible usa negrita, cursiva y una franja `#D4AF37` en el degradado. Con movimiento reducido el texto quedó fijo en el color de primer plano, también en negrita y cursiva. Una respuesta de `cart.js` actualizó el nivel nombrado.
+- `shopify theme check --path .` inspeccionó 339 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+- El validador Liquid aprobó el bloque, el permiso en los detalles, el import map y los 51 locales.
+
+### Reversión
+
+- Quitar el bloque, su módulo, el permiso en los detalles y las claves de locale restaura la info principal anterior. No hay migración ni cambios en templates.
+
 ### Modificado
 
 - Objetivo (2026-11-11): el modal de las pills queda centrado en la pantalla.

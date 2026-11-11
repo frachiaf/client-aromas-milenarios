@@ -56,7 +56,10 @@
     "rating": "{{ rating }} de 5 estrellas",
     "add_review_text": "Escribí la reseña de un cliente.",
     "add_reviews": "Agregá bloques de reseña para configurar esta sección.",
-    "connect_siblings": "Conectá el metafield de productos vinculados."
+    "connect_siblings": "Conectá el metafield de productos vinculados.",
+    "tier_unlock": "Agregalo al carrito y desbloqueás {benefit}.",
+    "tier_unlock_sample": "el próximo beneficio",
+    "tier_unlock_help": "Este texto aparece solo cuando agregar la cantidad elegida alcanza el próximo nivel de la barra."
   },
   "blocks": {
     "load_video": "Cargar video: {{ description }}",

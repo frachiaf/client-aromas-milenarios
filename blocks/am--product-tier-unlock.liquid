@@ -1,0 +1,242 @@
+{% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: closest.product %}{% endcapture %}
+{% liquid
+  assign am_is_tier_gift = am_is_tier_gift | strip
+  assign product = closest.product
+  assign variant = product.selected_or_first_available_variant
+  assign message_template = block.settings.message | strip
+  if message_template == blank
+    assign message_template = 'am_pdp.tier_unlock' | t
+  endif
+  assign sample_benefit = 'am_pdp.tier_unlock_sample' | t
+  assign sample_message = message_template | replace: '{benefit}', sample_benefit
+
+  assign slots = '1,2,3' | split: ','
+  assign previous_threshold = 0
+  assign tier_count = 0
+  assign tiers_valid = true
+  assign tiers_json = ''
+  assign found_next = false
+  assign next_threshold = 0
+  assign next_label = ''
+  if settings.am_progress_enabled
+    for slot in slots
+      assign prefix = 'am_progress_' | append: slot
+      assign enabled_key = prefix | append: '_enabled'
+      if settings[enabled_key]
+        assign amount_key = prefix | append: '_threshold'
+        assign label_key = prefix | append: '_label'
+        assign threshold = settings[amount_key] | times: 100 | round
+        if threshold <= previous_threshold or settings[label_key] == blank
+          assign tiers_valid = false
+        endif
+        assign tier_count = tier_count | plus: 1
+        assign label_json = settings[label_key] | json
+        assign tier_entry = '{"threshold":' | append: threshold | append: ',"label":' | append: label_json | append: '}'
+        if tiers_json == blank
+          assign tiers_json = tier_entry
+        else
+          assign tiers_json = tiers_json | append: ',' | append: tier_entry
+        endif
+        if tiers_valid and found_next == false and cart.total_price < threshold
+          assign found_next = true
+          assign next_threshold = threshold
+          assign next_label = settings[label_key]
+        endif
+        assign previous_threshold = threshold
+      endif
+    endfor
+  endif
+  if tier_count == 0
+    assign tiers_valid = false
+  endif
+  assign tiers_json = '[' | append: tiers_json | append: ']'
+
+  assign currency_ok = false
+  if cart.currency.iso_code == shop.currency
+    assign currency_ok = true
+  endif
+
+  assign show_host = false
+  if tiers_valid and currency_ok and am_is_tier_gift != 'true' and variant != blank
+    assign show_host = true
+  endif
+
+  assign initial_quantity = variant.quantity_rule.min | default: 1
+  if initial_quantity < 1
+    assign initial_quantity = 1
+  endif
+  assign initially_visible = false
+  if show_host and variant.available and found_next
+    assign line_total = variant.price | times: initial_quantity
+    assign projected_total = cart.total_price | plus: line_total
+    if projected_total >= next_threshold
+      assign initially_visible = true
+    endif
+  endif
+  assign visible_message = message_template | replace: '{benefit}', next_label
+  assign highlight_color = block.settings.highlight_color
+  if highlight_color == blank
+    assign highlight_color = '#D4AF37'
+  endif
+%}
+
+{% if request.visual_preview_mode %}
+  <div
+    class="am-tier-unlock spacing-style{% unless block.settings.inherit_color_scheme %} color-{{ block.settings.color_scheme }}{% endunless %}"
+    style="{% render 'spacing-style', settings: block.settings %} --am-tier-unlock-highlight: {{ highlight_color }};"
+    {{ block.shopify_attributes }}
+  >
+    <p class="am-tier-unlock__message">{{ sample_message | escape }}</p>
+  </div>
+{% elsif show_host %}
+  <am-tier-unlock
+    class="am-tier-unlock spacing-style{% unless block.settings.inherit_color_scheme %} color-{{ block.settings.color_scheme }}{% endunless %}"
+    style="{% render 'spacing-style', settings: block.settings %} --am-tier-unlock-highlight: {{ highlight_color }}; display: none;"
+    data-cart-total="{{ cart.total_price }}"
+    data-unit-price="{{ variant.price }}"
+    data-quantity="{{ initial_quantity }}"
+    data-available="{% if variant.available %}true{% else %}false{% endif %}"
+    data-shop-currency="{{ shop.currency | escape }}"
+    data-cart-currency="{{ cart.currency.iso_code | escape }}"
+    data-cart-url="{{ routes.cart_url }}.js"
+    data-tiers="{{ tiers_json | escape }}"
+    data-template="{{ message_template | escape }}"
+    data-product-id="{{ product.id }}"
+    {% if request.design_mode %}data-design-mode="true"{% endif %}
+    {% unless initially_visible or request.design_mode %}hidden{% endunless %}
+    {{ block.shopify_attributes }}
+  >
+    <p
+      class="am-tier-unlock__message"
+      data-message
+      aria-live="polite"
+      {% unless initially_visible %}hidden{% endunless %}
+    >{% if initially_visible %}{{ visible_message | escape }}{% endif %}</p>
+    {% if request.design_mode %}
+      <p class="am-tier-unlock__help" data-help {% if initially_visible %}hidden{% endif %}>{{ 'am_pdp.tier_unlock_help' | t }}</p>
+    {% endif %}
+    <script type="module">
+      import '@theme/am-tier-unlock';
+    </script>
+  </am-tier-unlock>
+{% elsif request.design_mode %}
+  <div
+    class="am-tier-unlock spacing-style{% unless block.settings.inherit_color_scheme %} color-{{ block.settings.color_scheme }}{% endunless %}"
+    style="{% render 'spacing-style', settings: block.settings %}"
+    {{ block.shopify_attributes }}
+  >
+    <p class="am-tier-unlock__help">{{ 'am_pdp.tier_unlock_help' | t }}</p>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  [data-am-main-product] am-tier-unlock:not([hidden]) {
+    display: block !important;
+  }
+
+  .am-tier-unlock__message,
+  .am-tier-unlock__help {
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .am-tier-unlock__message {
+    font-weight: bold;
+    font-style: italic;
+    background-image: linear-gradient(
+      100deg,
+      var(--color-foreground) 46%,
+      var(--am-tier-unlock-highlight, #D4AF37) 50%,
+      var(--color-foreground) 54%
+    );
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: am-tier-unlock-shimmer 2.4s linear infinite;
+  }
+
+  .am-tier-unlock__message[hidden],
+  .am-tier-unlock__help[hidden] {
+    display: none;
+  }
+
+  @keyframes am-tier-unlock-shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+
+    100% {
+      background-position: -100% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .am-tier-unlock__message {
+      animation: none;
+      background-image: none;
+      color: var(--color-foreground);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:am_pdp.product_tier_unlock",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "message",
+      "label": "t:settings.text",
+      "info": "t:am_pdp.tier_unlock_message_help"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "t:am_pdp.tier_unlock_highlight",
+      "default": "#D4AF37"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:am_pdp.product_tier_unlock",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

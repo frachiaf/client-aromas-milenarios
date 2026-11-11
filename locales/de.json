@@ -56,7 +56,10 @@
     "rating": "{{ rating }} out of 5 stars",
     "add_review_text": "Enter a customer review.",
     "add_reviews": "Add review blocks to configure this section.",
-    "connect_siblings": "Connect the linked products metafield."
+    "connect_siblings": "Connect the linked products metafield.",
+    "tier_unlock": "Add it to your cart and unlock {benefit}.",
+    "tier_unlock_sample": "the next benefit",
+    "tier_unlock_help": "This text appears only when the selected quantity reaches the next progress level."
   },
   "blocks": {
     "load_video": "Video laden: {{ description }}",

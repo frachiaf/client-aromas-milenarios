@@ -129,7 +129,10 @@
     "sibling_trim": "Text to remove from the title",
     "sibling_trim_help": "Removed from each product title before the pill is shown. Case sensitive. An empty result shows the full title.",
     "sibling_label": "Label",
-    "sibling_label_help": "Optional group name, like a variant option. Leave it empty to hide the legend."
+    "sibling_label_help": "Optional group name, like a variant option. Leave it empty to hide the legend.",
+    "product_tier_unlock": "AM Tier unlock",
+    "tier_unlock_message_help": "Use {benefit} for the next level's label. Leave it empty to use the translated text.",
+    "tier_unlock_highlight": "Highlight color"
   },
   "names": {
     "404": "404",

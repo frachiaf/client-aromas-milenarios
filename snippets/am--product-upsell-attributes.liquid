@@ -1,0 +1,17 @@
+{%- doc -%}
+  Prints upsell data attributes when the product opts in and the target can be purchased.
+  The theme reads these keys and does not create their definitions.
+
+  @param {product} product - Source product that may offer an upsell
+{%- enddoc -%}
+{%- liquid
+  assign am_upsell_enabled = product.metafields.custom.upsell_enabled.value
+  assign am_upsell_product = product.metafields.custom.upsell_product.value
+  assign am_upsell_heading = product.metafields.custom.upsell_heading.value | default: ''
+-%}
+{%- capture am_upsell_gift -%}{%- render 'am--is-tier-gift-product', product: am_upsell_product -%}{%- endcapture -%}
+{%- assign am_upsell_gift = am_upsell_gift | strip -%}
+{%- if am_upsell_enabled == true and am_upsell_product != blank and am_upsell_product.available and am_upsell_product.id != product.id and am_upsell_gift != 'true' -%}
+  data-am-upsell-url="{{ am_upsell_product.url | escape }}"
+  data-am-upsell-heading="{{ am_upsell_heading | escape }}"
+{%- endif -%}

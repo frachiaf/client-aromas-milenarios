@@ -8,6 +8,23 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Añadido
 
+- Objetivo (2026-11-11): al agregar un producto desde la PDP o una tarjeta, se puede abrir un Quick Buy del producto sugerido por sus metafields.
+- Archivos: `snippets/am--product-upsell-attributes.liquid`, `blocks/buy-buttons.liquid`, `snippets/quick-add.liquid`, `snippets/quick-add-modal.liquid`, `snippets/quick-add-modal-styles.liquid`, `assets/product-form.js`, `assets/quick-add.js`, `assets/events.js`, `tests/am-commerce.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el theme lee `custom.upsell_enabled`, `custom.upsell_product` y `custom.upsell_heading`. No crea esas definiciones. El modal se abre solo si el booleano es `true`, la referencia está disponible para comprar y no es el mismo producto ni un regalo de nivel. El drawer sigue abriéndose cuando corresponde y el Quick Buy queda encima, con el texto del metafield. Si el texto está vacío, el modal no muestra encabezado. Un alta fallida, un hotspot, el upsell del drawer o el propio producto sugerido no vuelven a abrirlo. Si la ficha sugerida no carga, queda solo el drawer.
+
+### Validación
+
+- `AM_QA_PRODUCT_UPSELL_ONLY=1 node tests/am-commerce.test.mjs` aprobó 13 comprobaciones en Chrome. Cubre el snippet Liquid, la tarjeta a 1280 px y 390 px con el drawer abierto y el Quick Buy encima, el cierre con foco en el título del carrito, el encabezado vacío, el Quick Buy abierto desde la tarjeta, la ausencia de una segunda oferta, el hotspot, el alta fallida, la PDP y el movimiento reducido.
+- `AM_QA_GALLERY_ONLY=1 node tests/am-commerce.test.mjs` aprobó 74 comprobaciones del Quick Buy existente.
+- `shopify theme check --path .` inspeccionó 340 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+- El validador Liquid aprobó el snippet, los formularios, el modal y sus estilos. No había preview de la tienda, así que no se conectó un metafield en el Theme Editor.
+
+### Reversión
+
+- Quitar el snippet, los atributos en los formularios, el encabezado del Quick Buy y la escucha del alta restaura el agregado anterior. No hay migración ni cambios en templates.
+
+### Añadido
+
 - Objetivo (2026-11-11): la info principal de la PDP puede mostrar un texto con brillo cuando agregar el producto desbloquea el próximo nivel de la barra.
 - Archivos: `blocks/am--product-tier-unlock.liquid`, `assets/am--tier-unlock.js`, `snippets/scripts.liquid`, `blocks/_product-details.liquid`, `tests/am-tier-unlock.test.mjs`, `locales/*.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
 - Impacto: el bloque `AM Desbloqueo de nivel` se agrega desde el editor en los detalles o en Main information. No se modificaron templates. El texto usa `{benefit}` con la etiqueta del próximo nivel; vacío, usa la traducción. Se ve solo en la PDP principal si la barra es válida, la moneda coincide y el total del carrito más el precio de venta de la variante por la cantidad elegida alcanza ese nivel. El umbral se considera alcanzado con `>=`, igual que la barra. Si se cruzan varios niveles, nombra solo el próximo. No aplica descuentos de carrito. Un regalo reservado no lo renderiza. Quick Buy y el producto destacado no lo muestran. Cambiar cantidad, variante o carrito recalcula el mensaje. El texto es negrita y cursiva. El barrido vuelve cada letra del color de brillo, `#D4AF37` por defecto, solo un instante. Con movimiento reducido no hay barrido y el texto queda en el color de primer plano. En el editor, si no corresponde, queda una ayuda seleccionable.

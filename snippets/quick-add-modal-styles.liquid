@@ -90,6 +90,27 @@
     }
   }
 
+  .am-product-upsell__heading {
+    margin: 0;
+    padding: var(--padding-2xl) var(--padding-xs);
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .quick-add-modal:has(.am-product-upsell__heading:not([hidden])) {
+    flex-direction: column;
+  }
+
+  .quick-add-modal:has(.am-product-upsell__heading:not([hidden])) .am-product-upsell__heading {
+    flex: 0 0 auto;
+  }
+
+  .quick-add-modal:has(.am-product-upsell__heading:not([hidden])) .quick-add-modal__content {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+
   .quick-add-modal__content {
     display: grid;
     grid-template-columns: repeat(7, 1fr);

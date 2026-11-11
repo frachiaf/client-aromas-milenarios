@@ -99,6 +99,28 @@ let items = [], serial = 0, writes = [], failNext = '', nullSections = false, de
 let activeCartRequests = 0, maxActiveCartRequests = 0, failCartReads = 0, cartReadCount = 0;
 let current = new URLSearchParams();
 const settings = Object.fromEntries(json(read('config/settings_schema.json')).flatMap((g) => g.settings || []).filter((s) => s.id).map((s) => [s.id, s.default]));
+async function assertProductUpsellLiquid() {
+  const target = products.get(2);
+  const source = { ...products.get(1), metafields: { custom: {
+    upsell_enabled: { value: true }, upsell_product: { value: target }, upsell_heading: { value: 'Sumá este aroma' },
+  } } };
+  const offered = (await render('snippets/am--product-upsell-attributes.liquid', context({ product: source }))).trim();
+  assert.match(offered, /data-am-upsell-url="\/products\/test-2"/);
+  assert.match(offered, /data-am-upsell-heading="Sumá este aroma"/);
+  const blankHeading = { ...source, metafields: { custom: { ...source.metafields.custom, upsell_heading: { value: '' } } } };
+  const blank = (await render('snippets/am--product-upsell-attributes.liquid', context({ product: blankHeading }))).trim();
+  assert.match(blank, /data-am-upsell-heading=""/);
+  for (const product of [
+    { ...source, metafields: { custom: { ...source.metafields.custom, upsell_enabled: { value: false } } } },
+    { ...source, metafields: { custom: { ...source.metafields.custom, upsell_product: { value: { ...target, available: false } } } } },
+    { ...source, metafields: { custom: { ...source.metafields.custom, upsell_product: { value: products.get(1) } } } },
+    products.get(1),
+  ]) assert.equal((await render('snippets/am--product-upsell-attributes.liquid', context({ product }))).trim(), '');
+  settings.am_progress_1_product = target;
+  assert.equal((await render('snippets/am--product-upsell-attributes.liquid', context({ product: source }))).trim(), '');
+  delete settings.am_progress_1_product;
+}
+await assertProductUpsellLiquid();
 Object.assign(settings, { am_gift_wrapping_enabled: true, am_gift_note_enabled: true,
   am_gift_wrapping_product: products.get(10), am_gift_note_product: products.get(11),
   am_gift_modal_image: image, am_progress_enabled: true, drawer_color_scheme: 'scheme-1',
@@ -815,9 +837,9 @@ try {
     await check('page cart mode retains global gift guards without a cart section', '(async()=>{const m=await import("@theme/am-tier-gifts");return m.hasTierGifts() && m.isReservedProduct(20)})()');
     Object.assign(settings,saved); for(const slot of [1,2,3])delete settings['am_progress_'+slot+'_product'];items=previousItems;discount=0;
   };
-  if (![process.env.AM_QA_DETAILS_ONLY,process.env.AM_QA_HOTSPOTS_ONLY,process.env.AM_QA_DENSITY_ONLY,process.env.AM_QA_UPSELL_ONLY,process.env.AM_QA_EMPTY_ONLY,process.env.AM_QA_GALLERY_ONLY].some(Boolean)) await tierGiftChecks();
-  if (!process.env.AM_QA_TIERS_ONLY && ![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY].some(Boolean)) await quickBuyGalleryChecks();
-  if (!process.env.AM_QA_GALLERY_ONLY && !process.env.AM_QA_TIERS_ONLY) {
+  if (![process.env.AM_QA_DETAILS_ONLY,process.env.AM_QA_HOTSPOTS_ONLY,process.env.AM_QA_DENSITY_ONLY,process.env.AM_QA_UPSELL_ONLY,process.env.AM_QA_EMPTY_ONLY,process.env.AM_QA_GALLERY_ONLY,process.env.AM_QA_PRODUCT_UPSELL_ONLY].some(Boolean)) await tierGiftChecks();
+  if (!process.env.AM_QA_TIERS_ONLY && !process.env.AM_QA_PRODUCT_UPSELL_ONLY && ![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY].some(Boolean)) await quickBuyGalleryChecks();
+  if (!process.env.AM_QA_PRODUCT_UPSELL_ONLY && !process.env.AM_QA_GALLERY_ONLY && !process.env.AM_QA_TIERS_ONLY) {
   if (!process.env.AM_QA_DETAILS_ONLY && !process.env.AM_QA_HOTSPOTS_ONLY && !process.env.AM_QA_DENSITY_ONLY && !process.env.AM_QA_UPSELL_ONLY) await emptyDrawer();
   add(1); add(2);
   if (process.env.AM_QA_EMPTY_ONLY) {
@@ -1217,6 +1239,67 @@ try {
   await check('touch cards expose Quick Add', `getComputedStyle(document.querySelector('#product-card-card-test .quick-add__button--add')).opacity==='1'`);
   }
   }
+  async function productUpsellChecks() {
+    const previousAutoOpen = settings.auto_open_cart_drawer;
+    settings.auto_open_cart_drawer = true;
+    await cdp('Emulation.setTouchEmulationEnabled', { enabled: false });
+    await cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+    const offer = async (selector, heading) => {
+      await evaluate(`(()=>{const form=document.querySelector(${JSON.stringify(selector)});form.dataset.amUpsellUrl='/products/test-2';form.dataset.amUpsellHeading=${JSON.stringify(heading)};form.querySelector('form').requestSubmit()})()`);
+    };
+    const offered = `document.querySelector('#quick-add-dialog dialog').open && document.querySelector('.cart-drawer__dialog').open && document.querySelector('#quick-add-modal-content [data-product-id="2"]')`;
+    try {
+      for (const width of [1280, 390]) {
+        await viewport(width); await load();
+        await offer('#product-card-card-test product-form-component', 'Sumá este aroma');
+        await wait(offered + ` && document.querySelector('.am-product-upsell__heading').textContent==='Sumá este aroma' && document.querySelector('.am-product-upsell__heading').hidden===false`);
+        await evaluate(`Promise.all(document.querySelector('#quick-add-dialog dialog').getAnimations().map(animation=>animation.finished.catch(()=>{})))`);
+        await check('product card upsell sits above the drawer at ' + width, `(()=>{const dialog=document.querySelector('#quick-add-dialog dialog'),heading=document.querySelector('.am-product-upsell__heading'),box=dialog.getBoundingClientRect(),hit=document.elementFromPoint(box.left+box.width/2,Math.min(box.bottom-8,box.top+24));return ${offered} && dialog.getAttribute('aria-labelledby')==='am-product-upsell-heading' && dialog.contains(hit) && box.left>=-1 && box.right<=innerWidth+1 && box.bottom<=innerHeight+1 && parseFloat(getComputedStyle(heading).paddingInlineStart)>=44 && (innerWidth<750 || getComputedStyle(dialog).flexDirection==='column') && (innerWidth>=750 || !!document.querySelector('#quick-add-modal-content .product-header'))})()`);
+        await evaluate(`document.querySelector('#quick-add-dialog .quick-add-modal__close').click()`);
+        await wait(`!document.querySelector('#quick-add-dialog dialog').open && document.activeElement?.id==='cart-drawer-heading' && document.querySelector('.cart-drawer__dialog').open`);
+        await check('closing the upsell keeps the drawer open at ' + width, `document.activeElement?.id==='cart-drawer-heading' && document.querySelector('.cart-drawer__dialog').open && document.querySelector('.am-product-upsell__heading').hidden`);
+      }
+      await viewport(1280); await load();
+      await offer('#product-card-card-test product-form-component', '');
+      await wait(offered + ` && document.querySelector('.am-product-upsell__heading').hidden===true`);
+      await check('an empty upsell heading stays hidden', `document.querySelector('.am-product-upsell__heading').hidden && !document.querySelector('#quick-add-dialog dialog').hasAttribute('aria-labelledby') && document.querySelector('#quick-add-dialog').hasAttribute('data-am-product-upsell')`);
+      await evaluate(`document.querySelector('#quick-add-dialog').closeDialog()`);
+      await wait(`!document.querySelector('#quick-add-dialog dialog').open`);
+      await evaluate(`document.querySelector('#product-card-card-test quick-add-component').open('/products/test-1')`);
+      await wait(`document.querySelector('#quick-add-dialog dialog').open && document.querySelector('#quick-add-modal-content [data-product-id="1"]')`);
+      await check('quick buy opened from a card keeps its origin', `document.getElementById('quick-add-dialog').dataset.amQuickAddOrigin==='product-card' && document.querySelector('.am-product-upsell__heading').hidden`);
+      await offer('#quick-add-modal-content product-form-component', 'Desde la tarjeta');
+      await wait(offered + ` && document.querySelector('.am-product-upsell__heading').textContent==='Desde la tarjeta'`);
+      await check('choosing options on a card opens the suggested product', `document.querySelector('.am-product-upsell__heading').textContent==='Desde la tarjeta' && !!document.querySelector('#quick-add-modal-content [data-product-id="2"]')`);
+      await evaluate(`(()=>{const form=document.querySelector('#quick-add-modal-content product-form-component');form.dataset.amUpsellUrl='/products/test-3';form.dataset.amUpsellHeading='No encadena';form.querySelector('form').requestSubmit()})()`);
+      await wait(`!document.querySelector('#quick-add-dialog dialog').open && document.querySelector('.cart-drawer__dialog').open`);
+      await pause(400);
+      await check('adding the suggested product does not chain another upsell', `!document.querySelector('#quick-add-dialog dialog').open`);
+      await evaluate(`(()=>{const form=document.querySelector('product-hotspot-component product-form-component');form.dataset.amUpsellUrl='/products/test-2';form.dataset.amUpsellHeading='No';form.querySelector('form').requestSubmit()})()`);
+      await idle(); await pause(400);
+      await check('a hotspot add does not open the product upsell', `!document.querySelector('#quick-add-dialog dialog').open`);
+      failNext = 'reject';
+      await offer('#product-card-card-test product-form-component', 'No debe abrir');
+      await idle(); await pause(400);
+      await check('a failed add does not open the product upsell', `!document.querySelector('#quick-add-dialog dialog').open`);
+      failNext = '';
+      await evaluate(`(()=>{const host=document.createElement('div');host.id='fixture-main-product';host.setAttribute('data-am-main-product','');host.innerHTML='<product-form-component data-section-id="fixture-pdp" data-product-id="1" data-am-upsell-url="/products/test-2" data-am-upsell-heading="Para tu altar" on:submit="/handleSubmit"><div ref="liveRegion" role="status"></div><form><input name="id" ref="variantId" value="1"><input name="quantity" value="1"><span class="hidden" ref="addToCartTextError"></span><add-to-cart-component ref="addToCartButtonContainer" data-add-to-cart-animation="false"><button type="submit" ref="addToCartButton">Agregar</button></add-to-cart-component></form></product-form-component>';document.body.append(host)})()`);
+      await evaluate(`document.querySelector('#fixture-main-product form').requestSubmit()`);
+      await wait(offered + ` && document.querySelector('.am-product-upsell__heading').textContent==='Para tu altar'`);
+      await check('the main product page opens the same upsell', `document.querySelector('#fixture-main-product') && document.querySelector('.am-product-upsell__heading').textContent==='Para tu altar'`);
+      await evaluate(`document.querySelector('#quick-add-dialog').closeDialog()`);
+      await wait(`!document.querySelector('#quick-add-dialog dialog').open`);
+      await cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+      await offer('#product-card-card-test product-form-component', 'Sumá este aroma');
+      await wait(offered);
+      await check('reduced motion still opens the product upsell', `!!(${offered})`);
+    } finally {
+      failNext = '';
+      settings.auto_open_cart_drawer = previousAutoOpen;
+      await cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+    }
+  }
+  if (process.env.AM_QA_PRODUCT_UPSELL_ONLY || ![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY, process.env.AM_QA_GALLERY_ONLY, process.env.AM_QA_TIERS_ONLY].some(Boolean)) await productUpsellChecks();
   assert.deepEqual(errors, [], 'No browser exceptions'); checks++;
   fs.writeFileSync(path.join(output, 'density.json'), JSON.stringify(metrics, null, 2));
   console.log(JSON.stringify({ checks, writes: writes.length, artifacts: output }, null, 2));

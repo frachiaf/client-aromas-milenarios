@@ -6,6 +6,66 @@ import { mediaQueryLarge, isMobileBreakpoint, getIOSVersion } from '@theme/utili
 import VariantPicker from '@theme/variant-picker';
 import { prepareQuickBuyGallery } from '@theme/media-gallery';
 
+/**
+ * Adapts a product grid before it is mounted in Quick Buy.
+ * @param {Element} productGrid
+ * @param {{ productTitle: string, productPageUrl: string, showThumbnails: boolean, cartUpsell: boolean, cartError?: string }} options
+ */
+function prepareQuickAddGrid(productGrid, options) {
+  if (options.showThumbnails) {
+    const gallery = productGrid.querySelector('media-gallery');
+    if (gallery) prepareQuickBuyGallery(gallery);
+  }
+
+  for (const form of productGrid.querySelectorAll('product-form-component')) {
+    form.toggleAttribute('data-am-cart-upsell', options.cartUpsell);
+    if (options.cartUpsell && options.cartError) {
+      form.setAttribute('data-am-cart-error', options.cartError);
+    } else {
+      form.removeAttribute('data-am-cart-error');
+    }
+  }
+
+  if (!isMobileBreakpoint()) return;
+
+  const productDetails = productGrid.querySelector('.product-details');
+  const productFormComponent = productGrid.querySelector('product-form-component');
+  const variantPicker = productGrid.querySelector('variant-picker');
+  const productPrice = productGrid.querySelector('product-price');
+  const productTitle = document.createElement('a');
+  productTitle.textContent = options.productTitle || '';
+  productTitle.href = options.productPageUrl;
+
+  const productHeader = document.createElement('div');
+  productHeader.classList.add('product-header');
+  productHeader.appendChild(productTitle);
+  if (productPrice) productHeader.appendChild(productPrice);
+  productGrid.appendChild(productHeader);
+  if (variantPicker) productGrid.appendChild(variantPicker);
+  if (productFormComponent) productGrid.appendChild(productFormComponent);
+  productDetails?.remove();
+}
+
+/**
+ * Replaces the shared Quick Buy content.
+ * @param {Element} productGrid
+ * @returns {boolean}
+ */
+function replaceQuickAddContent(productGrid) {
+  const modalContent = document.getElementById('quick-add-modal-content');
+  if (!modalContent) return false;
+
+  const currentGallery = modalContent.querySelector('media-gallery');
+  if (
+    productGrid.querySelector('[data-am-quick-buy-gallery]') ||
+    currentGallery?.hasAttribute('data-am-quick-buy-gallery')
+  ) {
+    currentGallery?.remove();
+  }
+  morph(modalContent, productGrid);
+  return true;
+}
+
 export class QuickAddComponent extends Component {
   static #activeOpenRequestId = 0;
   /** @type {AbortController | null} */
@@ -111,6 +171,7 @@ export class QuickAddComponent extends Component {
    * @returns {Promise<'opened' | 'unavailable' | 'failed' | 'aborted'>}
    */
   async open(productPageUrl) {
+    this.#getQuickAddDialog()?.cancelProductUpsell();
     const requestId = ++this.#openRequestId;
     const activeRequestId = ++QuickAddComponent.#activeOpenRequestId;
 
@@ -271,64 +332,20 @@ export class QuickAddComponent extends Component {
    */
   async updateQuickAddModal(productGrid, productPageUrl = this.productPageUrl) {
     const modalContent = document.getElementById('quick-add-modal-content');
-
     if (!productGrid || !modalContent) return;
 
-    if (!isMobileBreakpoint() && this.#getQuickAddDialog()?.dataset.amShowThumbnails === 'true') {
-      const gallery = productGrid.querySelector('media-gallery');
-      if (gallery) prepareQuickBuyGallery(gallery);
-    }
-
+    const dialog = this.#getQuickAddDialog();
     const isCartUpsell = this.hasAttribute('data-am-cart-upsell');
-    this.#getQuickAddDialog()?.setCartUpsellSource(isCartUpsell ? this : null);
-    for (const form of productGrid.querySelectorAll('product-form-component')) {
-      form.toggleAttribute('data-am-cart-upsell', isCartUpsell);
-      if (isCartUpsell && this.dataset.amCartError) {
-        form.setAttribute('data-am-cart-error', this.dataset.amCartError);
-      } else {
-        form.removeAttribute('data-am-cart-error');
-      }
-    }
-
-    if (isMobileBreakpoint()) {
-      const productDetails = productGrid.querySelector('.product-details');
-      const productFormComponent = productGrid.querySelector('product-form-component');
-      const variantPicker = productGrid.querySelector('variant-picker');
-      const productPrice = productGrid.querySelector('product-price');
-      const productTitle = document.createElement('a');
-      productTitle.textContent = this.dataset.productTitle || '';
-
-      // Make product title as a link to the product page
-      productTitle.href = productPageUrl;
-
-      const productHeader = document.createElement('div');
-      productHeader.classList.add('product-header');
-
-      productHeader.appendChild(productTitle);
-      if (productPrice) {
-        productHeader.appendChild(productPrice);
-      }
-      productGrid.appendChild(productHeader);
-
-      if (variantPicker) {
-        productGrid.appendChild(variantPicker);
-      }
-      if (productFormComponent) {
-        productGrid.appendChild(productFormComponent);
-      }
-
-      productDetails?.remove();
-    }
-
-    const currentGallery = modalContent.querySelector('media-gallery');
-    if (
-      productGrid.querySelector('[data-am-quick-buy-gallery]') ||
-      currentGallery?.hasAttribute('data-am-quick-buy-gallery')
-    ) {
-      currentGallery?.remove();
-    }
-    morph(modalContent, productGrid);
-
+    dialog?.markQuickAddOrigin(this.closest('product-card') ? 'product-card' : '');
+    dialog?.setCartUpsellSource(isCartUpsell ? this : null);
+    prepareQuickAddGrid(productGrid, {
+      productTitle: this.dataset.productTitle || '',
+      productPageUrl,
+      showThumbnails: !isMobileBreakpoint() && dialog?.dataset.amShowThumbnails === 'true',
+      cartUpsell: isCartUpsell,
+      cartError: this.dataset.amCartError,
+    });
+    replaceQuickAddContent(productGrid);
     this.#syncVariantSelection(modalContent);
   }
 
@@ -372,22 +389,41 @@ class QuickAddDialog extends DialogComponent {
   #abortController = new AbortController();
   /** @type {HTMLElement | null} */
   #cartUpsellSource = null;
+  #upsellRequestId = 0;
+  /** @type {AbortController | null} */
+  #upsellAbort = null;
+  #productUpsellActive = false;
 
   /** @param {HTMLElement | null} source */
   setCartUpsellSource(source) {
     this.#cartUpsellSource = source;
   }
 
+  /** @param {string} origin */
+  markQuickAddOrigin(origin) {
+    this.dataset.amQuickAddOrigin = origin || '';
+    this.#productUpsellActive = false;
+    this.#clearProductUpsellChrome();
+  }
+
+  cancelProductUpsell() {
+    this.#upsellRequestId += 1;
+    this.#upsellAbort?.abort();
+    this.#upsellAbort = null;
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
     this.addEventListener(ThemeEvents.cartUpdate, this.handleCartUpdate, { signal: this.#abortController.signal });
+    document.addEventListener(ThemeEvents.cartUpdate, this.#handleProductUpsell, { signal: this.#abortController.signal });
     this.addEventListener(ThemeEvents.variantUpdate, this.#updateProductTitleLink);
 
     this.addEventListener(DialogCloseEvent.eventName, this.#handleDialogClose);
   }
 
   disconnectedCallback() {
+    this.cancelProductUpsell();
     super.disconnectedCallback();
 
     this.#abortController.abort();
@@ -416,16 +452,136 @@ class QuickAddDialog extends DialogComponent {
     if (mobileProductTitle) mobileProductTitle.href = anchorElement.href;
   };
 
+  /**
+   * Opens Quick Buy for a product suggested by the item just added.
+   * @param {Event} event
+   */
+  #handleProductUpsell = (event) => {
+    const detail = /** @type {{ data?: { didError?: boolean, source?: string, upsell?: { url?: string, heading?: string } } }} */ (event).detail;
+    const upsell = detail?.data?.upsell;
+    if (!upsell?.url || detail?.data?.didError || detail?.data?.source !== 'product-form-component') return;
+
+    const requestId = ++this.#upsellRequestId;
+    this.#upsellAbort?.abort();
+    const abort = new AbortController();
+    this.#upsellAbort = abort;
+
+    const fromInside = event.target instanceof Node && this.contains(event.target);
+    const closed = !this.refs.dialog.open
+      ? Promise.resolve()
+      : fromInside
+        ? new Promise((resolve) => {
+            this.addEventListener(DialogCloseEvent.eventName, () => resolve(), { once: true });
+          })
+        : this.closeDialog();
+
+    void this.#openProductUpsell(upsell, requestId, closed, abort);
+  };
+
+  /**
+   * @param {{ url?: string, heading?: string }} upsell
+   * @param {number} requestId
+   * @param {Promise<unknown>} closed
+   * @param {AbortController} abort
+   */
+  async #openProductUpsell(upsell, requestId, closed, abort) {
+    let grid = null;
+    try {
+      const [fetched] = await Promise.all([this.#fetchUpsellGrid(upsell.url || '', abort.signal), closed, this.#waitForCartDrawer()]);
+      grid = fetched;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+      return;
+    }
+    if (requestId !== this.#upsellRequestId || !grid || this.refs.dialog.open) return;
+
+    const productTitle = grid.querySelector('.view-product-title')?.textContent?.trim() || '';
+    prepareQuickAddGrid(grid, {
+      productTitle,
+      productPageUrl: upsell.url || '',
+      showThumbnails: !isMobileBreakpoint() && this.dataset.amShowThumbnails === 'true',
+      cartUpsell: false,
+    });
+    if (requestId !== this.#upsellRequestId || !replaceQuickAddContent(grid) || this.refs.dialog.open) return;
+
+    this.setCartUpsellSource(null);
+    this.dataset.amQuickAddOrigin = '';
+    this.setAttribute('data-am-product-upsell', '');
+    this.#applyUpsellHeading(upsell.heading || '');
+    this.#productUpsellActive = true;
+    this.showDialog();
+  };
+
+  /**
+   * @param {string} url
+   * @param {AbortSignal} signal
+   * @returns {Promise<Element | null>}
+   */
+  async #fetchUpsellGrid(url, signal) {
+    const response = await fetch(url, { signal });
+    if (!response.ok) throw new Error(`Failed to fetch suggested product: HTTP error ${response.status}`);
+    const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const grid = html.querySelector('[data-product-grid-content]');
+    return grid ? /** @type {Element} */ (grid.cloneNode(true)) : null;
+  }
+
+  #waitForCartDrawer() {
+    const drawer = document.querySelector('cart-drawer-component');
+    if (!(drawer instanceof HTMLElement) || !drawer.hasAttribute('auto-open')) return Promise.resolve();
+    const dialog = drawer.querySelector('dialog');
+    if (!(dialog instanceof HTMLDialogElement) || dialog.open) return Promise.resolve();
+
+    return new Promise((resolve) => {
+      const timeout = setTimeout(resolve, 800);
+      drawer.addEventListener(
+        DialogOpenEvent.eventName,
+        () => {
+          clearTimeout(timeout);
+          resolve();
+        },
+        { once: true }
+      );
+    });
+  }
+
+  /** @param {string} heading */
+  #applyUpsellHeading(heading) {
+    const node = this.querySelector('.am-product-upsell__heading');
+    if (!(node instanceof HTMLElement)) return;
+    const text = heading.trim();
+    node.textContent = text;
+    node.hidden = text.length === 0;
+    if (text) this.refs.dialog.setAttribute('aria-labelledby', node.id);
+    else this.refs.dialog.removeAttribute('aria-labelledby');
+  }
+
+  #clearProductUpsellChrome() {
+    this.removeAttribute('data-am-product-upsell');
+    const node = this.querySelector('.am-product-upsell__heading');
+    if (node instanceof HTMLElement) {
+      node.textContent = '';
+      node.hidden = true;
+    }
+    this.refs.dialog?.removeAttribute('aria-labelledby');
+  }
+
+  #focusOpenCartHeading() {
+    const heading = document.querySelector('.cart-drawer__dialog[open] #cart-drawer-heading');
+    if (!(heading instanceof HTMLElement)) return;
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+  }
+
   #handleDialogClose = () => {
     for (const media of this.querySelectorAll('[data-am-quick-buy-gallery] :is(deferred-media, product-model)')) {
       if ('pauseMedia' in media && typeof media.pauseMedia === 'function') media.pauseMedia();
     }
-    if (this.#cartUpsellSource && !this.#cartUpsellSource.isConnected) {
-      const heading = document.querySelector('.cart-drawer__dialog[open] #cart-drawer-heading');
-      if (heading instanceof HTMLElement) {
-        heading.tabIndex = -1;
-        heading.focus({ preventScroll: true });
-      }
+    if (this.#productUpsellActive) {
+      this.#productUpsellActive = false;
+      this.#clearProductUpsellChrome();
+      this.#focusOpenCartHeading();
+    } else if (this.#cartUpsellSource && !this.#cartUpsellSource.isConnected) {
+      this.#focusOpenCartHeading();
     }
     this.#cartUpsellSource = null;
     const iosVersion = getIOSVersion();

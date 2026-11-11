@@ -46,6 +46,7 @@
     data-product-id="{{ product.id }}"
     on:submit="/handleSubmit"
     class="quick-add__product-form-component"
+    {% render 'am--product-upsell-attributes', product: product %}
   >
     <div
       class="visually-hidden"

@@ -100,6 +100,7 @@ export class CartAddEvent extends Event {
    * @param {number} [data.itemCount] - The number of items in the cart
    * @param {string} [data.variantId] - The id of the product variant that was added
    * @param {Record<string, string>} [data.sections] - The sections affected by the cart operation
+   * @param {{url: string, heading: string}} [data.upsell] - Suggested product to show after a successful add
    */
   constructor(resource, sourceId, data) {
     super(CartAddEvent.eventName, { bubbles: true });

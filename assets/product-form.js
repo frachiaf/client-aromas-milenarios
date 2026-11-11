@@ -346,6 +346,39 @@ class ProductFormComponent extends Component {
     target.dispatchEvent(event);
   }
 
+  /**
+   * Suggested product for a successful add from the main PDP or a product card.
+   * @returns {{url: string, heading: string} | null}
+   */
+  #productUpsellPayload() {
+    const url = this.dataset.amUpsellUrl;
+    if (!url || this.hasAttribute('data-am-cart-upsell')) return null;
+
+    const quickAddDialog = this.closest('quick-add-dialog');
+    if (quickAddDialog?.hasAttribute('data-am-product-upsell')) return null;
+
+    const fromCardQuickAdd = Boolean(quickAddDialog) && quickAddDialog.dataset.amQuickAddOrigin === 'product-card';
+    const fromMainPdp = !quickAddDialog && Boolean(this.closest('[data-am-main-product]'));
+    const fromCard = !quickAddDialog && Boolean(this.closest('product-card'));
+    if (!fromMainPdp && !fromCard && !fromCardQuickAdd) return null;
+
+    return { url, heading: this.dataset.amUpsellHeading || '' };
+  }
+
+  /**
+   * @param {Object} extra
+   * @returns {Object}
+   */
+  #successfulCartAddData(extra) {
+    const data = {
+      source: this.hasAttribute('data-am-cart-upsell') ? 'am-cart-upsell' : 'product-form-component',
+      ...extra,
+    };
+    const upsell = this.#productUpsellPayload();
+    if (upsell) data.upsell = upsell;
+    return data;
+  }
+
   /** @param {unknown} error */
   #handleRequestError = (error) => {
     console.error(error);
@@ -528,12 +561,11 @@ class ProductFormComponent extends Component {
           const cart = await this.#fetchAndUpdateCartQuantity();
 
           this.#dispatchCartEvent(
-            new CartAddEvent(cart ?? undefined, id.toString(), {
-              source: this.hasAttribute('data-am-cart-upsell') ? 'am-cart-upsell' : 'product-form-component',
+            new CartAddEvent(cart ?? undefined, id.toString(), this.#successfulCartAddData({
               itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault),
               productId: this.dataset.productId,
               sections: response.sections,
-            })
+            }))
           );
         }
       })
@@ -633,12 +665,11 @@ class ProductFormComponent extends Component {
 
         const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
         this.#dispatchCartEvent(
-          new CartAddEvent(cart ?? undefined, this.id, {
-            source: this.hasAttribute('data-am-cart-upsell') ? 'am-cart-upsell' : 'product-form-component',
+          new CartAddEvent(cart ?? undefined, this.id, this.#successfulCartAddData({
             itemCount: totalQuantity,
             productId: this.dataset.productId,
             sections: response.sections,
-          })
+          }))
         );
       })
       .catch(this.#handleRequestError));

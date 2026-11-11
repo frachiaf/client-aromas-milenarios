@@ -59,6 +59,66 @@
     "header_section": {
       "type": "header",
       "blocks": {
+        "am_header_menu_image_rXRdPH": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/Vela_MAGDALENA_entre_madera_y_rosas-1_982f8bd6-ab10-4c3b-a455-7bd39aac77c0.png",
+            "menu_item_level": "sub",
+            "menu_item_text": "Magdalena",
+            "position_desktop": "top",
+            "position_mobile": "top",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
+        "am_header_menu_image_6HGxP9": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-52e3cbda-1294-43ef-b361-3bba9ef41b9b.png",
+            "menu_item_level": "sub",
+            "menu_item_text": "Celta",
+            "position_desktop": "top",
+            "position_mobile": "top",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
+        "am_header_menu_image_pj3U6J": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/Vela_Selene_bajo_una_luna_llena-1_15e065ee-20f9-4fb9-b06e-9dc98806bab0.png",
+            "menu_item_level": "sub",
+            "menu_item_text": "Selene",
+            "position_desktop": "top",
+            "position_mobile": "top",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
+        "am_header_menu_image_3e3fDC": {
+          "type": "_am--header-menu-image",
+          "name": "t:am_header.menu_image",
+          "settings": {
+            "image": "shopify://shop_images/grok-image-9e4641d9-a644-42ce-9c5b-ff9f0456be16.png",
+            "menu_item_level": "sub",
+            "menu_item_text": "Océano",
+            "position_desktop": "top",
+            "position_mobile": "top",
+            "size_desktop": 48,
+            "size_mobile": 32,
+            "text_gap": 6
+          },
+          "blocks": {}
+        },
         "am_header_menu_image_aGNpMC": {
           "type": "_am--header-menu-image",
           "name": "t:am_header.menu_image",
@@ -183,6 +243,10 @@
         }
       },
       "block_order": [
+        "am_header_menu_image_rXRdPH",
+        "am_header_menu_image_6HGxP9",
+        "am_header_menu_image_pj3U6J",
+        "am_header_menu_image_3e3fDC",
         "am_header_menu_image_aGNpMC",
         "am_header_menu_image_4W4VxH",
         "am_header_menu_image_NLbHcr",

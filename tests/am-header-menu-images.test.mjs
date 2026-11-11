@@ -88,6 +88,7 @@ for (const id of ['position_desktop', 'position_mobile']) {
 pass('schemas, defaults, private targeting and all 51 locale files');
 
 const link = (title, handle, links = []) => ({ title, handle, url: '/collections/' + handle, links, type: 'http_link', current: handle === 'shop', active: handle === 'shop' });
+const productLink = (title, handle) => ({ ...link(title, handle), type: 'product_link', url: '/products/' + handle, object: { featured_image: { src: '/products/' + handle + '.png' } } });
 async function fixture(options = {}) {
   const scheme = { id: 'scheme-1', settings: { background: { rgb: '247, 247, 247', rgba: '247, 247, 247, 1', alpha: 1 } } };
   const section = { id: 'header-test', index: options.hydrated ? null : 1, blocks: [], settings: {
@@ -100,25 +101,43 @@ async function fixture(options = {}) {
     link('Explore', 'explore'), link('Shop all', 'shop-all'),
     ...(options.repeated ? [link('SHOP', 'second-shop')] : []),
     ...Array.from({ length: options.extra || 0 }, (_, i) => link('Other item ' + i, 'other-' + i))] };
+  if (options.plainCards || options.imageCards) {
+    menu.links.push(link('Experiencias', 'experiencias', [
+      productLink('Oceano', 'oceano'), productLink('Selene', 'selene'), productLink('Celta', 'celta'), productLink('Magdalena', 'magdalena'),
+    ]));
+  }
+  if (options.plainCards) {
+    menu.links.push(link('Paginas', 'paginas', [
+      link('Nota', 'nota'), link('Guia', 'guia'), link('Historia', 'historia'), link('Taller', 'taller'),
+    ]));
+  }
+  if (options.imageCards) {
+    const soja = link('Soja', 'soja');
+    soja.type = 'collection_link';
+    soja.object = {};
+    menu.links.push(link('Velas', 'velas', [soja, link('Antique', 'antique')]));
+  }
   const context = { section, request: { design_mode: options.editor !== false, page_type: 'index' }, template: { name: 'index' },
     shop: { name: 'Aromas', customer_accounts_enabled: false }, settings: {},
     localization: { available_languages: [], available_countries: [] }, fixture: {} };
   const block = { id: 'header-menu', shopify_attributes: '', settings: {
-    ...defaults('blocks/_header-menu.liquid'), menu, color_scheme: scheme, menu_style: 'text',
+    ...defaults('blocks/_header-menu.liquid'), menu, color_scheme: scheme, menu_style: options.menuStyle || 'text',
     type_font_primary_link: 'body', menu_font_style: 'regular', navigation_bar: options.bar !== false,
     drawer_accordion: options.accordion !== false,
   } };
-  for (const variant of ['', 'mobile', 'navigation_bar']) {
-    context.fixture[variant || 'desktop'] = await render('blocks/_header-menu.liquid', { ...context, block, variant });
-  }
   context.fixture.logo = '<a class="header-logo" href="/">AROMAS</a>';
   context.fixture.actions = '<a href="/cart">Carrito</a>';
   const images = options.empty ? [] : [
     ['shop', '  SHOP  ', '/square.svg'], ['entertaining', 'Entertaining', '/wide.png'], ['explore', 'explore', '/tall.svg'],
     ['unmatched', 'Shop al', '/square.svg'], ['empty', 'Shop', null], ['duplicate', 'Shop', '/tall.svg'],
     ...(options.submenu ? [['child-shop', 'Shop', '/square.svg', 'sub'], ['grandchild', 'Explore', '/wide.png', 'sub']] : []),
+    ...(options.imageCards ? [
+      ['oceano', 'Oceano', '/square.svg', 'sub'], ['selene', 'Selene', '/square.svg', 'sub'],
+      ['celta', 'Celta', '/square.svg', 'sub'], ['magdalena', '  Magdalena  ', '/square.svg', 'sub'],
+      ['antique', 'Antique', '/wide.png', 'sub'],
+    ] : []),
   ];
-  section.blocks = images.map(([id]) => ({ id }));
+  section.blocks = [];
   context.fixture.images = '';
   for (const [id, name, src, level] of images) {
     const imageSettings = {
@@ -131,7 +150,11 @@ async function fixture(options = {}) {
       delete imageSettings.position_desktop;
       delete imageSettings.position_mobile;
     }
+    section.blocks.push({ id, type: '_am--header-menu-image', settings: imageSettings });
     context.fixture.images += await render(imageBlock, { ...context, block: { id, shopify_attributes: attrs(id), settings: imageSettings } });
+  }
+  for (const variant of ['', 'mobile', 'navigation_bar']) {
+    context.fixture[variant || 'desktop'] = await render('blocks/_header-menu.liquid', { ...context, block, variant });
   }
   const html = await render('sections/header.liquid', context);
   const importmap = Object.fromEntries([...read('snippets/scripts.liquid').matchAll(/"(@theme\/[^\"]+)": "{{ '([^']+)' \| asset_url }}"/g)]
@@ -411,14 +434,14 @@ try {
     const link=document.querySelector('header-menu [data-am-menu-level="sub"][data-am-menu-title="Shop"]').closest('.mega-menu__link');
     const original=link.querySelector('img[data-am-test-original]');
     const image=link.querySelector(':scope > img[data-am-header-menu-image="child-shop"]');
-    return original.hidden && original.hasAttribute('data-am-menu-image-original') && original.nextElementSibling===image && image.sizes==='320px' && !link.querySelector('.wrap-text [data-am-header-menu-image]');
+    return original.hidden && getComputedStyle(original).display==='none' && original.hasAttribute('data-am-menu-image-original') && original.nextElementSibling===image && image.sizes==='320px' && [...link.querySelectorAll('img')].filter((img)=>img.getClientRects().length>0).length===1 && !link.querySelector('.wrap-text [data-am-header-menu-image]');
   })()`);
   await evaluate(`document.querySelector('[data-am-header-image-source="child-shop"]').dataset.amMenuTitle='unused-name'`);
   await wait(`document.querySelector('header-menu img[data-am-test-original]')?.hidden===false`);
   await check('removing the submenu match restores the collection photo', `(()=>{
     const link=document.querySelector('header-menu [data-am-menu-level="sub"][data-am-menu-title="Shop"]').closest('.mega-menu__link');
     const original=link.querySelector('img[data-am-test-original]');
-    return original.hidden===false && !original.hasAttribute('data-am-menu-image-original') && !link.querySelector('[data-am-header-menu-image]');
+    return original.hidden===false && getComputedStyle(original).display==='block' && !original.hasAttribute('data-am-menu-image-original') && !link.querySelector('[data-am-header-menu-image]');
   })()`);
   await load({ levels: 3, submenu: true, legacyLevel: true });
   await check('a missing level setting still targets main items', `${levelLabel('main', 'Shop', 'header-menu')}.querySelector('[data-am-header-menu-image="shop"]')!==null && document.querySelector('[data-am-menu-level="sub"] [data-am-header-menu-image]')===null`);
@@ -445,6 +468,92 @@ try {
   await evaluate(`document.querySelector('header-component').replaceWith(new DOMParser().parseFromString(${JSON.stringify(replacement)},'text/html').querySelector('header-component'))`);
   await wait(`${images}.length===9`);
   await check('section reload reconnects the controller without duplicating images', `${label('Shop')}.querySelectorAll('img').length===1`);
+
+  const cardColumns = (title) => `document.querySelector('header-menu [data-am-menu-level="sub"][data-am-menu-title="${title}"]')?.closest('.mega-menu__list')?.querySelectorAll(':scope > .mega-menu__column').length`;
+  const openSubmenu = (title) => `(()=>{const item=document.querySelector('header-menu [data-am-menu-level="main"][data-am-menu-title="${title}"]').closest('.menu-list__list-item');item.querySelector('.menu-list__submenu').dataset.active='true';item.querySelector('.menu-list__link').setAttribute('aria-expanded','true')})()`;
+  await viewport(1440); await load({ menuStyle: 'collection_images', plainCards: true });
+  await evaluate(openSubmenu('Experiencias'));
+  await pause(100);
+  await check('product links sit in one horizontal row without custom photos', `(()=>{
+    const list=document.querySelector('header-menu [data-am-menu-title="Oceano"]').closest('.mega-menu__list');
+    const columns=[...list.querySelectorAll(':scope > .mega-menu__column')];
+    const boxes=columns.map((column)=>column.getBoundingClientRect());
+    return columns.length===4 && columns.every((column)=>column.classList.contains('mega-menu__column--wide-collection-image') && column.querySelector(':scope > div > a > img.mega-menu__link-image:not([data-am-header-menu-image])')?.getAttribute('src')?.includes('/products/'))
+      && boxes.every((box,index)=>box.width>40 && (index===0 || (box.left>=boxes[index-1].right-1 && Math.abs(box.top-boxes[0].top)<2)));
+  })()`);
+  await check('plain links stay in one column', `${cardColumns('Nota')}===1`);
+  await viewport(390); await pause(150);
+  await evaluate(`document.querySelector('header-drawer summary').click()`); await pause(350);
+  await evaluate(`document.querySelector('#Details-menu-drawer-experiencias summary')?.click()`);
+  await pause(350);
+  await check('product drawer cards use the two-column grid without custom photos', `(()=>{
+    const list=document.querySelector('#Details-menu-drawer-experiencias .menu-drawer__menu--childlist');
+    const cards=[...list.querySelectorAll(':scope > .menu-drawer__list-item > a')];
+    const boxes=cards.map((card)=>card.getBoundingClientRect());
+    return list.classList.contains('menu-drawer__menu--grid') && cards.length===4 && cards.every((card)=>card.querySelector(':scope > img.menu-drawer__link-image:not([data-am-header-menu-image])')?.getAttribute('src')?.includes('/products/'))
+      && Math.abs(boxes[0].top-boxes[1].top)<2 && boxes[1].left>boxes[0].right-1;
+  })()`);
+  await check('drawer without product or collection links stays a text list', `document.querySelector('#Details-menu-drawer-paginas') && !document.querySelector('#Details-menu-drawer-paginas .menu-drawer__menu--grid')`);
+  await evaluate(`document.querySelector('header-drawer').close()`); await pause(200);
+
+  await viewport(1440); await load({ imageCards: true });
+  await check('text menus keep product sub items stacked', `${cardColumns('Oceano')}===1`);
+  await viewport(390); await pause(150);
+  await evaluate(`document.querySelector('header-drawer summary').click()`); await pause(350);
+  await check('text drawer keeps the sub item photo inside the label', `document.querySelector('#Details-menu-drawer-experiencias') && !document.querySelector('#Details-menu-drawer-experiencias .menu-drawer__menu--grid') && document.querySelector('header-drawer [data-am-menu-title="Oceano"] > .am-header-menu-image')!==null`);
+  await evaluate(`document.querySelector('header-drawer').close()`); await pause(200);
+
+  await viewport(1440); await load({ menuStyle: 'collection_images', imageCards: true });
+  await evaluate(`(()=>{const item=document.querySelector('header-menu [data-am-menu-level="main"][data-am-menu-title="Experiencias"]').closest('.menu-list__list-item');item.querySelector('.menu-list__submenu').dataset.active='true';item.querySelector('.menu-list__link').setAttribute('aria-expanded','true')})()`);
+  await pause(100);
+  await check('experiencias sub items sit in one horizontal row', `(()=>{
+    const list=document.querySelector('header-menu [data-am-menu-title="Oceano"]').closest('.mega-menu__list');
+    const columns=[...list.querySelectorAll(':scope > .mega-menu__column')];
+    const boxes=columns.map((column)=>column.getBoundingClientRect());
+    const images=columns.map((column)=>column.querySelector(':scope > div > a > img.mega-menu__link-image[data-am-header-menu-image]'));
+    return columns.length===4 && columns.every((column)=>{
+      const link=column.querySelector(':scope > div > a');
+      const original=link?.querySelector('img.mega-menu__link-image:not([data-am-header-menu-image])');
+      const visible=link ? [...link.querySelectorAll('img')].filter((img)=>img.getClientRects().length>0) : [];
+      return column.classList.contains('mega-menu__column--wide-collection-image') && original?.hidden===true && getComputedStyle(original).display==='none' && visible.length===1 && visible[0].hasAttribute('data-am-header-menu-image');
+    })
+      && images.every((image)=>image && image.sizes==='(min-width: 990px) 25vw, 50vw' && !image.closest('.wrap-text'))
+      && getComputedStyle(list).getPropertyValue('--menu-columns-desktop').trim()==='8'
+      && boxes.every((box,index)=>box.width>40 && (index===0 || (box.left>=boxes[index-1].right-1 && Math.abs(box.top-boxes[0].top)<2)))
+      && columns.some((column)=>column.querySelector('img[data-am-header-menu-image="magdalena"]'));
+  })()`);
+  await viewport(390); await pause(150);
+  await evaluate(`document.querySelector('header-drawer summary').click()`); await pause(350);
+  await evaluate(`document.querySelector('#Details-menu-drawer-experiencias summary')?.click();document.querySelector('#Details-menu-drawer-velas summary')?.click()`);
+  await pause(350);
+  await check('experiencias drawer cards use the same two-column image grid', `(()=>{
+    const list=document.querySelector('#Details-menu-drawer-experiencias .menu-drawer__menu--childlist');
+    const cards=[...list.querySelectorAll(':scope > .menu-drawer__list-item > a')];
+    const boxes=cards.map((card)=>card.getBoundingClientRect());
+    return list.classList.contains('menu-drawer__menu--grid') && cards.length===4 && cards.every((card)=>{
+      const image=card.querySelector(':scope > img.menu-drawer__link-image[data-am-header-menu-image]');
+      const original=card.querySelector(':scope > img.menu-drawer__link-image:not([data-am-header-menu-image])');
+      const visible=[...card.querySelectorAll('img')].filter((img)=>img.getClientRects().length>0);
+      return image && original && image.sizes==='auto, 400px' && getComputedStyle(original).display==='none' && visible.length===1 && visible[0]===image && !card.querySelector('[data-am-header-menu-label] [data-am-header-menu-image]') && getComputedStyle(image).aspectRatio==='16 / 9';
+    }) && Math.abs(boxes[0].top-boxes[1].top)<2 && boxes[1].left>boxes[0].right-1 && boxes[2].top>boxes[0].bottom-1;
+  })()`);
+  await check('antique photo fills the same card slot as its collection sibling', `(()=>{
+    const card=document.querySelector('#HeaderDrawer-velas-antique');
+    const image=card.querySelector(':scope > img.menu-drawer__link-image[data-am-header-menu-image="antique"]');
+    const soja=document.querySelector('#HeaderDrawer-velas-soja');
+    const cardBox=card.getBoundingClientRect();
+    const imageBox=image.getBoundingClientRect();
+    const sojaBox=soja.getBoundingClientRect();
+    return image && !card.querySelector('[data-am-header-menu-label] img') && Math.abs(imageBox.width-cardBox.width)<2
+      && imageBox.top<=card.querySelector('[data-am-header-menu-label]').getBoundingClientRect().top
+      && Math.abs(cardBox.top-sojaBox.top)<2 && cardBox.left>sojaBox.right-1;
+  })()`);
+  await check('main drawer items keep the small icon beside collection cards', `(()=>{
+    const label=document.querySelector('header-drawer [data-am-menu-level="main"][data-am-menu-title="Shop"]');
+    return label.querySelector(':scope > .am-header-menu-image') && !label.closest('a,summary').querySelector(':scope > img.menu-drawer__link-image');
+  })()`);
+  await check('back and more stay undecorated when sub item cards are present', `![...document.querySelectorAll('.menu-drawer__back-button,[slot="more"]')].some((node)=>node.querySelector('[data-am-header-menu-image]'))`);
+  await evaluate(`document.querySelector('header-drawer').close()`); await pause(200);
 
   await viewport(1100); await load({ extra: 12, positions: { position_desktop: 'right', position_mobile: 'left' } });
   await wait(`document.querySelector('li[slot="overflow"]')`);

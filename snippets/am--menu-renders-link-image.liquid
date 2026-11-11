@@ -1,0 +1,43 @@
+{%- doc -%}
+  Reports whether a menu list should use the collection-image grid.
+
+  Collection, catalog, all-collections and product links qualify. A direct child
+  whose title matches a sub-item image block also qualifies, so those links keep
+  the same horizontal cards.
+
+  @param {linklist} menu_links - Links that would render as cards.
+  @param {string} menu_style - Header menu style.
+  @param {object} [section] - Header section that owns the image blocks.
+
+  @example
+  {% render 'am--menu-renders-link-image', menu_links: link.links, menu_style: block_settings.menu_style, section: section %}
+{%- enddoc -%}
+{%- liquid
+  assign render_images = false
+  if menu_style == 'collection_images'
+    assign catalog_links = menu_links | where: 'type', 'catalog_link'
+    assign collection_list_links = menu_links | where: 'type', 'collections_link'
+    assign collection_links = menu_links | where: 'type', 'collection_link'
+    assign product_links = menu_links | where: 'type', 'product_link'
+    if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0 or product_links.size > 0
+      assign render_images = true
+    elsif section != blank
+      for block in section.blocks
+        if block.type == '_am--header-menu-image' and block.settings.menu_item_level == 'sub' and block.settings.image != blank
+          assign image_title = block.settings.menu_item_text | strip | downcase
+          if image_title != blank
+            for menu_link in menu_links
+              assign link_title = menu_link.title | strip | downcase
+              if link_title == image_title
+                assign render_images = true
+              endif
+            endfor
+          endif
+        endif
+      endfor
+    endif
+  endif
+  if render_images
+    echo 'true'
+  endif
+%}

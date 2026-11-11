@@ -41,12 +41,13 @@
   endif
 
   if menu_content_type == 'collection_images'
-    assign collection_links = parent_link.links | where: 'type', 'collection_link'
-    assign catalog_links = parent_link.links | where: 'type', 'catalog_link'
-    assign collection_list_links = parent_link.links | where: 'type', 'collections_link'
-    if collection_links.size == 0 and catalog_links.size == 0 and collection_list_links.size == 0
+    capture keep_collection_columns
+      render 'am--menu-renders-link-image', menu_links: parent_link.links, menu_style: menu_content_type, section: section
+    endcapture
+    assign keep_collection_columns = keep_collection_columns | strip
+    unless keep_collection_columns == 'true'
       assign menu_content_type = 'text'
-    endif
+    endunless
   endif
 
   if menu_content_type == 'featured_collections'

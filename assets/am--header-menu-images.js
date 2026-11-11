@@ -79,12 +79,14 @@ class HeaderMenuImages extends HTMLElement {
       const mapping = mappings.get(menuKey(label.dataset.amMenuLevel, label.dataset.amMenuTitle));
       const placement = this.#placements.get(label);
       const columnLink = megaColumnLink(label);
+      const drawerCard = columnLink ? null : drawerGridLink(label);
+      const host = columnLink || drawerCard;
 
       if (
         mapping &&
         placement?.signature === mapping.signature &&
         placement.image.isConnected &&
-        placement.image.parentElement === (columnLink || label)
+        placement.image.parentElement === (host || label)
       ) {
         continue;
       }
@@ -101,17 +103,21 @@ class HeaderMenuImages extends HTMLElement {
 
       if (!mapping || nestedMegaLink(label)) continue;
 
-      const image = columnLink ? columnImage(mapping.template, columnLink) : mapping.template.content.firstElementChild?.cloneNode(true);
+      const image = host ? slotImage(mapping.template, drawerCard ? 'menu-drawer__link-image' : 'mega-menu__link-image') : mapping.template.content.firstElementChild?.cloneNode(true);
       if (!(image instanceof HTMLElement)) continue;
-      if (columnLink) {
-        const original = columnLink.querySelector(':scope > img.mega-menu__link-image:not([data-am-header-menu-image])');
+      if (host) {
+        const originalSelector = drawerCard
+          ? ':scope > img.menu-drawer__link-image:not([data-am-header-menu-image])'
+          : ':scope > img.mega-menu__link-image:not([data-am-header-menu-image])';
+        const original = host.querySelector(originalSelector);
+        const fallbackSizes = drawerCard ? DRAWER_IMAGE_SIZES : COLUMN_IMAGE_SIZES;
         if (original instanceof HTMLImageElement) {
-          if (original.sizes) image.sizes = original.sizes;
+          image.sizes = original.getAttribute('sizes') || fallbackSizes;
           original.hidden = true;
           original.setAttribute('data-am-menu-image-original', '');
           original.after(image);
         } else {
-          image.sizes = COLUMN_IMAGE_SIZES;
+          image.sizes = fallbackSizes;
           label.before(image);
         }
         this.#placements.set(label, {
@@ -159,6 +165,7 @@ class HeaderMenuImages extends HTMLElement {
 }
 
 const COLUMN_IMAGE_SIZES = '(min-width: 990px) 25vw, 50vw';
+const DRAWER_IMAGE_SIZES = 'auto, 400px';
 
 /** @param {{image: HTMLElement, original: HTMLImageElement | null}} placement */
 function releasePlacement(placement) {
@@ -188,22 +195,34 @@ function nestedMegaLink(label) {
 }
 
 /**
+ * Direct card inside a drawer image grid. Accordion summaries stay text rows.
+ * @param {HTMLElement} label
+ * @returns {HTMLElement | null}
+ */
+function drawerGridLink(label) {
+  if (label.dataset.amMenuLevel !== 'sub') return null;
+  const link = label.closest('a.menu-drawer__menu-item');
+  if (!(link instanceof HTMLElement)) return null;
+  const item = link.parentElement;
+  const list = item?.parentElement;
+  if (!(list instanceof HTMLElement) || !list.classList.contains('menu-drawer__menu--grid')) return null;
+  return link;
+}
+
+/**
  * @param {HTMLTemplateElement} template
- * @param {HTMLElement} link
+ * @param {string} className
  * @returns {HTMLImageElement | null}
  */
-function columnImage(template, link) {
+function slotImage(template, className) {
   const source = template.content.querySelector('img');
   const image = source?.cloneNode(true);
   const marker = template.content.querySelector('[data-am-header-menu-image]');
   if (!(image instanceof HTMLImageElement) || !(marker instanceof HTMLElement)) return null;
   image.dataset.amHeaderMenuImage = marker.dataset.amHeaderMenuImage || '';
-  image.classList.add('mega-menu__link-image');
+  image.classList.add(className);
   const editorBlock = marker.getAttribute('data-shopify-editor-block');
   if (editorBlock) image.setAttribute('data-shopify-editor-block', editorBlock);
-  if (!link.querySelector(':scope > img.mega-menu__link-image:not([data-am-header-menu-image])')?.getAttribute('sizes')) {
-    image.sizes = COLUMN_IMAGE_SIZES;
-  }
   return image;
 }
 

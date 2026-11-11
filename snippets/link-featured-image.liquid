@@ -37,6 +37,14 @@
       | image_tag: loading: 'lazy', class: class, sizes: image_sizes
     }}
   {% endif %}
+{% elsif link.type == 'product_link' %}
+  {% if link.object.featured_image %}
+    {{
+      link.object.featured_image
+      | image_url: width: 800
+      | image_tag: loading: 'lazy', class: class, sizes: image_sizes
+    }}
+  {% endif %}
 {% elsif link.type == 'catalog_link' %}
   {% assign product_object = collections.all.products | where: 'featured_image' | first %}
   {{

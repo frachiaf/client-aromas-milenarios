@@ -132,18 +132,13 @@
                         </span>
                       </summary>
                       {% liquid
-                        assign render_link_image = false
-                        if block_settings.menu_style == 'collection_images'
-                          assign catalog_links = link.links | where: 'type', 'catalog_link'
-                          assign collection_list_links = link.links | where: 'type', 'collections_link'
-                          assign collection_links = link.links | where: 'type', 'collection_link'
-                          if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                            assign render_link_image = true
-                          endif
-                        endif
+                        capture render_link_image
+                          render 'am--menu-renders-link-image', menu_links: link.links, menu_style: block_settings.menu_style, section: section
+                        endcapture
+                        assign render_link_image = render_link_image | strip
                       %}
                       <ul
-                        class="menu-drawer__menu menu-drawer__menu--childlist menu-drawer__animated-element details-content{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
+                        class="menu-drawer__menu menu-drawer__menu--childlist menu-drawer__animated-element details-content{% if render_link_image == 'true' %} menu-drawer__menu--grid{% endif %}"
                         role="list"
                         tabindex="-1"
                       >
@@ -160,7 +155,7 @@
                                 aria-current="page"
                               {% endif %}
                             >
-                              {% if render_link_image %}
+                              {% if render_link_image == 'true' %}
                                 {% render 'link-featured-image',
                                   link: childlink,
                                   class: 'menu-drawer__link-image',
@@ -193,18 +188,13 @@
                     <span class="menu-drawer__menu-item-text wrap-text" data-am-header-menu-label data-am-menu-level="main" data-am-menu-title="{{ link.title | escape }}">{{ link.title | escape }}</span>
                   </a>
                   {% liquid
-                    assign render_link_image = false
-                    if block_settings.menu_style == 'collection_images'
-                      assign catalog_links = link.links | where: 'type', 'catalog_link'
-                      assign collection_list_links = link.links | where: 'type', 'collections_link'
-                      assign collection_links = link.links | where: 'type', 'collection_link'
-                      if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                        assign render_link_image = true
-                      endif
-                    endif
+                    capture render_link_image
+                      render 'am--menu-renders-link-image', menu_links: link.links, menu_style: block_settings.menu_style, section: section
+                    endcapture
+                    assign render_link_image = render_link_image | strip
                   %}
                   <ul
-                    class="menu-drawer__menu menu-drawer__menu--childlist{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
+                    class="menu-drawer__menu menu-drawer__menu--childlist{% if render_link_image == 'true' %} menu-drawer__menu--grid{% endif %}"
                     role="list"
                     tabindex="-1"
                   >
@@ -220,7 +210,7 @@
                             aria-current="page"
                           {% endif %}
                         >
-                          {% if render_link_image %}
+                          {% if render_link_image == 'true' %}
                             {% render 'link-featured-image',
                               link: childlink,
                               class: 'menu-drawer__link-image',
@@ -308,18 +298,13 @@
                           </button>
                         </div>
                         {% liquid
-                          assign render_link_image = false
-                          if block_settings.menu_style == 'collection_images'
-                            assign catalog_links = link.links | where: 'type', 'catalog_link'
-                            assign collection_list_links = link.links | where: 'type', 'collections_link'
-                            assign collection_links = link.links | where: 'type', 'collection_link'
-                            if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                              assign render_link_image = true
-                            endif
-                          endif
+                          capture render_link_image
+                            render 'am--menu-renders-link-image', menu_links: link.links, menu_style: block_settings.menu_style, section: section
+                          endcapture
+                          assign render_link_image = render_link_image | strip
                         %}
                         <ul
-                          class="menu-drawer__menu menu-drawer__menu--childlist{% if render_link_image and link.levels == 1 %} menu-drawer__menu--grid{% endif %}"
+                          class="menu-drawer__menu menu-drawer__menu--childlist{% if render_link_image == 'true' and link.levels == 1 %} menu-drawer__menu--grid{% endif %}"
                           role="list"
                           tabindex="-1"
                         >
@@ -347,7 +332,7 @@
                                     aria-current="page"
                                   {% endif %}
                                 >
-                                  {% if render_link_image and link.levels == 1 %}
+                                  {% if render_link_image == 'true' and link.levels == 1 %}
                                     {% render 'link-featured-image',
                                       link: childlink,
                                       class: 'menu-drawer__link-image',
@@ -386,18 +371,13 @@
                                         </span>
                                       </summary>
                                       {% liquid
-                                        assign render_link_image = false
-                                        if block_settings.menu_style == 'collection_images'
-                                          assign catalog_links = childlink.links | where: 'type', 'catalog_link'
-                                          assign collection_list_links = childlink.links | where: 'type', 'collections_link'
-                                          assign collection_links = childlink.links | where: 'type', 'collection_link'
-                                          if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                                            assign render_link_image = true
-                                          endif
-                                        endif
+                                        capture render_link_image
+                                          render 'am--menu-renders-link-image', menu_links: childlink.links, menu_style: block_settings.menu_style, section: section
+                                        endcapture
+                                        assign render_link_image = render_link_image | strip
                                       %}
                                       <ul
-                                        class="menu-drawer__menu menu-drawer__menu--grandchildlist details-content{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
+                                        class="menu-drawer__menu menu-drawer__menu--grandchildlist details-content{% if render_link_image == 'true' %} menu-drawer__menu--grid{% endif %}"
                                         role="list"
                                         tabindex="-1"
                                       >
@@ -414,7 +394,7 @@
                                                 aria-current="page"
                                               {% endif %}
                                             >
-                                              {% if render_link_image %}
+                                              {% if render_link_image == 'true' %}
                                                 {% render 'link-featured-image',
                                                   link: grandchildlink,
                                                   class: 'menu-drawer__link-image',
@@ -451,18 +431,13 @@
                                     </span>
                                   </a>
                                   {% liquid
-                                    assign render_link_image = false
-                                    if block_settings.menu_style == 'collection_images'
-                                      assign catalog_links = childlink.links | where: 'type', 'catalog_link'
-                                      assign collection_list_links = childlink.links | where: 'type', 'collections_link'
-                                      assign collection_links = childlink.links | where: 'type', 'collection_link'
-                                      if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                                        assign render_link_image = true
-                                      endif
-                                    endif
+                                    capture render_link_image
+                                      render 'am--menu-renders-link-image', menu_links: childlink.links, menu_style: block_settings.menu_style, section: section
+                                    endcapture
+                                    assign render_link_image = render_link_image | strip
                                   %}
                                   <ul
-                                    class="menu-drawer__menu menu-drawer__menu--grandchildlist details-content{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
+                                    class="menu-drawer__menu menu-drawer__menu--grandchildlist details-content{% if render_link_image == 'true' %} menu-drawer__menu--grid{% endif %}"
                                     role="list"
                                     tabindex="-1"
                                   >
@@ -479,7 +454,7 @@
                                             aria-current="page"
                                           {% endif %}
                                         >
-                                          {% if render_link_image %}
+                                          {% if render_link_image == 'true' %}
                                             {% render 'link-featured-image',
                                               link: grandchildlink,
                                               class: 'menu-drawer__link-image',
@@ -1129,6 +1104,10 @@
     position: relative;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+  }
+
+  .menu-drawer__link-image[hidden] {
+    display: none !important;
   }
 
   /* Fix alignment for collection image mode links without images in drawer */

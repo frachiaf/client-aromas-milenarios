@@ -6,6 +6,22 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Modificado
+
+- Objetivo (2026-11-11): los subítems que apuntan a productos se despliegan como las demás tarjetas del menú, en escritorio y en el drawer, con una sola foto por ítem.
+- Archivos: `snippets/am--menu-renders-link-image.liquid`, `snippets/link-featured-image.liquid`, `snippets/mega-menu-list.liquid`, `snippets/header-drawer.liquid`, `blocks/_header-menu.liquid`, `assets/am--header-menu-images.js`, `tests/am-header-menu-images.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: en `collection_images`, un hijo `product_link` abre la misma grilla que una colección y muestra su foto destacada en el recorte 16/9. Con cuatro o menos, cada uno ocupa dos columnas de la grilla ancha. El drawer usa dos columnas. Si hay una foto de subítem, reemplaza esa imagen y no queda como icono en el texto. La foto reemplazada sale del layout con `display: none !important`, porque `img { display: block }` de `base.css` la dejaba visible junto a la foto del bloque. Un listado que no es de productos ni de colecciones sigue en una sola columna, salvo que un hijo coincida con una foto de subítem. Los ítems principales, Volver y Más no cambian. No se editó `sections/header-group.json`.
+
+### Validación
+
+- `node tests/am-header-menu-images.test.mjs` aprobó 145 comprobaciones en Chromium. Cubre cuatro productos de Experiencias en una fila a 1440 px, su foto destacada, la grilla de dos columnas del drawer a 390 px, el reemplazo por la foto de subítem con `display: none` y una sola imagen visible por tarjeta, la restauración a `display: block`, Antique en el recuadro 16/9 y un listado de páginas que sigue en una columna.
+- `shopify theme check --path .` inspeccionó 341 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+- El validador Liquid aprobó el snippet nuevo, `link-featured-image`, `mega-menu-list` y `header-drawer`.
+
+### Reversión
+
+- Quitar el snippet y volver a agrupar los enlaces sin colección en una columna restaura el listado vertical. La foto del drawer vuelve al icono junto al nombre. No hay migración ni datos administrados.
+
 ### Añadido
 
 - Objetivo (2026-11-11): al agregar un producto desde la PDP o una tarjeta, se puede abrir un Quick Buy del producto sugerido por sus metafields.

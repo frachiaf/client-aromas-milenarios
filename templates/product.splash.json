@@ -306,19 +306,6 @@
                   },
                   "blocks": {}
                 },
-                "am_product_tier_unlock_kwzkWA": {
-                  "type": "am--product-tier-unlock",
-                  "name": "t:am_pdp.product_tier_unlock",
-                  "settings": {
-                    "message": "",
-                    "highlight_color": "#D4AF37",
-                    "inherit_color_scheme": true,
-                    "color_scheme": "",
-                    "padding-block-start": 0,
-                    "padding-block-end": 0
-                  },
-                  "blocks": {}
-                },
                 "buy_buttons_6p8c63": {
                   "type": "buy-buttons",
                   "settings": {
@@ -355,6 +342,19 @@
                     }
                   },
                   "block_order": []
+                },
+                "am_product_tier_unlock_kwzkWA": {
+                  "type": "am--product-tier-unlock",
+                  "name": "t:am_pdp.product_tier_unlock",
+                  "settings": {
+                    "message": "",
+                    "highlight_color": "#FFC300",
+                    "inherit_color_scheme": true,
+                    "color_scheme": "",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0
+                  },
+                  "blocks": {}
                 },
                 "accordion_WNYMan": {
                   "type": "accordion",
@@ -549,8 +549,8 @@
                 "am_product_highlights_3jRMDJ",
                 "variant_picker_KePPVa",
                 "am_product_siblings_ErLwYy",
-                "am_product_tier_unlock_kwzkWA",
                 "buy_buttons_6p8c63",
+                "am_product_tier_unlock_kwzkWA",
                 "accordion_WNYMan"
               ]
             },

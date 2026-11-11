@@ -123,7 +123,13 @@
     "rating": "Rating",
     "verified": "Show verified badge",
     "example_review": "Example review: replace this text with a real customer review before publishing.",
-    "example_author": "Example author"
+    "example_author": "Example author",
+    "product_siblings": "AM Linked products",
+    "siblings_help": "Connect a product list metafield using the dynamic source button.",
+    "sibling_trim": "Text to remove from the title",
+    "sibling_trim_help": "Removed from each product title before the pill is shown. Case sensitive. An empty result shows the full title.",
+    "sibling_label": "Label",
+    "sibling_label_help": "Optional group name, like a variant option. Leave it empty to hide the legend."
   },
   "categories": {
     "banners": "Banners",

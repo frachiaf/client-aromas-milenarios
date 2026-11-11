@@ -1,0 +1,472 @@
+{% liquid
+  assign siblings = block.settings.products
+  assign title_trim = block.settings.title_trim | strip
+  assign option_label = block.settings.option_label | strip
+  assign has_siblings = false
+  assign has_prefetch = false
+  assign sort_keys = ''
+  assign ordered_keys = ''
+  assign current_pill_label = ''
+  assign use_modal = false
+  assign trigger_label = ''
+  assign list_label_id = ''
+  if siblings != blank and siblings.size > 0
+    assign has_siblings = true
+  endif
+
+  if has_siblings
+    for sibling in siblings
+      if sibling.url != blank
+        assign pill_label = sibling.title
+        if title_trim != blank
+          assign trimmed_label = sibling.title | remove: title_trim | strip
+          if trimmed_label != blank
+            assign pill_label = trimmed_label
+          endif
+        endif
+        assign sort_label = pill_label | downcase | replace: '~~~', '' | replace: '|||', ''
+        assign sort_id = sibling.id | prepend: '00000000000000000000' | slice: -20, 20
+        assign sort_key = sort_label | append: '~~~' | append: sort_id
+        if sort_keys == blank
+          assign sort_keys = sort_key
+        else
+          assign sort_keys = sort_keys | append: '|||' | append: sort_key
+        endif
+        if sibling.id == closest.product.id
+          assign current_pill_label = pill_label
+        else
+          assign has_prefetch = true
+        endif
+      endif
+    endfor
+    if sort_keys != blank
+      assign ordered_keys = sort_keys | split: '|||' | sort
+    endif
+  endif
+
+  assign alt_layout_value = closest.product.metafields.custom.alt_layout_pseudo_variante.value
+  if alt_layout_value == true or alt_layout_value == 'true'
+    assign use_modal = true
+  endif
+  assign trigger_label = option_label
+  if trigger_label == blank
+    assign trigger_label = current_pill_label
+  endif
+  if trigger_label == blank
+    assign use_modal = false
+  endif
+  if option_label != blank or use_modal
+    assign list_label_id = 'AmSiblingPillsLegend-' | append: block.id
+  endif
+%}
+
+{% if has_siblings or request.design_mode %}
+  <div
+    class="am-sibling-pills"
+    {{ block.shopify_attributes }}
+  >
+    {% if has_siblings %}
+      {% capture pills_markup %}
+        <ul
+          class="am-sibling-pills__list"
+          {% if list_label_id != blank %}
+            aria-labelledby="{{ list_label_id }}"
+          {% endif %}
+        >
+        {% if ordered_keys != blank %}
+          {% for sort_key in ordered_keys %}
+            {% liquid
+              assign sibling_id = sort_key | split: '~~~' | last | plus: 0
+              assign sibling = blank
+              for candidate in siblings
+                if candidate.id == sibling_id
+                  assign sibling = candidate
+                  break
+                endif
+              endfor
+              assign pill_label = sibling.title
+              if title_trim != blank
+                assign trimmed_label = sibling.title | remove: title_trim | strip
+                if trimmed_label != blank
+                  assign pill_label = trimmed_label
+                endif
+              endif
+              assign is_current = false
+              if sibling.id == closest.product.id
+                assign is_current = true
+              endif
+            %}
+            {% if sibling.url != blank %}
+            <li class="am-sibling-pills__item">
+              <a
+                class="am-sibling-pills__pill{% unless sibling.available %} am-sibling-pills__pill--unavailable{% endunless %}"
+                href="{{ sibling.url }}"
+                {% if is_current %}
+                  aria-current="page"
+                {% endif %}
+                {% unless sibling.available %}
+                  aria-label="{{ pill_label | escape }} - {{ 'products.product.sold_out' | t }}"
+                {% endunless %}
+              >
+                <span class="am-sibling-pills__text">{{ pill_label | escape }}</span>
+                {% unless sibling.available %}
+                  <svg
+                    class="am-sibling-pills__strike"
+                    viewBox="0 0 100 46"
+                    preserveAspectRatio="xMidYMid slice"
+                    aria-hidden="true"
+                  >
+                    <line
+                      x1="100"
+                      y1="0"
+                      x2="0"
+                      y2="46"
+                      vector-effect="non-scaling-stroke"
+                    ></line>
+                  </svg>
+                {% endunless %}
+              </a>
+              {% unless is_current %}
+                <link
+                  rel="prefetch"
+                  href="{{ sibling.url }}"
+                  as="document"
+                >
+              {% endunless %}
+            </li>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        </ul>
+      {% endcapture %}
+
+      {% if use_modal %}
+        <dialog-component>
+          <button
+            class="am-sibling-pills__trigger"
+            type="button"
+            on:click="/showDialog"
+            aria-haspopup="dialog"
+            aria-controls="AmSiblingPillsDialog-{{ block.id }}"
+          >
+            {{ trigger_label | escape }}
+          </button>
+          <dialog
+            id="AmSiblingPillsDialog-{{ block.id }}"
+            ref="dialog"
+            class="dialog-modal am-sibling-pills__dialog{% if section.settings.color_scheme != blank %} color-{{ section.settings.color_scheme }}{% endif %}"
+            scroll-lock
+            aria-labelledby="{{ list_label_id }}"
+          >
+            <div class="am-sibling-pills__dialog-header">
+              <p
+                class="am-sibling-pills__legend"
+                id="{{ list_label_id }}"
+              >
+                {{ trigger_label | escape }}
+              </p>
+              <button
+                class="am-sibling-pills__close"
+                type="button"
+                on:click="/closeDialog"
+                aria-label="{{ 'actions.close_dialog' | t }}"
+              >
+                <span class="svg-wrapper">
+                  {{- 'icon-close.svg' | inline_asset_content -}}
+                </span>
+              </button>
+            </div>
+            {{ pills_markup }}
+          </dialog>
+        </dialog-component>
+      {% else %}
+        {% if option_label != blank %}
+          <p
+            class="am-sibling-pills__legend"
+            id="{{ list_label_id }}"
+          >
+            {{ option_label | escape }}
+          </p>
+        {% endif %}
+        {{ pills_markup }}
+      {% endif %}
+
+      {% if has_prefetch %}
+        <script type="speculationrules">
+          {
+            "prefetch": [
+              {
+                "source": "list",
+                "urls": [{%- assign emitted_prefetch = false -%}
+                  {%- for sort_key in ordered_keys -%}
+                    {%- assign sibling_id = sort_key | split: '~~~' | last | plus: 0 -%}
+                    {%- for sibling in siblings -%}
+                      {%- if sibling.id == sibling_id and sibling.url != blank and sibling.id != closest.product.id -%}
+                        {%- if emitted_prefetch -%},{%- endif -%}
+                        {{- sibling.url | json -}}
+                        {%- assign emitted_prefetch = true -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endfor -%}],
+                "eagerness": "immediate"
+              }
+            ],
+            "prerender": [
+              {
+                "source": "list",
+                "urls": [{%- assign emitted_prerender = false -%}
+                  {%- for sort_key in ordered_keys -%}
+                    {%- assign sibling_id = sort_key | split: '~~~' | last | plus: 0 -%}
+                    {%- for sibling in siblings -%}
+                      {%- if sibling.id == sibling_id and sibling.url != blank and sibling.id != closest.product.id -%}
+                        {%- if emitted_prerender -%},{%- endif -%}
+                        {{- sibling.url | json -}}
+                        {%- assign emitted_prerender = true -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endfor -%}],
+                "eagerness": "moderate"
+              }
+            ]
+          }
+        </script>
+      {% endif %}
+    {% elsif request.design_mode %}
+      <p class="am-sibling-pills__placeholder">{{ 'am_pdp.connect_siblings' | t }}</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .am-sibling-pills {
+    --am-sibling-radius: var(--variant-picker-button-radius);
+    --am-sibling-border-width: var(--variant-picker-button-border-width);
+  }
+
+  .am-sibling-pills__legend,
+  .am-sibling-pills__placeholder {
+    margin: 0;
+    padding: 0;
+  }
+
+  .am-sibling-pills__legend {
+    margin-block-end: var(--margin-xs);
+  }
+
+  .am-sibling-pills__trigger {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: 0;
+    padding-block: 0;
+    padding-inline: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    text-decoration: underline;
+    text-underline-offset: 0.125em;
+    cursor: pointer;
+  }
+
+  .am-sibling-pills__trigger:focus-visible {
+    outline: var(--focus-outline-width) solid var(--color-foreground);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  .am-sibling-pills__dialog.dialog-modal {
+    position: fixed;
+    inset: 0;
+    width: fit-content;
+    height: fit-content;
+    max-width: min(var(--normal-content-width), calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    overflow: auto;
+    border-radius: var(--style-border-radius-popover);
+    padding: var(--padding-lg);
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  .am-sibling-pills__dialog.dialog-modal[open] {
+    animation: modalSlideInTop var(--animation-speed) var(--animation-easing) forwards;
+  }
+
+  .am-sibling-pills__dialog.dialog-modal.dialog-closing {
+    animation: modalSlideOutTop var(--animation-speed) var(--animation-easing) forwards;
+  }
+
+  .am-sibling-pills__dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    margin-block-end: var(--margin-xs);
+  }
+
+  .am-sibling-pills__dialog .am-sibling-pills__legend {
+    margin-block-end: 0;
+  }
+
+  .am-sibling-pills__close {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .am-sibling-pills__close:focus-visible {
+    outline: var(--focus-outline-width) solid var(--color-foreground);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  .am-sibling-pills__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .am-sibling-pills__item {
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+
+  .am-sibling-pills__pill {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25em;
+    min-width: fit-content;
+    padding-block: var(--padding-sm);
+    padding-inline: var(--padding-lg);
+    border: var(--am-sibling-border-width) solid var(--color-variant-border);
+    border-radius: var(--am-sibling-radius);
+    overflow: clip;
+    background-color: var(--color-variant-background);
+    color: var(--color-variant-text);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .am-sibling-pills__text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .am-sibling-pills__pill[aria-current='page']:not(.am-sibling-pills__pill--unavailable) {
+    background-color: var(--color-selected-variant-background);
+    border-color: var(--color-selected-variant-border);
+    color: var(--color-selected-variant-text);
+  }
+
+  .am-sibling-pills__pill--unavailable {
+    color: rgb(var(--color-variant-text-rgb) / var(--opacity-60));
+  }
+
+  .am-sibling-pills__pill[aria-current='page'].am-sibling-pills__pill--unavailable {
+    background-color: var(--color-variant-background);
+    border-color: var(--color-selected-variant-border);
+  }
+
+  .am-sibling-pills__pill:hover {
+    background-color: var(--color-variant-hover-background);
+    border-color: var(--color-variant-hover-border);
+    color: var(--color-variant-hover-text);
+  }
+
+  .am-sibling-pills__pill[aria-current='page']:not(.am-sibling-pills__pill--unavailable):hover {
+    background-color: var(--color-selected-variant-hover-background);
+    border-color: var(--color-selected-variant-hover-border);
+    color: var(--color-selected-variant-hover-text);
+  }
+
+  .am-sibling-pills__pill--unavailable:hover {
+    color: rgb(var(--color-variant-text-rgb) / var(--opacity-60));
+  }
+
+  .am-sibling-pills__pill:focus-visible {
+    outline: var(--focus-outline-width) solid var(--color-foreground);
+    outline-offset: var(--focus-outline-offset);
+    border-color: var(--color-foreground);
+  }
+
+  .am-sibling-pills__strike {
+    position: absolute;
+    inset: var(--am-sibling-border-width);
+    width: calc(100% - (var(--am-sibling-border-width) * 2));
+    height: calc(100% - (var(--am-sibling-border-width) * 2));
+    pointer-events: none;
+  }
+
+  .am-sibling-pills__strike line {
+    stroke: rgb(var(--color-variant-text-rgb) / 1);
+    stroke-width: var(--am-sibling-border-width);
+  }
+
+  @media screen and (min-width: 750px) {
+    .am-sibling-pills__pill {
+      padding: var(--padding-xs) var(--padding-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .am-sibling-pills__pill {
+      transition-property: background-color, border-color, color;
+      transition-duration: var(--animation-speed);
+      transition-timing-function: var(--animation-easing);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:am_pdp.product_siblings",
+  "tag": null,
+  "settings": [
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "t:settings.products",
+      "limit": 20,
+      "info": "t:am_pdp.siblings_help"
+    },
+    {
+      "type": "text",
+      "id": "title_trim",
+      "label": "t:am_pdp.sibling_trim",
+      "info": "t:am_pdp.sibling_trim_help"
+    },
+    {
+      "type": "text",
+      "id": "option_label",
+      "label": "t:am_pdp.sibling_label",
+      "info": "t:am_pdp.sibling_label_help"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:am_pdp.product_siblings",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

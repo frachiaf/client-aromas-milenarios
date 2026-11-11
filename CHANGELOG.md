@@ -6,6 +6,70 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Modificado
+
+- Objetivo (2026-11-11): el modal de las pills queda centrado en la pantalla.
+- Archivos: `blocks/am--product-siblings.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el diálogo de productos vinculados es una tarjeta centrada en horizontal y vertical, también bajo 750 px. Ya no hereda el alto de pantalla completa ni el margen superior en cero del diálogo global. Si el contenido no entra, hace scroll dentro de la tarjeta. Los demás modales del theme no cambian.
+
+### Validación
+
+- En Chrome, con las reglas globales de `.dialog-modal` cargadas después, el diálogo abierto quedó en el centro del viewport a 758 px (`dx` 0, `dy` 0, 158×159 px) y dentro de un marco de 390 px (`dx` 0, `dy` 0, 278×175 px). La animación usada es `modalSlideInTop`. Con el metafield en `false` no se creó el diálogo.
+- `shopify theme check --path .` inspeccionó 338 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La CLI volvió a cerrarse por su aserción interna de Node después del resumen. El validador Liquid aprobó el bloque.
+
+### Reversión
+
+- Quitar las reglas de posición de `.am-sibling-pills__dialog.dialog-modal` devuelve el diálogo al comportamiento global. No hay migración ni datos administrados.
+
+### Modificado
+
+- Objetivo (2026-11-11): las pills de productos vinculados pueden abrirse en un modal cuando el producto lo pide.
+- Archivos: `blocks/am--product-siblings.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: si `custom.alt_layout_pseudo_variante` es `true`, la etiqueta subrayada abre el mismo listado en un diálogo. Si la etiqueta está vacía, el botón usa el texto de la pill del producto cargado. Si tampoco hay texto, las pills siguen en la página. Ausente o `false` no cambia el layout. El theme lee esa clave y no crea la definición ni un setting nuevo. El orden, el recorte, la pill seleccionada, el tachado y la precarga siguen igual. Los enlaces no se interceptan. No hay cambios en templates.
+
+### Validación
+
+- Liquid real con el metafield en `true` y en el texto `true` renderizó el botón subrayado, `aria-haspopup="dialog"`, `aria-controls` y un solo `dialog` con `scroll-lock` y «Cerrar diálogo». El listado quedó dentro del diálogo, en orden `10 ml`, `2 ml`, `200 g`, con la pill actual marcada y sin su URL en la precarga.
+- Con el metafield en `false` o ausente se conservó la leyenda y no se creó el diálogo. Sin etiqueta, el botón usó el texto de la pill cargada. Sin etiqueta y sin pill del producto cargado, el listado siguió visible.
+- `shopify theme check --path .` inspeccionó 338 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. El validador Liquid aprobó `blocks/am--product-siblings.liquid`.
+
+### Reversión
+
+- Quitar la rama del diálogo y la lectura de `custom.alt_layout_pseudo_variante` restaura el listado siempre visible. No hay migración ni datos administrados.
+
+### Modificado
+
+- Objetivo (2026-11-11): las pills de productos vinculados mantienen su posición al cambiar de producto.
+- Archivos: `blocks/am--product-siblings.liquid`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el listado se ordena por el texto visible de la pill, sin distinguir mayúsculas. Si dos textos coinciden, queda primero el id menor. El orden guardado en el metafield ya no cambia las posiciones. `10 ml` aparece antes que `2 ml`. La precarga usa ese mismo orden. No hay settings nuevos ni cambios en templates.
+
+### Validación
+
+- Liquid real ordenó el mismo conjunto en dos secuencias distintas y produjo las mismas pills y las mismas URLs de precarga: `10 ml`, `2 ml`, `200 g`, `mini`, `Mini`. `Mini` y `mini` quedan juntas, con el id menor primero. Un producto sin URL no ocupa un lugar.
+- `shopify theme check --path .` inspeccionó 338 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+
+### Reversión
+
+- Volver a recorrer `block.settings.products` en su orden original restaura las posiciones del metafield. No hay migración ni datos administrados.
+
+### Añadido
+
+- Objetivo (2026-11-10): la info principal de la PDP puede mostrar productos de un metafield como pills que navegan a cada producto.
+- Archivos: `blocks/am--product-siblings.liquid`, `blocks/_product-details.liquid`, `locales/*.schema.json`, `locales/*.json`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el bloque `AM Productos vinculados` se agrega desde el editor dentro de los detalles o del grupo Main information. Un setting `product_list` de hasta 20 productos se conecta a un metafield `list.product_reference`; el theme no fija la clave ni modifica templates. El texto de recorte se elimina del título y la etiqueta opcional funciona como leyenda. La pill de la URL cargada queda seleccionada. Las demás URLs se precargan y, en Chromium, pueden prerenderizarse al apuntarlas o tocarlas. El click sigue siendo una navegación real. Sin productos, el bloque no se ve en la tienda.
+
+### Validación
+
+- El schema del bloque se parseó: `product_list` con límite 20, dos settings de texto sin default y preset de producto. El recorte usa `remove` y `strip`. La pill actual compara `id` y emite `aria-current="page"`. Las reglas de precarga no incluyen esa URL.
+- Los 20 schemas y los 31 locales de storefront que ya tenían `am_pdp` recibieron las claves. Español e inglés tienen texto propio; el resto usa inglés.
+- Liquid real recortó `Vela de soja - 200 g` a `200 g`, conservó el título cuando el recorte lo dejaba vacío y no quitó una variante con otras mayúsculas. La URL cargada no entra en prefetch ni en prerender. El agotado conserva el enlace y anuncia «Agotado».
+- `shopify theme check --path .` inspeccionó 338 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+- Una página local con el CSS real comprobó, en Chrome a 980 px, el relleno, borde y texto de la pill seleccionada, el hover de la pill libre y de la seleccionada, el tachado del agotado y una sola fila. A 375 px de ancho, el padding pasa a 8 px y 20 px y las pills ocupan 3 filas. No había preview de la tienda, así que no se conectó un metafield en el Theme Editor.
+
+### Reversión
+
+- Quitar el bloque, su permiso en los detalles y las claves de locale restaura la info principal anterior. No hay migración ni cambios en templates.
+
 ### Añadido
 
 - Objetivo (2026-11-10): la imagen de un ítem del menú puede apuntar a un subítem, además del ítem principal.

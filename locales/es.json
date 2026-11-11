@@ -55,7 +55,8 @@
     "add_benefit_text": "Escribí el texto del beneficio.",
     "rating": "{{ rating }} de 5 estrellas",
     "add_review_text": "Escribí la reseña de un cliente.",
-    "add_reviews": "Agregá bloques de reseña para configurar esta sección."
+    "add_reviews": "Agregá bloques de reseña para configurar esta sección.",
+    "connect_siblings": "Conectá el metafield de productos vinculados."
   },
   "blocks": {
     "load_video": "Cargar video: {{ description }}",

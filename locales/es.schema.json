@@ -123,7 +123,13 @@
     "rating": "Puntuación",
     "verified": "Mostrar distintivo de verificado",
     "example_review": "Reseña de ejemplo: reemplazá este texto por la reseña real de un cliente antes de publicar.",
-    "example_author": "Autor de ejemplo"
+    "example_author": "Autor de ejemplo",
+    "product_siblings": "AM Productos vinculados",
+    "siblings_help": "Conectá un metafield de producto de lista de productos con el botón de fuente dinámica.",
+    "sibling_trim": "Texto a quitar del título",
+    "sibling_trim_help": "Se quita del título de cada producto antes de mostrar la pill. Distingue mayúsculas. Si el resultado queda vacío, se muestra el título completo.",
+    "sibling_label": "Etiqueta",
+    "sibling_label_help": "Nombre opcional del grupo, como el de una opción de variante. Vacío no muestra leyenda."
   },
   "names": {
     "404": "404",

@@ -21,12 +21,12 @@
             "horizontal_alignment": "flex-start",
             "vertical_alignment": "center",
             "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "center",
+            "horizontal_alignment_flex_direction_column": "flex-start",
             "vertical_alignment_flex_direction_column": "center",
             "gap": 12,
-            "width": "fill",
+            "width": "fit-content",
             "custom_width": 100,
-            "width_mobile": "fill",
+            "width_mobile": "fit-content",
             "custom_width_mobile": 100,
             "height": "fit",
             "custom_height": 100,
@@ -49,10 +49,37 @@
             "placeholder": "",
             "padding-block-start": 100,
             "padding-block-end": 100,
-            "padding-inline-start": 100,
-            "padding-inline-end": 100
+            "padding-inline-start": 49,
+            "padding-inline-end": 47
           },
           "blocks": {
+            "text_QanKpV": {
+              "type": "text",
+              "name": "t:names.text",
+              "disabled": true,
+              "settings": {
+                "text": "<h1>Navidad</h1>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h2",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "jumbo_text_8hRbpM": {
               "type": "jumbo-text",
               "name": "t:names.jumbo_text",
@@ -111,6 +138,7 @@
             }
           },
           "block_order": [
+            "text_QanKpV",
             "jumbo_text_8hRbpM",
             "text_tJBBLb",
             "button_ANe78D"
@@ -201,7 +229,6 @@
         "stack_media_on_mobile": false,
         "custom_mobile_media": true,
         "media_type_1_mobile": "image",
-        "image_1_mobile": "shopify://shop_images/Picnic_primaveral_con_velas_Jardin_del_Alma.png",
         "media_type_2_mobile": "image",
         "link": "",
         "open_in_new_tab": false,

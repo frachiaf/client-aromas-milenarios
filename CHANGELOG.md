@@ -8,6 +8,22 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Modificado
 
+- Objetivo (2026-11-11): el mensaje de desbloqueo de nivel queda debajo del botón Agregar al carrito y centrado respecto a ese botón.
+- Archivos: `blocks/add-to-cart.liquid`, `blocks/am--product-tier-unlock.liquid`, `templates/product.json`, `templates/product.velas.json`, `templates/product.splash.json`, `tests/am-tier-unlock.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: el bloque se anida en Agregar al carrito. Las tres fichas conservan el id, el texto vacío y el color `#FFC300`. El mensaje usa el ancho del botón, queda debajo y el texto está centrado. La cantidad sigue a la izquierda. Oculto, no suma alto. La barra fija y el resto de la ficha no cambian. Fuera de la PDP principal el host sigue oculto.
+
+### Validación
+
+- `node tests/am-tier-unlock.test.mjs` aprobó el cálculo, el render Liquid y el anidado de las tres plantillas. En Chrome, a 1280 px y 390 px, el centro del texto coincidió con el del botón (`centerDelta` 0), quedó debajo, dentro de su ancho, y la cantidad permaneció a la izquierda y alineada. Con el mensaje oculto, la fila midió la misma altura que sin el bloque.
+- `shopify theme check --path .` inspeccionó 341 archivos sin errores y con 30 advertencias preexistentes en 11 archivos ajenos a este cambio.
+- El validador Liquid aprobó los dos bloques y las tres plantillas.
+
+### Reversión
+
+- Devolver el bloque al grupo Product form y quitar el anidado de Agregar al carrito restaura el texto alineado a la izquierda bajo toda la fila. No hay migración de datos ni cambios de settings.
+
+### Modificado
+
 - Objetivo (2026-11-11): los subítems que apuntan a productos se despliegan como las demás tarjetas del menú, en escritorio y en el drawer, con una sola foto por ítem.
 - Archivos: `snippets/am--menu-renders-link-image.liquid`, `snippets/link-featured-image.liquid`, `snippets/mega-menu-list.liquid`, `snippets/header-drawer.liquid`, `blocks/_header-menu.liquid`, `assets/am--header-menu-images.js`, `tests/am-header-menu-images.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
 - Impacto: en `collection_images`, un hijo `product_link` abre la misma grilla que una colección y muestra su foto destacada en el recorte 16/9. Con cuatro o menos, cada uno ocupa dos columnas de la grilla ancha. El drawer usa dos columnas. Si hay una foto de subítem, reemplaza esa imagen y no queda como icono en el texto. La foto reemplazada sale del layout con `display: none !important`, porque `img { display: block }` de `base.css` la dejaba visible junto a la foto del bloque. Un listado que no es de productos ni de colecciones sigue en una sola columna, salvo que un hijo coincida con una foto de subítem. Los ítems principales, Volver y Más no cambian. No se editó `sections/header-group.json`.

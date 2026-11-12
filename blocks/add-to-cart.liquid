@@ -14,6 +14,7 @@
 %}
 
 <span
+  class="am-add-to-cart"
   {{ block.shopify_attributes }}
   style="--add-to-cart-font-case: {{ settings.button_text_case }};"
 >
@@ -26,12 +27,37 @@
     show_total_price: block.settings.show_total_price,
     data_testid: 'standalone-add-to-cart'
   %}
+  {% content_for 'blocks' %}
 </span>
+
+{% stylesheet %}
+  .product-form-buttons:has(.am-add-to-cart :is(am-tier-unlock, .am-tier-unlock)) {
+    align-items: flex-start;
+  }
+
+  .product-form-buttons > .am-add-to-cart.am-add-to-cart {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-self: flex-start;
+    min-width: fit-content;
+    max-width: 100%;
+  }
+
+  .am-add-to-cart > add-to-cart-component {
+    width: 100%;
+    min-width: fit-content;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:names.add_to_cart",
   "tag": null,
+  "blocks": [
+    {
+      "type": "am--product-tier-unlock"
+    }
+  ],
   "settings": [
     {
       "type": "checkbox",

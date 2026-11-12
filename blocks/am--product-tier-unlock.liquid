@@ -134,6 +134,20 @@
     display: block !important;
   }
 
+  .am-add-to-cart > :is(am-tier-unlock, .am-tier-unlock) {
+    width: 0;
+    min-width: 100%;
+    margin-block-start: var(--gap-xs);
+    text-align: center;
+  }
+
+  .am-add-to-cart .am-tier-unlock__message,
+  .am-add-to-cart .am-tier-unlock__help {
+    min-width: 0;
+    text-align: center;
+    overflow-wrap: break-word;
+  }
+
   .am-tier-unlock__message,
   .am-tier-unlock__help {
     margin: 0;

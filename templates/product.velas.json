@@ -321,7 +321,24 @@
                         "show_total_price": true,
                         "style_class": "button"
                       },
-                      "blocks": {}
+                      "blocks": {
+                        "am_product_tier_unlock_DmhbTk": {
+                          "type": "am--product-tier-unlock",
+                          "name": "t:am_pdp.product_tier_unlock",
+                          "settings": {
+                            "message": "",
+                            "highlight_color": "#FFC300",
+                            "inherit_color_scheme": true,
+                            "color_scheme": "",
+                            "padding-block-start": 0,
+                            "padding-block-end": 0
+                          },
+                          "blocks": {}
+                        }
+                      },
+                      "block_order": [
+                        "am_product_tier_unlock_DmhbTk"
+                      ]
                     },
                     "accelerated-checkout": {
                       "type": "accelerated-checkout",
@@ -332,19 +349,6 @@
                     }
                   },
                   "block_order": []
-                },
-                "am_product_tier_unlock_DmhbTk": {
-                  "type": "am--product-tier-unlock",
-                  "name": "t:am_pdp.product_tier_unlock",
-                  "settings": {
-                    "message": "",
-                    "highlight_color": "#ffc300",
-                    "inherit_color_scheme": true,
-                    "color_scheme": "",
-                    "padding-block-start": 0,
-                    "padding-block-end": 0
-                  },
-                  "blocks": {}
                 },
                 "accordion_WNYMan": {
                   "type": "accordion",
@@ -539,7 +543,6 @@
                 "am_product_highlights_3jRMDJ",
                 "variant_picker_KePPVa",
                 "buy_buttons_6p8c63",
-                "am_product_tier_unlock_DmhbTk",
                 "accordion_WNYMan"
               ]
             },

@@ -126,7 +126,7 @@
               "name": "t:names.button",
               "settings": {
                 "label": "Ver Colección",
-                "link": "shopify://collections/all",
+                "link": "shopify://collections/velas",
                 "open_in_new_tab": false,
                 "style_class": "button-secondary",
                 "width": "fit-content",

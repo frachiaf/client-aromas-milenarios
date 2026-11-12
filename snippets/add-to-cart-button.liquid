@@ -11,8 +11,10 @@
   @param {boolean} [show_total_price] - Show quantity total inside the main PDP only.
 {%- enddoc -%}
 {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% capture am_is_gift_service %}{% render 'am--is-gift-service-product', product: product %}{% endcapture %}
 {% assign am_is_tier_gift = am_is_tier_gift | strip %}
-{% unless am_is_tier_gift == 'true' %}
+{% assign am_is_gift_service = am_is_gift_service | strip %}
+{% unless am_is_tier_gift == 'true' or am_is_gift_service == 'true' %}
 
 
 {%- liquid

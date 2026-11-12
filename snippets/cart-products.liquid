@@ -132,8 +132,21 @@
               {% liquid
                 assign am_is_tier_gift = am_is_tier_gift | strip
                 assign is_tier_gift = false
+                assign is_gift_service_product = false
                 if am_is_tier_gift == 'true' or item.properties._am_tier_gift != nil
                   assign is_tier_gift = true
+                endif
+                if item.product.id != blank
+                  if settings.am_gift_wrapping_product != blank and item.product.id == settings.am_gift_wrapping_product.id
+                    assign is_gift_service_product = true
+                  endif
+                  if settings.am_gift_note_product != blank and item.product.id == settings.am_gift_note_product.id
+                    assign is_gift_service_product = true
+                  endif
+                endif
+                assign am_gift_line_static = false
+                if is_gift_service_product or item.properties._am_gift_service == 'wrapping' or item.properties._am_gift_service == 'note'
+                  assign am_gift_line_static = true
                 endif
                 if is_tier_gift
                   assign tier_gift_label = 'am_commerce.tier_gift' | t
@@ -159,6 +172,7 @@
                 data-parent-key="{{ item.parent_relationship.parent.key }}"
                 data-key="{{ item.key }}"
                 {% if is_tier_gift %}data-am-tier-gift="{{ item.properties._am_tier_gift | escape }}"{% endif %}
+                {% if is_gift_service_product %}data-am-gift-product{% endif %}
                 data-am-gift-service="{{ item.properties._am_gift_service | escape }}"
               >
                 <td
@@ -181,7 +195,7 @@
                         assign ratio = item.image.aspect_ratio
                       endif
                     %}
-                    {% if is_tier_gift %}
+                    {% if is_tier_gift or am_gift_line_static %}
                       <div class="cart-items__media-container" style="--ratio:{{ ratio }};">
                         {{ item.image | image_url: width: 250 | image_tag: class: 'cart-items__media-image border-style', style: border_override }}
                       </div>
@@ -208,6 +222,8 @@
                       {% if is_tier_gift %}
                         <span class="cart-items__title">{{ item.product.title | escape }}</span>
                         <span class="am-cart-tier-gift-label">{{ tier_gift_label | escape }}</span>
+                      {% elsif am_gift_line_static %}
+                        <span class="cart-items__title">{{ item.product.title | escape }}</span>
                       {% else %}
                       <a
                         href="{{ item.url }}"
@@ -367,7 +383,7 @@
                     | default: true, allow_false: true
                   %}
                   <div class="cart-items__quantity-controls">
-                    {% if is_tier_gift == false and item.properties._am_gift_service != 'wrapping' and item.properties._am_gift_service != 'note' %}
+                    {% if is_tier_gift == false and is_gift_service_product == false and item.properties._am_gift_service != 'wrapping' and item.properties._am_gift_service != 'note' %}
                     {% render 'volume-pricing-info',
                       variant: item.variant,
                       unique_id: item.index,

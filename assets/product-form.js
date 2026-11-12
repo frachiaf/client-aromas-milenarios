@@ -5,6 +5,7 @@ import { cartPerformance } from '@theme/performance';
 import { morph } from '@theme/morph';
 import '@theme/am-atc-total';
 import { hasTierGifts, isReservedProduct } from '@theme/am-tier-gifts';
+import { isBlockedGiftProduct } from '@theme/am-gift-limits';
 
 // Error message display duration - gives users time to read the message
 const ERROR_MESSAGE_DISPLAY_DURATION = 10000;
@@ -325,7 +326,7 @@ class ProductFormComponent extends Component {
 
   /** @param {() => Promise<unknown>} task */
   #runAddRequest(task) {
-    if (isReservedProduct(this.dataset.productId)) return Promise.resolve();
+    if (isReservedProduct(this.dataset.productId) || isBlockedGiftProduct(this.dataset.productId)) return Promise.resolve();
     if (!this.hasAttribute('data-am-cart-upsell') && !hasTierGifts()) return task();
     if (this.#upsellRequestPending) return Promise.resolve();
 

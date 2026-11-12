@@ -1,5 +1,7 @@
 {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: product %}{% endcapture %}
+{% capture am_is_gift_service %}{% render 'am--is-gift-service-product', product: product %}{% endcapture %}
 {% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% assign am_is_gift_service = am_is_gift_service | strip %}
 
 
 <script type="application/ld+json">
@@ -26,7 +28,7 @@
   {% content_for 'blocks' %}
 {% endcapture %}
 
-{% if section.settings.enable_sticky_add_to_cart and am_is_tier_gift != 'true' %}
+{% if section.settings.enable_sticky_add_to_cart and am_is_tier_gift != 'true' and am_is_gift_service != 'true' %}
   {% liquid
     assign current_variant = product.selected_or_first_available_variant
     # Get the initial quantity based on quantity rules

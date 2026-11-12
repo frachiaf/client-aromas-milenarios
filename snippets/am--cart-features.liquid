@@ -20,7 +20,8 @@
   {{ 'am--cart-upsell.css' | asset_url | stylesheet_tag }}
 {% endif %}
 {% render 'am--tier-gift-config', show_help: false %}
-{% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or has_gifts or has_tier_gifts or request.design_mode or settings.am_progress_1_product != blank or settings.am_progress_2_product != blank or settings.am_progress_3_product != blank %}
+{% render 'am--gift-service-config' %}
+{% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or settings.am_gift_wrapping_product != blank or settings.am_gift_note_product != blank or has_gifts or has_tier_gifts or request.design_mode or settings.am_progress_1_product != blank or settings.am_progress_2_product != blank or settings.am_progress_3_product != blank %}
 <script type="module" src="{{ 'am--cart-gifts.js' | asset_url }}" fetchpriority="low"></script>
 {% endif %}
 {% if settings.am_gift_wrapping_enabled or settings.am_gift_note_enabled or has_gifts or request.design_mode %}

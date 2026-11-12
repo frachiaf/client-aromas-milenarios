@@ -2429,6 +2429,23 @@
       },
       {
         "type": "checkbox",
+        "id": "am_gift_block_direct_add",
+        "label": "t:am_commerce.am_gift_block_direct_add",
+        "info": "t:am_commerce.am_gift_block_direct_add_info",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "am_gift_max_quantity",
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "label": "t:am_commerce.am_gift_max_quantity",
+        "info": "t:am_commerce.am_gift_max_quantity_info",
+        "default": 1
+      },
+      {
+        "type": "checkbox",
         "id": "am_gift_open",
         "label": "t:am_commerce.am_gift_open",
         "info": "t:am_commerce.cart_page_setting_info",

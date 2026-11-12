@@ -11,8 +11,10 @@
   {% content_for 'block', type: 'accelerated-checkout', id: 'accelerated-checkout', can_add_to_cart: can_add_to_cart, form_obj: form %}
 {%- enddoc -%}
 {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: closest.product %}{% endcapture %}
+{% capture am_is_gift_service %}{% render 'am--is-gift-service-product', product: closest.product %}{% endcapture %}
 {% assign am_is_tier_gift = am_is_tier_gift | strip %}
-{% unless am_is_tier_gift == 'true' %}
+{% assign am_is_gift_service = am_is_gift_service | strip %}
+{% unless am_is_tier_gift == 'true' or am_is_gift_service == 'true' %}
 
 
 {% liquid

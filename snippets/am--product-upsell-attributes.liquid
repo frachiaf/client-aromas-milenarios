@@ -10,8 +10,10 @@
   assign am_upsell_heading = product.metafields.custom.upsell_heading.value | default: ''
 -%}
 {%- capture am_upsell_gift -%}{%- render 'am--is-tier-gift-product', product: am_upsell_product -%}{%- endcapture -%}
+{%- capture am_upsell_service -%}{%- render 'am--is-gift-service-product', product: am_upsell_product -%}{%- endcapture -%}
 {%- assign am_upsell_gift = am_upsell_gift | strip -%}
-{%- if am_upsell_enabled == true and am_upsell_product != blank and am_upsell_product.available and am_upsell_product.id != product.id and am_upsell_gift != 'true' -%}
+{%- assign am_upsell_service = am_upsell_service | strip -%}
+{%- if am_upsell_enabled == true and am_upsell_product != blank and am_upsell_product.available and am_upsell_product.id != product.id and am_upsell_gift != 'true' and am_upsell_service != 'true' -%}
   data-am-upsell-url="{{ am_upsell_product.url | escape }}"
   data-am-upsell-heading="{{ am_upsell_heading | escape }}"
 {%- endif -%}

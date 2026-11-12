@@ -80,13 +80,17 @@
 
   <div class="am--video-with-carousel__content">
     {%- if section.settings.video_url != blank and section.settings.replacing_image == blank -%}
+      {%- if section.settings.eager_video -%}
+        <link rel="preload" as="video" href="{{ section.settings.video_url | escape }}" type="video/mp4" fetchpriority="high">
+      {%- endif -%}
       <div class="am--video-with-carousel__media">
         <div class="am--video-with-carousel__media-frame">
           <video
             class="am--video-with-carousel__video"
             data-am-video
             playsinline
-            preload="metadata"
+            preload="{% if section.settings.eager_video %}auto{% else %}metadata{% endif %}"
+            {% if section.settings.eager_video %}fetchpriority="high"{% endif %}
             {% if section.settings.video_loop %}loop{% endif %}
             {% if section.settings.video_poster != blank %}poster="{{ section.settings.video_poster | image_url: width: 1600 }}"{% endif %}
           >
@@ -249,6 +253,7 @@
     { "type": "image_picker", "id": "video_poster", "label": "Imagen de portada del video" },
     { "type": "text", "id": "video_url", "label": "URL del video", "info": "URL directa a un archivo de video MP4." },
     { "type": "checkbox", "id": "video_loop", "label": "Repetir video", "default": true },
+    { "type": "checkbox", "id": "eager_video", "label": "Cargar el video al entrar a la página", "info": "Empieza la descarga del MP4 apenas se lee la sección, sin esperar a que entre en pantalla.", "default": false },
     { "type": "header", "content": "Reemplazar video por imagen" },
     { "type": "image_picker", "id": "replacing_image", "label": "Imagen de reemplazo", "info": "Al seleccionarla, esta imagen reemplaza el video." },
     { "type": "url", "id": "replacing_image_url", "label": "Enlace de la imagen" },

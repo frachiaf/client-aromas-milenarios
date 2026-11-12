@@ -10,8 +10,10 @@
     {%- paginate collection.products by 50 -%}
       {%- for upsell_product in collection.products limit: 50 -%}
         {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: upsell_product %}{% endcapture %}
+        {% capture am_is_gift_service %}{% render 'am--is-gift-service-product', product: upsell_product %}{% endcapture %}
         {% assign am_is_tier_gift = am_is_tier_gift | strip %}
-        {% if am_is_tier_gift == 'true' %}{% continue %}{% endif %}
+        {% assign am_is_gift_service = am_is_gift_service | strip %}
+        {% if am_is_tier_gift == 'true' or am_is_gift_service == 'true' %}{% continue %}{% endif %}
         {%- if upsell_product.available == false or cart_product_ids contains upsell_product.id or upsell_product.id == wrapping_product_id or upsell_product.id == note_product_id -%}
           {%- continue -%}
         {%- endif -%}

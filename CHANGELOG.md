@@ -8,6 +8,43 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Modificado
 
+- Objetivo (2026-11-12): la foto y el título de la nota y el envoltorio dejan de abrir su ficha desde el carrito.
+- Archivos: `snippets/cart-products.liquid`, `tests/am-gift-limits.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: la línea queda sin enlace cuando es el producto elegido de nota o envoltorio, o cuando trae `_am_gift_service` en `note` o `wrapping`. La foto usa el contenedor sin enlace y el título queda en texto. La papelera, el mensaje y el resto de la línea no cambian. Drawer y página comparten este listado.
+
+### Añadido
+
+- Objetivo (2026-11-12): AM Video + Carrusel puede empezar a descargar el MP4 principal al leer la página.
+- Archivos: `sections/am--video-with-carousel.liquid`, `tests/am-gift-limits.test.mjs` y `CHANGELOG.md`.
+- Impacto: el checkbox «Cargar el video al entrar a la página» nace apagado y conserva `preload="metadata"`. Encendido, el video usa `preload="auto"` y `fetchpriority="high"`, y la sección incluye un preload del mismo MP4. Los videos de las diapositivas y la imagen de reemplazo no cambian. El schema ya superaba el máximo recomendado de settings; este control suma una advertencia más de Theme Check.
+
+### Validación
+
+- `node tests/am-gift-limits.test.mjs` aprobó 21 comprobaciones. La línea de nota no tiene enlace de foto ni de título; una línea normal sí. El preload del MP4 aparece solo con el checkbox activo.
+- `shopify theme check --path .` inspeccionó 343 archivos sin errores y con 31 advertencias. La nueva es `AssetPreload` en el enlace de precarga del video, pedido por el comportamiento de descarga al leer el HTML. `ExcessiveSettingsCount` de la sección pasa a 51 settings.
+
+### Reversión
+
+- Devolver el enlace de foto y título en `cart-products` restaura la navegación a la ficha. Quitar `eager_video` y el preload deja el MP4 en `preload="metadata"`. No hay migración de datos.
+
+### Añadido
+
+- Objetivo (2026-11-12): la nota personalizada y el envoltorio de regalo pueden dejar de comprarse desde la tienda, y cada uno tiene un tope de cantidad en el carrito.
+- Archivos: `config/settings_schema.json`, `snippets/am--is-gift-service-product.liquid`, `snippets/am--gift-service-config.liquid`, `assets/am--gift-limits.js`, los formularios de compra, el listado del carrito, `assets/am--cart-gifts.js`, `assets/product-form.js`, `assets/quick-order-list.js`, `locales/*.json`, `locales/*.schema.json`, `tests/am-gift-limits.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
+- Impacto: en Servicios de regalo, el bloqueo nace desactivado y el tope nace en 1, hasta 20. Cada producto usa ese tope por separado. Con el bloqueo activo, la ficha muestra un texto y desaparecen el alta de la tarjeta, Quick Buy, la barra fija, hotspots, el upsell y el pedido rápido. El checkbox del carrito sigue agregando una unidad. Las líneas de esos productos no tienen selector. Si hay más unidades, el carrito baja primero las compras sueltas y después la del servicio. No se editó `config/settings_data.json`. El checkout que evita el theme no impone el tope.
+
+### Validación
+
+- `node tests/am-gift-limits.test.mjs` aprobó 17 comprobaciones: el tope por producto, la prioridad de las compras sueltas, el mensaje de la ficha y la ausencia de Quick Add.
+- `node tests/am-tier-gifts.test.mjs` aprobó 17 comprobaciones. El render Liquid de desbloqueo de nivel también pasó.
+- `shopify theme check --path .` inspeccionó 343 archivos sin errores y con 30 advertencias preexistentes en 11 archivos. La CLI volvió a cerrarse por su aserción interna de Node después del resumen.
+
+### Reversión
+
+- Quitar los settings, el snippet, el módulo y las exclusiones de compra restaura el alta directa. El tope vuelve a forzar una unidad solo en la línea marcada como servicio. No hay migración de datos.
+
+### Modificado
+
 - Objetivo (2026-11-11): el mensaje de desbloqueo de nivel queda debajo del botón Agregar al carrito y centrado respecto a ese botón.
 - Archivos: `blocks/add-to-cart.liquid`, `blocks/am--product-tier-unlock.liquid`, `templates/product.json`, `templates/product.velas.json`, `templates/product.splash.json`, `tests/am-tier-unlock.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
 - Impacto: el bloque se anida en Agregar al carrito. Las tres fichas conservan el id, el texto vacío y el color `#FFC300`. El mensaje usa el ancho del botón, queda debajo y el texto está centrado. La cantidad sigue a la izquierda. Oculto, no suma alto. La barra fija y el resto de la ficha no cambian. Fuera de la PDP principal el host sigue oculto.

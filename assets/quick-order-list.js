@@ -1,4 +1,5 @@
 import { hasTierGifts, isReservedProduct } from '@theme/am-tier-gifts';
+import { isBlockedGiftProduct } from '@theme/am-gift-limits';
 import { runTierCartMutation } from '@theme/am-cart-gifts';
 import { Component } from '@theme/component';
 import { CartAddEvent, QuantitySelectorUpdateEvent, ThemeEvents } from '@theme/events';
@@ -209,7 +210,7 @@ class QuickOrderListComponent extends Component {
    */
   onRemoveAll(event) {
     event.preventDefault();
-    if (isReservedProduct(this.dataset.productId)) return;
+    if (isReservedProduct(this.dataset.productId) || isBlockedGiftProduct(this.dataset.productId)) return;
     return hasTierGifts() ? runTierCartMutation(() => this.#removeAll(event)) : this.#removeAll(event);
   }
 
@@ -286,7 +287,7 @@ class QuickOrderListComponent extends Component {
    * @param {CustomEvent} event - The quantity update event
    */
   #handleQuantityUpdate(event) {
-    if (isReservedProduct(this.dataset.productId)) return;
+    if (isReservedProduct(this.dataset.productId) || isBlockedGiftProduct(this.dataset.productId)) return;
     return hasTierGifts() ? runTierCartMutation(() => this.#performQuantityUpdate(event)) : this.#performQuantityUpdate(event);
   }
 

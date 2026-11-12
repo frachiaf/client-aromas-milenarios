@@ -1,0 +1,24 @@
+{%- doc -%}
+  Provides the gift-service quantity cap and the products blocked from direct purchase.
+{%- enddoc -%}
+{%- liquid
+  assign max_quantity = settings.am_gift_max_quantity | default: 1
+  if max_quantity < 1
+    assign max_quantity = 1
+  endif
+-%}
+<script type="application/json" data-am-gift-service-config>
+  {
+    "max": {{ max_quantity | json }},
+    "blockDirect": {{ settings.am_gift_block_direct_add | json }},
+    "products": [
+      {%- if settings.am_gift_wrapping_product != blank -%}
+        { "id": {{ settings.am_gift_wrapping_product.id | json }}, "role": "wrapping" }
+      {%- endif -%}
+      {%- if settings.am_gift_wrapping_product != blank and settings.am_gift_note_product != blank -%},{%- endif -%}
+      {%- if settings.am_gift_note_product != blank -%}
+        { "id": {{ settings.am_gift_note_product.id | json }}, "role": "note" }
+      {%- endif -%}
+    ]
+  }
+</script>

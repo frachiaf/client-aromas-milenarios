@@ -1,6 +1,8 @@
 {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: closest.product %}{% endcapture %}
+{% capture am_is_gift_service %}{% render 'am--is-gift-service-product', product: closest.product %}{% endcapture %}
 {% liquid
   assign am_is_tier_gift = am_is_tier_gift | strip
+  assign am_is_gift_service = am_is_gift_service | strip
   assign product = closest.product
   assign variant = product.selected_or_first_available_variant
   assign message_template = block.settings.message | strip
@@ -57,7 +59,7 @@
   endif
 
   assign show_host = false
-  if tiers_valid and currency_ok and am_is_tier_gift != 'true' and variant != blank
+  if tiers_valid and currency_ok and am_is_tier_gift != 'true' and am_is_gift_service != 'true' and variant != blank
     assign show_host = true
   endif
 

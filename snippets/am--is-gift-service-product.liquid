@@ -1,0 +1,16 @@
+{%- doc -%}
+  Outputs true when direct purchase is blocked and the product is the gift note or wrapping product.
+  @param {product} product - Product to classify independently of its template.
+{%- enddoc -%}
+{%- liquid
+  assign blocked = false
+  if settings.am_gift_block_direct_add and product != blank
+    if settings.am_gift_wrapping_product != blank and settings.am_gift_wrapping_product.id == product.id
+      assign blocked = true
+    endif
+    if settings.am_gift_note_product != blank and settings.am_gift_note_product.id == product.id
+      assign blocked = true
+    endif
+  endif
+  echo blocked
+-%}

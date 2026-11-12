@@ -15,6 +15,7 @@
     "tier_gift_free": "FREE",
     "tier_gift": "Gift",
     "tier_gift_only": "This product is added automatically as a gift when a cart milestone is reached.",
+    "gift_service_only": "This product is added from the cart gift options.",
     "tier_gift_unavailable": "One of the gifts could not be added. You can continue with your purchase.",
     "tier_gift_help": "Check the gift for tier {{ tier }}: it requires one available free variant, a minimum and increment of one, and a product different from gift services.",
     "message_more": "Show more",

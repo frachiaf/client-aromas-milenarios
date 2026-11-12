@@ -1,5 +1,7 @@
 {% capture am_is_tier_gift %}{% render 'am--is-tier-gift-product', product: closest.product %}{% endcapture %}
+{% capture am_is_gift_service %}{% render 'am--is-gift-service-product', product: closest.product %}{% endcapture %}
 {% assign am_is_tier_gift = am_is_tier_gift | strip %}
+{% assign am_is_gift_service = am_is_gift_service | strip %}
 
 {% liquid
   assign block_settings = block.settings
@@ -41,7 +43,7 @@
   class="buy-buttons-block buy-buttons-block--{{ block.id }}"
   {{ block.shopify_attributes }}
 >
-  {%- if product != blank and am_is_tier_gift != 'true' -%}
+  {%- if product != blank and am_is_tier_gift != 'true' and am_is_gift_service != 'true' -%}
     {%- assign product_form_id = 'BuyButtons-ProductForm-' | append: section.id -%}
     <product-form-component
       data-section-id="{{ section.id }}"
@@ -241,6 +243,8 @@
     </product-form-component>
   {%- elsif am_is_tier_gift == 'true' -%}
     <p>{{ 'am_commerce.tier_gift_only' | t }}</p>
+  {%- elsif am_is_gift_service == 'true' -%}
+    <p>{{ 'am_commerce.gift_service_only' | t }}</p>
   {%- else -%}
     <div class="product-form-buttons">
       <button

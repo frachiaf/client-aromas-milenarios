@@ -3,6 +3,7 @@ import { fetchConfig } from '@theme/utilities';
 import { sectionRenderer } from '@theme/section-renderer';
 import '@theme/am-cart-message';
 import { hasTierGifts, tierGiftConfig, isTierGift, isNormalCartProduct, reconcileTierGifts } from '@theme/am-tier-gifts';
+import { giftQuantityCorrections, giftServiceConfig } from '@theme/am-gift-limits';
 
 let mutationQueue = Promise.resolve();
 let pending = 0;
@@ -117,16 +118,7 @@ async function publish(cart, sections) {
 }
 
 function corrections(cart) {
-  const updates = {};
-  const hasProducts = cart.items.some((item) => isNormalCartProduct(item));
-  const found = new Set();
-  for (const item of cart.items.filter(service)) {
-    const role = item.properties._am_gift_service;
-    if (!hasProducts || found.has(role)) updates[item.key] = 0;
-    else if (item.quantity !== 1) updates[item.key] = 1;
-    found.add(role);
-  }
-  return updates;
+  return giftQuantityCorrections(cart, giftServiceConfig(), cart.items.some((item) => isNormalCartProduct(item)));
 }
 
 async function normalizeCart(cart) {
@@ -227,7 +219,7 @@ export function removeGiftCartLine(owner, line) {
 
 function scheduleReconciliation() {
   if (reconciliationScheduled) return;
-  if (!hasTierGifts() && !refreshRequested && !document.documentElement.hasAttribute('data-am-cart-unverified') && !document.querySelector('[data-am-gift-service="wrapping"], [data-am-gift-service="note"]')) return;
+  if (!hasTierGifts() && !refreshRequested && !document.documentElement.hasAttribute('data-am-cart-unverified') && !document.querySelector('[data-am-gift-service="wrapping"], [data-am-gift-service="note"], [data-am-gift-product]')) return;
   reconciliationScheduled = true;
   void runCartMutation(async () => {
     const refresh = refreshRequested;

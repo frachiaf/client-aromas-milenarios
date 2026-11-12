@@ -847,7 +847,7 @@
           "type": "slide",
           "settings": {
             "media_type": "video",
-            "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (3).mp4",
+            "video": "shopify://files/videos/Sin título (900 x 1600 px) (1).mp4",
             "title": "",
             "link_title": "",
             "url": "#"
@@ -855,6 +855,7 @@
         },
         "slide_pjcJQJ": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.47 PM.mp4",
@@ -865,6 +866,7 @@
         },
         "slide_igJyin": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.45 PM.mp4",
@@ -875,6 +877,7 @@
         },
         "slide_H9pxQe": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (5).mp4",
@@ -885,6 +888,7 @@
         },
         "slide_A3TFMD": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (2).mp4",
@@ -895,6 +899,7 @@
         },
         "slide_FmbWPG": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (1).mp4",
@@ -905,6 +910,7 @@
         },
         "slide_cbPjCC": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM.mp4",
@@ -915,6 +921,7 @@
         },
         "slide_zaBGWV": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "media_type": "video",
             "video": "shopify://files/videos/WhatsApp Video 2026-08-22 at 8.03.44 PM (4).mp4",
@@ -944,7 +951,7 @@
         "background_image": "shopify://shop_images/Diseno_sin_titulo_23.png",
         "background_image_mobile": "shopify://shop_images/Diseno_sin_titulo_25.png",
         "background_image_on_content": true,
-        "background_color": "#eaeaea",
+        "background_color": "#E6E6E6",
         "video_url": "",
         "video_loop": true,
         "replacing_image": "shopify://shop_images/Sin_titulo_300_x_533_px_9.svg",

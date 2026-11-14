@@ -1217,7 +1217,7 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "section_width": "full-width",
+        "section_width": "page-width",
         "section_height": "auto",
         "animate_hotspots": true,
         "hide_hotspots_mobile": false,

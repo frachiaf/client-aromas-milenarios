@@ -71,6 +71,8 @@
     "am_gift_note_enabled": true,
     "am_gift_note_product": "nota-personalizada",
     "am_progress_enabled": true,
+    "am_progress_check_complete_color": "#058503",
+    "am_progress_check_complete_mark": "#FFFFFF",
     "am_progress_gift_free_text": "GRATIS",
     "am_progress_gift_only_free": true,
     "am_progress_1_enabled": true,
@@ -88,7 +90,7 @@
     "color_schemes": {
       "scheme-1": {
         "settings": {
-          "background": "#E6E6E6",
+          "background": "#e6e6e6",
           "foreground_heading": "#ad8995",
           "foreground": "#ad8995",
           "primary": "#ad8995",

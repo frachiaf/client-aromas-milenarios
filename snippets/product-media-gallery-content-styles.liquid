@@ -6,6 +6,15 @@
 {%- enddoc -%}
 
 {% stylesheet %}
+  media-gallery.media-gallery--image-darken :is(.product-media, .slideshow-controls__thumbnail, .dialog-thumbnails-list__thumbnail) {
+    background-color: var(--color-background);
+    isolation: isolate;
+  }
+
+  media-gallery.media-gallery--image-darken :is(.product-media, .slideshow-controls__thumbnail, .dialog-thumbnails-list__thumbnail) > img {
+    mix-blend-mode: darken;
+  }
+
   media-gallery:where(.media-gallery--grid) .media-gallery__grid {
     display: none;
   }

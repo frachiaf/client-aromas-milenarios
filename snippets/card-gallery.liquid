@@ -71,7 +71,7 @@
 
 <div
   ref="cardGallery"
-  class="card-gallery card-gallery-{{ block.id }} spacing-style border-style{% if has_badges %} card-gallery--badge-{{ badge_position }}{% endif %}"
+  class="card-gallery card-gallery-{{ block.id }} spacing-style border-style{% if has_badges %} card-gallery--badge-{{ badge_position }}{% endif %}{% if settings.am_card_images_darken %} card-gallery--image-darken{% endif %}"
   style="
     {% render 'border-override', settings: block_settings %}
     {% render 'spacing-style', settings: block_settings %}
@@ -215,6 +215,15 @@
 </div>
 
 {% stylesheet %}
+  .card-gallery--image-darken .product-media {
+    background-color: var(--color-background);
+    isolation: isolate;
+  }
+
+  .card-gallery--image-darken .product-media > img {
+    mix-blend-mode: darken;
+  }
+
   .card-gallery {
     overflow: hidden;
     container-type: inline-size; /* Make card-gallery a container */

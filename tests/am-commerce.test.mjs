@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { inflateSync } from 'node:zlib';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -202,9 +203,8 @@ async function productGallery(id, variantId = id) {
   const p = { ...original, media, images: media.map(m => ({ ...m.preview_image, 'attached_to_variant?': false })),
     selected_or_first_available_variant: { ...original.selected_or_first_available_variant, id: variantId, featured_media: media[variantId === 103 ? 1 : 0] } };
   const block = { id: 'fixture-gallery', shopify_attributes: '', settings: { ...defaults('blocks/_product-media-gallery.liquid'),
-    media_presentation: current.get('presentation') || 'grid', slideshow_controls_style: 'dots', slideshow_mobile_controls_style: 'hint', zoom: true } };
-  return render('snippets/product-media-gallery-content.liquid', context({ closest: { product: p }, product: p, block,
-    block_settings: block.settings, block_id: block.id, block_shopify_attributes: '', media_presentation: block.settings.media_presentation,
+    media_presentation: current.get('presentation') || 'grid', slideshow_controls_style: current.has('thumbnails') ? 'thumbnails' : 'dots', slideshow_mobile_controls_style: current.has('thumbnails') ? 'thumbnails' : 'hint', zoom: true } };
+  return render('blocks/_product-media-gallery.liquid', context({ closest: { product: p }, product: p, block,
     section: { id: 'fixture-product', settings: { gap: 24, equal_columns: true } } }));
 }
 async function productPage(id, variantId = id) {
@@ -287,7 +287,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === '/gallery-video.webm') { res.setHeader('Content-Type', 'video/webm'); return res.end(galleryVideo); }
     if (url.pathname === '/model-viewer.css') { res.setHeader('Content-Type', 'text/css'); return res.end(''); }
-    if (url.pathname.endsWith('.svg')) { if (url.pathname.startsWith('/gallery-') && url.searchParams.get('width') === '144') galleryImageRequests.push(url.toString()); res.setHeader('Content-Type', 'image/svg+xml'); return res.end(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="600" height="600" fill="${url.pathname.includes('hover') ? '#c99' : '#dda'}"/><circle cx="300" cy="300" r="170" fill="#b86"/></svg>`); }
+    if (url.pathname.endsWith('.svg')) { if (url.pathname.startsWith('/gallery-') && url.searchParams.get('width') === '144') galleryImageRequests.push(url.toString()); res.setHeader('Content-Type', 'image/svg+xml'); return res.end(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="600" height="600" fill="${url.searchParams.has('transparent') ? 'none' : url.searchParams.has('white') ? '#fff' : url.pathname.includes('hover') ? '#c99' : '#dda'}"/><circle cx="300" cy="300" r="170" fill="#b86"/></svg>`); }
     res.writeHead(404); res.end();
   } catch (error) { console.error(error.stack); res.writeHead(500); res.end(error.stack); }
   finally { if (mutationStarted) activeCartRequests--; }
@@ -729,7 +729,70 @@ try {
     await check('first add never reopens a closed empty drawer', `!document.querySelector('.cart-drawer__dialog').open && !!document.querySelector('#checkout')`);
     Object.assign(settings, savedSettings); items = []; discount = 0;
   };
+  const imageBlendChecks = async () => {
+    const saved = { ...settings }, p = products.get(1), originalMedia = p.media, originalFeatured = p.featured_media;
+    const state = (selector, enabled, background) => `(()=>{const root=document.querySelector(${JSON.stringify(selector)}),images=[...root.querySelectorAll('.product-media > img, .slideshow-controls__thumbnail > img, .dialog-thumbnails-list__thumbnail > img')];return images.length>0 && images.every(img=>{const parent=getComputedStyle(img.parentElement);return getComputedStyle(img).mixBlendMode===${JSON.stringify(enabled ? 'darken' : 'normal')} && (!${enabled} || (parent.backgroundColor===${JSON.stringify(background)} && parent.isolation==='isolate'))})})()`;
+    const sampleBackground = async (selector, transparent = false) => {
+      const point = await evaluate(`(async()=>{const img=document.querySelector(${JSON.stringify(selector)});img.removeAttribute('srcset');img.src='/image.svg?${transparent ? 'transparent' : 'white'}';await img.decode();img.scrollIntoView({block:'center',inline:'center',behavior:'instant'});const r=img.getBoundingClientRect();return {x:Math.floor(r.left+r.width/2+scrollX),y:Math.floor(r.top+r.height*.1+scrollY)}})()`);
+      const shot = await cdp('Page.captureScreenshot', { format: 'png', clip: { ...point, width: 1, height: 1, scale: 1 } });
+      const png = Buffer.from(shot.data, 'base64'), chunks = [];
+      assert.ok([2, 6].includes(png[25]), 'Screenshot has RGB channels');
+      for (let pos = 8; pos < png.length;) { const size = png.readUInt32BE(pos); if (png.toString('ascii', pos + 4, pos + 8) === 'IDAT') chunks.push(png.subarray(pos + 8, pos + 8 + size)); pos += size + 12; }
+      return [...inflateSync(Buffer.concat(chunks)).subarray(1, 4)];
+    };
+    try {
+      p.media = [...p.media, { ...p.media[0], id: 12, preview_image: { ...image, src: '/hover-image.svg' } }]; p.featured_media = p.media[0];
+      settings.product_card_carousel = true; settings.show_second_image_on_hover = true; settings.am_quick_buy_show_thumbnails = true;
+      for (const width of [390, 1440]) for (const cards of [false, true]) for (const pdp of [false, true]) {
+        settings.am_card_images_darken = cards; settings.am_pdp_images_darken = pdp;
+        const label = `${width} / cards ${cards} / PDP ${pdp}`;
+        await viewport(width); await load('gallery&presentation=carousel&thumbnails');
+        await wait(`customElements.get('zoom-dialog') && document.querySelector('#fixture-pdp media-gallery')`);
+        await evaluate(`document.querySelectorAll('.product-card__content').forEach(e=>e.style.setProperty('--color-background','rgb(210, 180, 160)'));document.querySelector('#fixture-pdp').style.setProperty('--color-background','rgb(170, 200, 220)')`);
+        await pause(350);
+        await check('card blend includes secondary images and both card shapes ' + label, state('.fixture-cards', cards, 'rgb(210, 180, 160)'));
+        await check('PDP main images, thumbnails and zoom use their own setting ' + label, state('#fixture-pdp', pdp, 'rgb(170, 200, 220)'));
+        await check('zoom thumbnails contain images instead of escaped markup ' + label, `document.querySelectorAll('#fixture-pdp .dialog-thumbnails-list__thumbnail img').length===3`);
+        assert.deepEqual(await sampleBackground('#product-card-original-test .product-media > img'), cards ? [210, 180, 160] : [255, 255, 255], 'Painted card white background / ' + label); checks++;
+        await check('non-card product images retain their normal blend ' + label, `[...document.querySelectorAll('product-hotspots img, .cart-items img')].every(img=>getComputedStyle(img).mixBlendMode==='normal')`);
+        await evaluate(`document.querySelector('#fixture-pdp zoom-dialog').open(0,new PointerEvent('click'))`);
+        await wait(`document.querySelector('#fixture-pdp zoom-dialog dialog').open`);
+        await check('open zoom retains the scheme blend ' + label, state('#fixture-pdp zoom-dialog', pdp, 'rgb(170, 200, 220)'));
+        await evaluate(`document.querySelector('#fixture-pdp zoom-dialog').close()`);
+        await evaluate(`document.querySelector('quick-add-component').open('/products/test-3')`);
+        await wait(`document.querySelector('#quick-add-dialog dialog').open`);
+        if (width >= 750) {
+          await wait(`document.querySelector('#quick-add-modal-content media-gallery[data-am-quick-buy-gallery]')`);
+          await evaluate(`Promise.all(document.querySelector('#quick-add-dialog dialog').getAnimations().map(a=>a.finished.catch(()=>{})));document.querySelector('#quick-add-dialog dialog').style.setProperty('--color-background','rgb(180, 190, 200)')`);
+          await pause(350);
+          await check('Quick Buy adopts the PDP blend and its modal scheme ' + label, state('#quick-add-modal-content media-gallery', pdp, 'rgb(180, 190, 200)'));
+          await evaluate(`(async()=>{const html=new DOMParser().parseFromString(await(await fetch('/products/test-3?variant=103')).text(),'text/html');const {VariantUpdateEvent}=await import('@theme/events');document.querySelector('#quick-add-modal-content product-form-component').dispatchEvent(new VariantUpdateEvent({id:'103',available:true},'fixture-product',{html,productId:'3'}))})()`);
+          await wait(`document.querySelector('#quick-add-modal-content media-gallery slideshow-slide .product-media').dataset.mediaId==='301'`);
+          await check('variant replacement preserves image blending and thumbnails ' + label, state('#quick-add-modal-content media-gallery', pdp, 'rgb(180, 190, 200)'));
+          await evaluate(`document.querySelector('#quick-add-modal-content .slideshow-controls__thumbnail').focus()`);
+          await check('blended thumbnails retain keyboard focus ' + label, `document.activeElement.matches('#quick-add-modal-content .slideshow-controls__thumbnail')`);
+        } else {
+          await check('mobile Quick Buy preserves its compact layout ' + label, `!document.querySelector('#quick-add-modal-content media-gallery[data-am-quick-buy-gallery]') && !!document.querySelector('#quick-add-modal-content .product-header')`);
+        }
+        await evaluate(`document.getElementById('quick-add-dialog').closeDialog()`);
+        await wait(`!document.querySelector('#quick-add-dialog dialog').open`);
+      }
+      await evaluate(`document.querySelectorAll('.product-card__content').forEach(e=>e.style.setProperty('--color-background','rgb(40, 50, 60)'));document.querySelector('#fixture-pdp').style.setProperty('--color-background','rgb(60, 40, 30)')`);
+      await pause(350);
+      await check('dark schemes update card and PDP image backgrounds independently', `${state('.fixture-cards', true, 'rgb(40, 50, 60)')} && ${state('#fixture-pdp', true, 'rgb(60, 40, 30)')}`);
+      assert.deepEqual(await sampleBackground('#product-card-original-test .product-media > img'), [40, 50, 60], 'White image pixels blend with a dark scheme'); checks++;
+      assert.deepEqual(await sampleBackground('#product-card-original-test .product-media > img', true), [40, 50, 60], 'Transparent image pixels retain the scheme background'); checks++;
+      settings.am_pdp_images_darken = true;
+      await load('gallery&mixed_media'); await evaluate(`document.querySelector('quick-add-component').open('/products/test-3')`);
+      await wait(`document.querySelector('#quick-add-dialog dialog').open && document.querySelector('#quick-add-modal-content product-model')`);
+      await check('model surfaces and thumbnail icons are not blended', `[...document.querySelectorAll('#quick-add-modal-content product-model, #quick-add-modal-content .slideshow-controls__thumbnail-badge svg')].every(e=>getComputedStyle(e).mixBlendMode==='normal')`);
+      await evaluate(`document.getElementById('quick-add-dialog').closeDialog()`);
+    } finally {
+      Object.assign(settings, saved); p.media = originalMedia; p.featured_media = originalFeatured;
+    }
+  };
   const quickBuyGalleryChecks = async () => {
+    await imageBlendChecks();
     const saved = { ...settings }, previousItems = items;
     settings.am_drawer_upsell_enabled = false;
     if (!process.env.AM_QA_MEDIA_ONLY) for (const width of [749, 750, 1024, 1440]) {
@@ -946,6 +1009,8 @@ try {
     await check('page cart mode retains global gift guards without a cart section', '(async()=>{const m=await import("@theme/am-tier-gifts");return m.hasTierGifts() && m.isReservedProduct(20)})()');
     Object.assign(settings,saved); for(const slot of [1,2,3])delete settings['am_progress_'+slot+'_product'];items=previousItems;discount=0;
   };
+  if (process.env.AM_QA_BLEND_ONLY) await imageBlendChecks();
+  if (!process.env.AM_QA_BLEND_ONLY) {
   if (process.env.AM_QA_NUMBERED_ONLY || ![process.env.AM_QA_DETAILS_ONLY,process.env.AM_QA_HOTSPOTS_ONLY,process.env.AM_QA_DENSITY_ONLY,process.env.AM_QA_UPSELL_ONLY,process.env.AM_QA_EMPTY_ONLY,process.env.AM_QA_GALLERY_ONLY,process.env.AM_QA_PRODUCT_UPSELL_ONLY,process.env.AM_QA_TIERS_ONLY].some(Boolean)) await numberedSlideshowChecks();
   if (!process.env.AM_QA_NUMBERED_ONLY) {
   if (![process.env.AM_QA_DETAILS_ONLY,process.env.AM_QA_HOTSPOTS_ONLY,process.env.AM_QA_DENSITY_ONLY,process.env.AM_QA_UPSELL_ONLY,process.env.AM_QA_EMPTY_ONLY,process.env.AM_QA_GALLERY_ONLY,process.env.AM_QA_PRODUCT_UPSELL_ONLY].some(Boolean)) await tierGiftChecks();
@@ -1411,6 +1476,7 @@ try {
     }
   }
   if (process.env.AM_QA_PRODUCT_UPSELL_ONLY || ![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY, process.env.AM_QA_GALLERY_ONLY, process.env.AM_QA_TIERS_ONLY].some(Boolean)) await productUpsellChecks();
+  }
   }
   assert.deepEqual(errors, [], 'No browser exceptions'); checks++;
   fs.writeFileSync(path.join(output, 'density.json'), JSON.stringify(metrics, null, 2));

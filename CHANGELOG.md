@@ -625,6 +625,30 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
 
+## 2026-11-18 — Mezcla de imágenes con el fondo del esquema
+
+### Añadido
+
+- Objetivo: integrar las fotos de producto con el fondo de su esquema mediante dos controles globales independientes, uno para tarjetas y otro para PDP y Quick Buy.
+- Archivos: `config/settings_schema.json`, los 20 `locales/*.schema.json`, `snippets/card-gallery.liquid`, `blocks/_product-media-gallery.liquid`, `snippets/product-media-gallery-content.liquid`, `snippets/product-media-gallery-content-styles.liquid`, `tests/am-commerce.test.mjs`, `docs/theme-architecture.md` y este changelog.
+- Impacto: Ajustes del tema > Imágenes de producto incluye «Mezclar imágenes de tarjetas con el fondo» y «Mezclar imágenes de PDP y Quick Buy con el fondo», ambos apagados inicialmente. Cada ajuste aplica `mix-blend-mode: darken` al `<img>` y el fondo `var(--color-background)` a su padre, con aislamiento local. El primero cubre imágenes principales/secundarias y carruseles de tarjetas Original/Circular; el segundo incluye fotos, miniaturas, zoom y las galerías de Quick Buy, también al cambiar variantes. El modo compacto móvil de Quick Buy se conserva. Las vistas previas de video/modelo sí se mezclan; los medios reproducidos, controles, badges y las demás imágenes del sitio mantienen sus estilos. No se agrega JavaScript ni se editan templates o datos administrados.
+- Contrato: `product-media-gallery-content` acepta `blend_images` como booleano opcional, falso por omisión; el bloque de galería de PDP lo pasa explícitamente. Los demás consumidores conservan el comportamiento previo.
+
+### Corregido
+
+- Las miniaturas del zoom entregan el HTML de `image_tag` directamente, en lugar de mostrarlo como texto escapado, conservando el tratamiento nativo de sus atributos.
+
+### Validación
+
+- El validador de Shopify aprobó los 25 archivos de theme modificados. El schema global y los 20 locales parsean correctamente; ambos controles tienen default `false` y sus cinco traducciones están presentes en cada locale de schema.
+- `AM_QA_GALLERY_ONLY=1` en `node tests/am-commerce.test.mjs` aprobó 139 comprobaciones de mezcla y regresión de galerías: imágenes y miniaturas, zoom, variantes, teclado, desktop/mobile, medios mixtos y Quick Buy desde tarjetas, hotspots y upsell. `AM_QA_BLEND_ONLY=1` aprobó las 69 comprobaciones finales, incluidas las adicionales de fondo oscuro y transparencia. No hubo escrituras de carrito ni excepciones de navegador.
+- Las cuatro combinaciones de controles se verificaron a 390 y 1440 px. Las capturas de un píxel confirmaron blanco sin mezcla al desactivar y el RGB exacto del esquema al activar, también con fondos oscuros e imágenes transparentes. La vista local de la tarjeta se revisó en Chromium.
+- `shopify.cmd theme check --path . --output json` terminó sin errores y con las 31 advertencias existentes. `node --check tests/am-commerce.test.mjs` y `git diff --check` aprobaron. No se publicó el theme ni se guardaron cambios en Theme Editor.
+
+### Reversión
+
+- Desactivar cada checkbox recupera el aspecto anterior de sus imágenes. Retirar los controles, las clases y el parámetro opcional elimina la función sin migración de datos; la corrección de miniaturas del zoom es independiente.
+
 ## 2026-11-18 — X alineada con el título de la tarjeta móvil
 
 ### Corregido

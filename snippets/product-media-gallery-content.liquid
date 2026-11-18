@@ -9,6 +9,7 @@
   @param {string} block_shopify_attributes - Block shopify attributes
   @param {block} block - The current block object
   @param {section} section - The current section object
+  @param {boolean} [blend_images] - Blends images with their active scheme background; defaults to false.
 
   @example
   {% render 'product-media-gallery-content',
@@ -348,6 +349,7 @@
         {% if block_settings.media_columns == "two" and block_settings.large_first_image%}media-gallery--large-first-image{% endif %}
       {% endif %}
       media-gallery--{{ media_presentation }}
+      {% if blend_images %}media-gallery--image-darken{% endif %}
       {% if block_settings.slideshow_mobile_controls_style == 'hint' %}
         media-gallery--hint
       {% endif %}
@@ -569,7 +571,6 @@
                         widths: '240, 352, 832, 1200',
                         alt: media.alt,
                         style: focal_point_style
-                      | escape
                     }}
                   </button>
                 {%- endfor -%}

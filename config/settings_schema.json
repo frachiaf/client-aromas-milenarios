@@ -2178,6 +2178,25 @@
     ]
   },
   {
+    "name": "t:am_product_images.settings_name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "am_card_images_darken",
+        "label": "t:am_product_images.cards_darken",
+        "info": "t:am_product_images.cards_darken_info",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "am_pdp_images_darken",
+        "label": "t:am_product_images.pdp_darken",
+        "info": "t:am_product_images.pdp_darken_info",
+        "default": false
+      }
+    ]
+  },
+  {
     "name": "t:names.product_cards",
     "settings": [
       {

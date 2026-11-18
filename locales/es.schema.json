@@ -8,6 +8,13 @@
  * ------------------------------------------------------------
  */
 {
+  "am_product_images": {
+    "settings_name": "Imágenes de producto",
+    "cards_darken": "Mezclar imágenes de tarjetas con el fondo",
+    "cards_darken_info": "Aplica darken a las imágenes de las tarjetas sobre el fondo de su esquema de color.",
+    "pdp_darken": "Mezclar imágenes de PDP y Quick Buy con el fondo",
+    "pdp_darken_info": "Aplica darken a las imágenes, miniaturas y zoom de la página de producto y a la galería de Quick Buy sobre el fondo de su esquema."
+  },
   "am_header": {
     "menu_image": "Imagen de ítem del menú",
     "menu_item_text": "Nombre del ítem",

@@ -8,6 +8,13 @@
  * ------------------------------------------------------------
  */
 {
+  "am_product_images": {
+    "settings_name": "Product images",
+    "cards_darken": "Blend card images with the background",
+    "cards_darken_info": "Applies darken to product card images over their color scheme background.",
+    "pdp_darken": "Blend product page and Quick Buy images with the background",
+    "pdp_darken_info": "Applies darken to product page images, thumbnails and zoom, and the Quick Buy gallery over their color scheme background."
+  },
   "am_header": {
     "menu_image": "Menu item image",
     "menu_item_text": "Menu item name",

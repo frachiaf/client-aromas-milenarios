@@ -814,6 +814,8 @@ export class ProductHotspotComponent extends Component {
   #quickAddRequestId = 0;
   /** @type {ResizeObserver | null} */
   #quickBuyLabelResizeObserver = null;
+  /** @type {ResizeObserver | null} */
+  #mobileCardResizeObserver = null;
   /** @type {ProductHotspots | null} */
   #hotspotsRoot = null;
   #triggerLabel = '';
@@ -853,6 +855,8 @@ export class ProductHotspotComponent extends Component {
     mediaQueryFinePointer.removeEventListener('change', this.#handleBreakpointChange);
     this.#quickBuyLabelResizeObserver?.disconnect();
     this.#quickBuyLabelResizeObserver = null;
+    this.#stopObservingMobileCard();
+    this.#clearMobileCardPlacement();
     this.removeEventListener('focusout', this.#handleFocusOut);
   }
 
@@ -1019,6 +1023,7 @@ export class ProductHotspotComponent extends Component {
   #handleBreakpointChange = () => {
     // Remove existing listeners
     this.#removeDesktopListeners();
+    if (this.hasAttribute('data-mobile-card-centered')) void this.closeDialog();
 
     // Set up desktop hover listeners only (mobile uses on:click in template)
     if (!isMobileBreakpoint() && mediaQueryFinePointer.matches && !isTouchDevice()) {
@@ -1030,12 +1035,56 @@ export class ProductHotspotComponent extends Component {
     this.syncMobileSelection(false);
   };
 
+  get #mobileCardCentered() {
+    return isMobileBreakpoint() && this.hasAttribute('data-mobile-card-centered');
+  }
+
+  #positionMobileCard = () => {
+    const container = this.parentElement;
+    if (!container || !this.#mobileCardCentered) return;
+
+    const bounds = container.getBoundingClientRect();
+    const hotspot = this.getBoundingClientRect();
+    const { dialog } = this.refs;
+    dialog.dataset.placement = 'mobile';
+    dialog.style.setProperty('--am-hotspot-card-width', `${Math.max(0, bounds.width - 20)}px`);
+    dialog.style.setProperty('--am-hotspot-card-height', `${Math.max(0, bounds.height - 20)}px`);
+    dialog.style.setProperty('--am-hotspot-card-x', `${bounds.left + bounds.width / 2 - hotspot.left}px`);
+    dialog.style.setProperty('--am-hotspot-card-y', `${bounds.top + bounds.height / 2 - hotspot.top}px`);
+  };
+
+  #observeMobileCard() {
+    if (!this.#mobileCardCentered || !this.parentElement) return;
+    if ('ResizeObserver' in window) {
+      this.#mobileCardResizeObserver = new ResizeObserver(this.#positionMobileCard);
+      this.#mobileCardResizeObserver.observe(this.parentElement);
+    }
+    window.addEventListener('resize', this.#positionMobileCard);
+  }
+
+  #stopObservingMobileCard() {
+    this.#mobileCardResizeObserver?.disconnect();
+    this.#mobileCardResizeObserver = null;
+    window.removeEventListener('resize', this.#positionMobileCard);
+  }
+
+  #clearMobileCardPlacement() {
+    for (const property of ['width', 'height', 'x', 'y']) {
+      this.refs.dialog.style.removeProperty(`--am-hotspot-card-${property}`);
+    }
+  }
+
   /**
    * Calculate the placement of the dialog.
    * @returns {void}
    */
   #calculateDialogPlacement() {
     const { trigger, dialog } = this.refs;
+
+    if (this.#mobileCardCentered) {
+      this.#positionMobileCard();
+      return;
+    }
 
     const hotspotsContainer = this.parentElement;
 
@@ -1234,6 +1283,7 @@ export class ProductHotspotComponent extends Component {
     delete dialog.dataset.closing;
     dialog.dataset.showing = 'true';
     dialog.show();
+    this.#observeMobileCard();
     trigger.setAttribute('aria-expanded', 'true');
     document.body.addEventListener('click', this.lightDismissMouse);
     document.body.addEventListener('keydown', this.lightDismissKeyboard);
@@ -1248,6 +1298,7 @@ export class ProductHotspotComponent extends Component {
    */
   closeDialog = async () => {
     const { dialog, trigger } = this.refs;
+    this.#stopObservingMobileCard();
     if (!dialog.open) {
       if (!this.#hotspotsRoot?.mobilePreviewQuickBuyEnabled) trigger.setAttribute('aria-expanded', 'false');
       return;
@@ -1267,7 +1318,16 @@ export class ProductHotspotComponent extends Component {
       delete dialog.dataset.showing;
       delete dialog.dataset.closing;
       delete dialog.dataset.placement;
+      this.#clearMobileCardPlacement();
     }
+  };
+
+  /** @param {Event} event */
+  closePreview = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    void this.closeDialog();
+    this.refs.trigger.focus({ preventScroll: true });
   };
 
   /**

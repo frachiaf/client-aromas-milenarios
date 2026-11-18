@@ -1379,6 +1379,17 @@
           }
         ],
         "default": "narrow"
+      },
+      {
+        "type": "range",
+        "id": "page_width_desktop",
+        "min": 50,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "t:settings.page_width_desktop",
+        "info": "t:settings.page_width_desktop_info",
+        "default": 100
       }
     ]
   },
@@ -2550,6 +2561,26 @@
       {
         "type": "paragraph",
         "content": "t:am_commerce.progress_info"
+      },
+      {
+        "type": "color",
+        "id": "am_progress_check_pending_background",
+        "label": "t:am_commerce.am_progress_check_pending_background"
+      },
+      {
+        "type": "color",
+        "id": "am_progress_check_pending_color",
+        "label": "t:am_commerce.am_progress_check_pending_color"
+      },
+      {
+        "type": "color",
+        "id": "am_progress_check_complete_color",
+        "label": "t:am_commerce.am_progress_check_complete_color"
+      },
+      {
+        "type": "color",
+        "id": "am_progress_check_complete_mark",
+        "label": "t:am_commerce.am_progress_check_complete_mark"
       },
       {
         "type": "text",

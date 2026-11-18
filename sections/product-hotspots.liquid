@@ -62,6 +62,7 @@
     section-product-hotspots
     {% if section.settings.animate_hotspots %}section-product-hotspots--animate-hotspots{% endif %}
     {% if section.settings.hide_hotspots_mobile %}section-product-hotspots--hide-hotspots-mobile{% endif %}
+    {% if section.settings.hotspots_custom_width %}section-product-hotspots--custom-width{% endif %}
     color-{{ section.settings.color_scheme }}
     spacing-style
     gap-style
@@ -85,11 +86,22 @@
     --minimum-width-dialog: 260px;
     --maximum-width-dialog: 330px;
     --width-product-image-dialog: 110px;
+    {% if section.settings.hotspots_custom_width %}
+      --hotspots-width: {{ section.settings.hotspots_width }}%;
+    {% endif %}
   "
 >
   <div class="section-product-hotspots__wrapper">
     <div class="section-product-hotspots__header">
       {% content_for 'block', type: 'text', id: 'heading' %}
+      {% if section.settings.subheading != blank %}
+        <div
+          class="section-product-hotspots__subheading text-block {{ section.settings.subheading_preset }}{% if section.settings.subheading_size != blank %} section-product-hotspots__subheading--sized{% endif %}"
+          style="--hotspots-subheading-align: {{ section.settings.subheading_alignment | default: 'center' }};{% if section.settings.subheading_size != blank %} --hotspots-subheading-size: {{ section.settings.subheading_size }};{% endif %}{% if section.settings.subheading_color != blank %} --hotspots-subheading-color: {{ section.settings.subheading_color }};{% endif %}"
+        >
+          {{ section.settings.subheading }}
+        </div>
+      {% endif %}
     </div>
 
     {% if section.settings.content_above_image and editorial_text != blank %}
@@ -196,6 +208,31 @@
     height: 100%;
   }
 
+  @media screen and (min-width: 1024px) {
+    .section-product-hotspots.section-product-hotspots--custom-width > .section-product-hotspots__wrapper {
+      width: var(--hotspots-width, 100%);
+      justify-self: center;
+    }
+  }
+
+  .section-product-hotspots__subheading {
+    width: 100%;
+    margin-top: 12px;
+    color: var(--hotspots-subheading-color, inherit);
+    text-align: var(--hotspots-subheading-align, center);
+  }
+
+  .section-product-hotspots__subheading :is(p, h1, h2, h3, h4, h5, h6, li) {
+    margin: 0;
+    color: inherit;
+    text-align: inherit;
+  }
+
+  .section-product-hotspots__subheading--sized,
+  .section-product-hotspots__subheading--sized :is(p, h1, h2, h3, h4, h5, h6, li) {
+    font-size: var(--hotspots-subheading-size);
+  }
+
   .section-product-hotspots__interactive {
     display: block;
     min-width: 0;
@@ -232,7 +269,6 @@
   .hotspots-editorial--bottom-right { align-items: flex-end; justify-content: flex-end; text-align: right; }
 
   .hotspots-editorial__content {
-    max-width: min(34rem, 100%);
     color: var(--color-foreground);
     text-shadow: 0 1px 18px rgb(0 0 0 / 0.3);
   }
@@ -387,6 +423,65 @@
   ],
   "settings": [
     {
+      "type": "header",
+      "content": "t:settings.hotspots_subheading"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "t:settings.hotspots_subheading"
+    },
+    {
+      "type": "select",
+      "id": "subheading_preset",
+      "label": "t:settings.hotspots_subheading_type",
+      "options": [
+        { "value": "rte", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" }
+      ],
+      "default": "rte"
+    },
+    {
+      "type": "select",
+      "id": "subheading_size",
+      "label": "t:settings.hotspots_subheading_size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "2rem", "label": "32px" },
+        { "value": "2.5rem", "label": "40px" },
+        { "value": "3rem", "label": "48px" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "subheading_alignment",
+      "label": "t:settings.hotspots_subheading_alignment",
+      "options": [
+        { "value": "left", "label": "t:options.left" },
+        { "value": "center", "label": "t:options.center" },
+        { "value": "right", "label": "t:options.right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "t:settings.hotspots_subheading_color"
+    },
+    {
       "type": "image_picker",
       "id": "image",
       "label": "t:settings.image"
@@ -527,6 +622,24 @@
         }
       ],
       "default": "page-width"
+    },
+    {
+      "type": "checkbox",
+      "id": "hotspots_custom_width",
+      "label": "t:settings.hotspots_custom_width",
+      "info": "t:settings.hotspots_custom_width_info",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "hotspots_width",
+      "label": "t:settings.hotspots_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ section.settings.hotspots_custom_width }}"
     },
     {
       "type": "select",

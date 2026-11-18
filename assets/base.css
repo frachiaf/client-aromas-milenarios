@@ -341,25 +341,37 @@ p:empty {
 
 .page-width-wide {
   /* NOTE: This results in a page width of 2400px because of how we set up margins with grid */
-  --page-content-width: var(--wide-page-width);
+  --am-page-width-basis: var(--wide-page-width);
+  --page-content-width: var(--am-page-width-basis);
   --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
 }
 
 .page-width-normal {
-  --page-content-width: var(--normal-page-width);
+  --am-page-width-basis: var(--normal-page-width);
+  --page-content-width: var(--am-page-width-basis);
   --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
 }
 
-.page-width-narrow,
-.page-width-content {
+.page-width-narrow {
   /* NOTE: This results in a page width of 1400px because of how we set up margins with grid */
-  --page-content-width: var(--narrow-page-width);
+  --am-page-width-basis: var(--narrow-page-width);
+  --page-content-width: var(--am-page-width-basis);
   --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
 }
 
 .page-width-content {
-  --page-content-width: var(--normal-content-width);
+  --am-page-width-basis: var(--normal-content-width);
+  --page-content-width: var(--am-page-width-basis);
   --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
+}
+
+@media screen and (min-width: 1024px) {
+  .page-width-wide,
+  .page-width-normal,
+  .page-width-narrow,
+  .page-width-content {
+    --page-content-width: calc(var(--am-page-width-basis) * var(--am-page-width-desktop, 100) / 100);
+  }
 }
 
 /* Section width full vs. page

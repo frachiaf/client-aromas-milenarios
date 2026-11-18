@@ -76,12 +76,12 @@ am-gift-message { display: block; min-width: 0; }
 .am-cart-progress__steps { display: grid; grid-template-columns: repeat(var(--am-tier-count), minmax(0, 1fr)); list-style: none; padding: 0; margin: 0 0 12px; gap: 0; }
 .am-cart-progress__steps li { display: flex; flex-direction: column; align-items: stretch; min-width: 0; gap: 6px; text-align: center; font-size: .8rem; overflow-wrap: anywhere; }
 .am-cart-progress__label { width: 100%; transform: translateX(50%); }
-.am-cart-progress__check { display: grid; place-items: center; align-self: end; flex-shrink: 0; transform: translateX(50%); width: var(--am-milestone-size); height: var(--am-milestone-size); border-radius: 50%; border: 1px solid var(--color-border); }
+.am-cart-progress__check { display: grid; place-items: center; align-self: end; flex-shrink: 0; transform: translateX(50%); width: var(--am-milestone-size); height: var(--am-milestone-size); border-radius: 50%; background: var(--am-check-pending-bg, transparent); border: 1px solid var(--am-check-pending, var(--color-border)); color: var(--am-check-pending, inherit); }
 html[dir='rtl'] .am-cart-progress__check, html[dir='rtl'] .am-cart-progress__label { transform: translateX(-50%); }
 .am-cart-progress--drawer .am-cart-progress__visual { padding-inline-end: 0; }
 .am-cart-progress--drawer .am-cart-progress__check { align-self: center; }
 .am-cart-progress--drawer .am-cart-progress__steps :is(.am-cart-progress__check, .am-cart-progress__label) { transform: none; }
-.am-cart-progress [data-complete] .am-cart-progress__check { background: var(--color-primary-button-background, var(--color-foreground)); color: var(--color-primary-button-text, var(--color-background)); }
+.am-cart-progress [data-complete] .am-cart-progress__check { background: var(--am-check-complete, var(--color-primary-button-background, var(--color-foreground))); color: var(--am-check-complete-mark, var(--am-check-complete-icon, var(--color-primary-button-text, var(--color-background)))); border-color: var(--am-check-complete-mark, var(--am-check-complete, var(--color-primary-button-background, var(--color-foreground)))); }
 .am-cart-progress__track { height: 8px; border-radius: 12px; background: rgb(var(--color-foreground-rgb) / .12); overflow: hidden; }
 .am-cart-progress__track > span { display: block; height: 100%; width: var(--am-progress); background: var(--color-primary-button-background, var(--color-foreground)); transition: width .3s ease; }
 .am-cart-progress__messages { text-align: center; font-size: .875rem; margin-block-start: 10px; }

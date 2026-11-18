@@ -8,6 +8,89 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Modificado
 
+- Objetivo (2026-11-15): achicar el confeti y anclarlo al hito que se acaba de completar.
+- Archivos: `assets/am--cart-progress.js`, `assets/am--cart.css`, `docs/theme-architecture.md` y este changelog.
+- Impacto: cada nivel nuevo suelta unas 8 piezas de 4–6 px por 6–8 px desde su propio círculo, con deriva de 4 a 14 px y caída de 28 a 46 px, durante cerca de 1,1 s. Si una actualización completa dos o tres niveles, cada uno muestra su estallido. No aparece al cargar ni al perder un nivel, y se omite con movimiento reducido.
+- Validación: pendiente de `node --check` y del preview.
+
+### Modificado
+
+- Objetivo (2026-11-15): achicar el confeti del hito para que no tape el drawer.
+- Archivos: `assets/am--cart-progress.js`, `assets/am--cart.css`, `docs/theme-architecture.md` y este changelog.
+- Impacto: al completar un nivel caen unas 20 piezas de 8–12 px por 14–20 px desde arriba de la barra, entre 120 y 200 px, durante cerca de 1,4 s. No aparece al cargar ni al perder un nivel, y se omite con movimiento reducido.
+- Validación: `node --check assets/am--cart-progress.js`. En el preview, el drawer mostró 20 piezas de 8–12 px por 14–20 px, con caída de 120–200 px. A 1,1 s iban entre 38 y 115 px; la barra mide 92 px, así que las más largas apenas cruzan el inicio del listado.
+
+### Modificado
+
+- Objetivo (2026-11-14): hacer visible el confeti del hito, más grande y repartido en toda la barra.
+- Archivos: `assets/am--cart-progress.js`, `assets/am--cart.css`, `docs/theme-architecture.md` y este changelog.
+- Impacto: al completar un nivel caen unas 28 piezas de 14–22 px por 22–36 px desde arriba de la barra, entre 220 y 380 px, durante cerca de 1,8 s. No aparece al cargar ni al perder un nivel, y se omite con movimiento reducido.
+- Validación: `node --check assets/am--cart-progress.js`. En el preview, con la contraseña de la tienda, el drawer mostró 28 piezas montadas en `.am-cart-progress--drawer`, de 14×22 a 20×31 px, repartidas en el ancho y a 156–184 px de caída a los 1,6 s.
+
+### Modificado
+
+- Objetivo (2026-11-14): hacer que el confeti del hito sea más grande y caiga de arriba hacia abajo.
+- Archivos: `assets/am--cart-progress.js`, `assets/am--cart.css`, `docs/theme-architecture.md` y este changelog.
+- Impacto: al completar un nivel caen unas 24 piezas de 8 por 14 px, en varios colores, desde arriba del check durante cerca de 1,2 s. No aparece al cargar ni al perder un nivel, y se omite con movimiento reducido.
+
+### Validación
+
+- `node --check` aprobó `assets/am--cart-progress.js`. El CSS servido por el preview usa piezas de 8 por 14 px y la animación termina más abajo, con deriva horizontal.
+
+### Reversión
+
+- Volver a los círculos de 4 px y al estallido hacia arriba restaura el confeti anterior. No hay migración de datos.
+
+### Modificado
+
+- Objetivo (2026-11-14): limitar el ancho en porcentaje de Product Hotspots al escritorio y separar el fondo de la marca en los hitos del carrito.
+- Archivos: `sections/product-hotspots.liquid`, `config/settings_schema.json`, `snippets/am--cart-progress.liquid`, `assets/am--cart.css`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: el porcentaje de Product Hotspots solo achica el contenido desde 1024 px. El checkbox lo aclara en el editor. Cada hito tiene fondo y color de borde y marca. Vacíos, el pendiente sigue sin relleno y el alcanzado conserva el botón principal, con el tilde en blanco o negro si no hay color de marca. No se editó `settings_data.json`.
+
+### Validación
+
+- El schema de settings y el de Product Hotspots parsean como JSON. El validador Liquid aprobó la sección, el snippet del carrito, el CSS y el schema.
+- En el preview local, a 1440 px el contenido pasa de 1080 px a 810 px con el porcentaje al 60 %. A 390 px se queda en 358 px. El fondo, el borde y la marca del hito pendiente toman los colores indicados.
+
+### Reversión
+
+- Quitar el media query vuelve a aplicar el porcentaje en todos los anchos. Quitar el fondo pendiente y la marca alcanzada deja un color por estado. No hay migración de datos.
+
+### Añadido
+
+- Objetivo (2026-11-14): elegir el ancho de Product Hotspots en porcentaje y agregar su subtítulo, con la alineación del subtítulo del video aplicada al texto interno.
+- Archivos: `sections/product-hotspots.liquid`, `assets/am--video-with-carousel.css`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: Ancho queda en Página y Completo. El checkbox Ancho en porcentaje nace apagado y, al activarlo, muestra el rango de 50 % a 100 %. El contenido se centra sobre la columna de página o sobre el ancho total, según Ancho; el fondo sigue a sangre. El subtítulo nace vacío debajo del título, con tipografía, tamaño, alineación y color. En el video, la alineación del subtítulo también alinea párrafos y encabezados. No se editaron templates.
+
+### Validación
+
+- El schema de `sections/product-hotspots.liquid` parsea como JSON. El validador Liquid de Shopify aprobó esa sección y `assets/am--video-with-carousel.css`.
+- `shopify theme check --path .` inspeccionó 343 archivos sin errores y con las 31 advertencias ya existentes. Product Hotspots no suma una advertencia de settings.
+- En el preview local, el subtítulo de Product Hotspots no se imprime vacío y la sección no trae el ancho personalizado. Con el checkbox simulado al 60 %, el contenido mide 810 px sobre 1350 px y queda centrado. El párrafo interno del subtítulo del video hereda la alineación derecha. El editor de tema hay que recargarlo para ver el checkbox.
+
+### Reversión
+
+- Quitar el checkbox, el rango y el subtítulo de Product Hotspots restaura el ancho anterior. Quitar `text-align: inherit` deja la alineación del video solo en el contenedor. No hay migración de datos.
+
+### Añadido
+
+- Objetivo (2026-11-14): personalizar los hitos del carrito, la presentación numerada, el video con carrusel y el ancho de página en escritorio.
+- Archivos: `config/settings_schema.json`, `snippets/am--cart-progress.liquid`, `snippets/am--cart-features.liquid`, `snippets/scripts.liquid`, `snippets/theme-styles-variables.liquid`, `assets/am--cart.css`, `assets/am--cart-progress.js`, `assets/am--numbered-slideshow.js`, `assets/am--numbered-slideshow.css`, `assets/am--video-with-carousel.css`, `assets/base.css`, `sections/am--video-with-carousel.liquid`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: los colores de check pendiente y alcanzado nacen vacíos y conservan el aspecto actual. El confeti nace apagado y solo aparece en el hito que acaba de completarse. El autoplay de la presentación numerada se pausa al posar el puntero sobre un hotspot y el botón de pausa sigue siendo manual. La barra de autoplay se ve también en mobile. En mobile, el toque de un hotspot abre Quick Buy y, si el modal falla, muestra la card. El contenido del video acepta ancho, separación y padding por dispositivo, con los valores actuales como default, y un subtítulo richtext opcional. El ancho de página en escritorio nace en 100 % y puede bajar hasta 50 % desde 1024 px. No se editaron `settings_data.json` ni templates.
+
+### Validación
+
+- `node --check` aprobó `assets/am--cart-progress.js` y `assets/am--numbered-slideshow.js`. El schema de la sección y `config/settings_schema.json` parsean como JSON.
+- El validador Liquid de Shopify revisó 12 archivos y quedó válido. La única advertencia es `AssetPreload` ya existente en el video.
+- `shopify theme check --path .` inspeccionó 343 archivos sin errores y con 31 advertencias. `ExcessiveSettingsCount` de AM Video + Carrusel pasa a 63 settings; el resto ya existía.
+- En el preview local `http://127.0.0.1:9292`, con colores y confeti vacíos, el check conserva el borde y el texto del tema y no carga el módulo. Al simular un nivel recién completado aparecen 12 partículas y ninguna al recordar el estado inicial. El autoplay no se pausa sobre la imagen, sí sobre el hotspot, y el botón de pausa sigue manual. La barra ocupa su fila en 390 px y permanece en la línea de escritorio. El punto móvil mide 44 px con círculo de 36 px. Los hotspots de la home están agotados, así que no hay Quick Buy y la card queda visible. El contenido al 60 % queda centrado y el ancho de página al 50 % mide la mitad de la base angosta. No se editaron `settings_data.json` ni templates.
+
+### Reversión
+
+- Quitar los settings, el módulo de confeti, los listeners de hotspot y el factor `--am-page-width-desktop` restaura el comportamiento anterior. No hay migración de datos.
+
+### Modificado
+
 - Objetivo (2026-11-12): la foto y el título de la nota y el envoltorio dejan de abrir su ficha desde el carrito.
 - Archivos: `snippets/cart-products.liquid`, `tests/am-gift-limits.test.mjs`, `docs/theme-architecture.md` y `CHANGELOG.md`.
 - Impacto: la línea queda sin enlace cuando es el producto elegido de nota o envoltorio, o cuando trae `_am_gift_service` en `note` o `wrapping`. La foto usa el contenedor sin enlace y el título queda en texto. La papelera, el mensaje y el resto de la línea no cambian. Drawer y página comparten este listado.
@@ -541,6 +624,63 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 ### Reversión
 
 - Eliminar los nuevos settings y restaurar los tres archivos funcionales para volver al comportamiento anterior.
+
+## 2026-11-18 — X alineada con el título de la tarjeta móvil
+
+### Corregido
+
+- Objetivo: quitar la franja vacía que ocupaba el cierre de las tarjetas móviles de AM Presentación numerada y alinear su X con la primera línea del título.
+- Archivos: `assets/am--numbered-slideshow.css`, `snippets/product-hotspot.liquid`, `docs/theme-architecture.md` y este changelog.
+- Impacto: el cierre queda fuera del flujo, conserva su área táctil de 44 × 44 px y usa el preset del título para calcular su alineación con la primera línea. Se reserva únicamente espacio horizontal en título y precio, sin una fila ni padding vertical adicional. El ajuste se limita a `mobile_card_centered` hasta 749 px; la tarjeta conserva su centrado, límites, scroll interno, cierre y foco. Escritorio y Product Hotspots mantienen su presentación. No se agregan controles al editor ni se modifican datos administrados.
+
+### Validación
+
+- `AM_QA_NUMBERED_ONLY=1` en `node tests/am-commerce.test.mjs` aprobó 42 comprobaciones; `AM_QA_HOTSPOTS_ONLY=1` aprobó 13, sin escrituras de carrito ni excepciones de navegador. Cubren los cuatro extremos de la imagen a 320/390/749 px, contenido largo, marco de poca altura, redimensionado, cierre con X/Escape/toque exterior, foco, movimiento reducido, remontaje de editor, Quick Buy y escritorio a 750/1440 px.
+- Una inspección temporal en Chromium midió 15 combinaciones de ancho y tipografía: títulos cortos y multilínea, encabezados de 12/14/24 px y párrafo de 18 px. El centro del icono coincide con el centro de la primera línea con menos de 0,01 px de diferencia; el contenido comienza en el borde superior de la tarjeta, el área táctil mide 44 × 44 px y no se superpone con el título. Las capturas de 390 px y la disposición RTL también se revisaron.
+- El validador de Shopify aprobó el CSS y el snippet, con las cuatro advertencias de contexto `section`/`block` ya conocidas del snippet compartido. `shopify.cmd theme check --path . --output json` terminó sin errores y con las 31 advertencias existentes. `git diff --check` quedó limpio.
+- No se publicó el theme ni se guardaron cambios en Theme Editor.
+
+### Reversión
+
+- Restaurar la fila de 44 px del cierre y retirar su preset tipográfico y la reserva horizontal recupera la distribución anterior. No hay migración de datos.
+
+## 2026-11-18 — Eliminación del confeti de la barra del carrito
+
+### Eliminado
+
+- Objetivo: quitar por completo el confeti al alcanzar niveles, tanto en el drawer como en la página del carrito.
+- Archivos: `assets/am--cart-progress.js` (eliminado), `assets/am--cart.css`, `snippets/am--cart-features.liquid`, `snippets/am--cart-progress.liquid`, `snippets/scripts.liquid`, `config/settings_schema.json`, los 20 `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: se retiran el módulo, su carga e import map, los atributos exclusivos, las partículas, los keyframes y el checkbox del editor con sus traducciones. Los umbrales, los regalos, los mensajes, los colores configurables de los hitos y la transición de relleno conservan su funcionamiento. Se preservan los demás cambios pendientes y no se editan templates ni datos administrados por Shopify.
+
+### Validación
+
+- El validador de Shopify aprobó los 25 archivos de theme afectados. El schema global y los 20 locales de schema parsean correctamente; una revisión de 438 archivos confirmó que no quedan referencias al confeti en el código del theme y que el módulo fue eliminado.
+- `shopify.cmd theme check --path . --output json` terminó sin errores y con las 31 advertencias ya documentadas. `git diff --check` quedó limpio.
+- La suite de comercio aprobó los escenarios de umbrales, avance y retroceso, alineación, cantidades y descuentos de la barra en drawer y página. Después falló en `product card upsell sits above the drawer at 1280`; el mismo fallo se reprodujo aisladamente restaurando el CSS y el markup de la barra previos a esta eliminación, con el confeti desactivado en la fixture.
+- `AM_QA_DENSITY_ONLY=1` en `node tests/am-commerce.test.mjs` aprobó 81 comprobaciones en Chromium, incluidos anchos de 320 a 1837 px y viewport de poca altura, sin escrituras de carrito ni excepciones de navegador. No se publicó el theme ni se guardaron cambios en Theme Editor.
+
+### Reversión
+
+- Restaurar el módulo, su carga, los atributos, los estilos y el checkbox con sus traducciones recupera el efecto. No hay migración de datos.
+
+## 2026-11-15 — Tarjeta móvil centrada en la presentación numerada
+
+### Corregido
+
+- Objetivo: evitar que el marco de imagen recorte la tarjeta de un hotspot en mobile, y permitir cerrarla desde una X o tocando fuera.
+- Archivos: `sections/am--numbered-slideshow.liquid`, `snippets/product-hotspot.liquid`, `assets/product-hotspot.js`, `assets/am--numbered-slideshow.css`, `tests/am-commerce.test.mjs`, `docs/theme-architecture.md` y este changelog.
+- Impacto: hasta 749 px, la tarjeta de agotados o errores de Quick Buy se centra en ambos ejes de la imagen, con 10 px de margen. El ancho respeta el máximo existente y el alto disponible; el contenido largo se desplaza dentro de la tarjeta y la X conserva un área de 44 × 44 px. X y Escape devuelven el foco al punto; el toque exterior conserva el foco del destino. El control de pausa se oculta mientras la tarjeta está abierta para no tapar su contenido y reaparece al cerrarla, conservando la pausa manual. Redimensionado, cambio de diapositiva y desmontaje limpian el posicionamiento y los observadores. Los productos con stock siguen abriendo Quick Buy directamente. Escritorio y Product Hotspots mantienen su presentación. No se editaron schemas, locales, templates ni datos administrados.
+
+### Validación
+
+- `AM_QA_NUMBERED_ONLY=1` en `node tests/am-commerce.test.mjs` aprobó 42 comprobaciones en Chromium: cuatro extremos a 320/390/749 px, centrado, X, Escape, toque interior/exterior y foco, imagen de poca altura, texto largo, redimensionado, cambio de slide, remontaje de editor, movimiento reducido, pausa manual, escritorio a 750/1440 px, stock con una o varias variantes y fallos/ausencia del modal. No hubo escrituras de carrito ni excepciones de navegador.
+- `AM_QA_HOTSPOTS_ONLY=1` aprobó las 13 comprobaciones de regresión del componente compartido. `node --check` aprobó el módulo y las pruebas; `git diff --check` quedó limpio.
+- El preview real mostró la tarjeta completa y centrada a 320/390/749 px y la X la cerró. La captura a 390 px confirmó la foto del producto cargada y el control de pausa sin superposición, sin excepciones de navegador. Los eventos de editor se probaron mediante remontaje local; no se guardaron cambios en Theme Editor.
+- El validador de Shopify aprobó los cuatro archivos de theme modificados; solo señaló las referencias existentes a `section` y `block` del snippet compartido. Theme Check inspeccionó 343 archivos sin errores y con las 31 advertencias preexistentes. La CLI volvió a terminar con su aserción interna de Node después del resumen.
+
+### Reversión
+
+- Quitar `mobile_card_centered: true` de la presentación numerada recupera la tarjeta anterior. El parámetro del snippet es opcional y nace desactivado; no hay migración de datos.
 
 ## 2026-11-02 — Centrado exclusivo para imágenes arriba del menú
 

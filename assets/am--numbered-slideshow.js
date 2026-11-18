@@ -24,12 +24,31 @@
       });
       this.playbackButton?.addEventListener('click', () => this.togglePlayback(), { signal: this.abortController.signal });
       this.updatePlaybackButton();
+      this.hotspotPaused = false;
 
-      this.addEventListener('mouseenter', () => this.pause(), { signal: this.abortController.signal });
-      this.addEventListener('mouseleave', () => this.play(), { signal: this.abortController.signal });
-      this.addEventListener('focusin', () => this.pause(), { signal: this.abortController.signal });
+      this.addEventListener('pointerover', (event) => {
+        if (!(event.target instanceof Element) || !event.target.closest('.hotspot')) return;
+        this.hotspotPaused = true;
+        this.pause();
+      }, { signal: this.abortController.signal });
+      this.addEventListener('pointerout', (event) => {
+        if (!(event.target instanceof Element) || !event.target.closest('.hotspot')) return;
+        const next = event.relatedTarget;
+        if (next instanceof Element && this.contains(next) && next.closest('.hotspot')) return;
+        this.hotspotPaused = false;
+        this.play();
+      }, { signal: this.abortController.signal });
+      this.addEventListener('focusin', (event) => {
+        if (!(event.target instanceof Element) || !event.target.closest('.hotspot')) return;
+        this.hotspotPaused = true;
+        this.pause();
+      }, { signal: this.abortController.signal });
       this.addEventListener('focusout', (event) => {
-        if (!this.contains(event.relatedTarget)) this.play();
+        if (!(event.target instanceof Element) || !event.target.closest('.hotspot')) return;
+        const next = event.relatedTarget;
+        if (next instanceof Element && this.contains(next) && next.closest('.hotspot')) return;
+        this.hotspotPaused = false;
+        this.play();
       }, { signal: this.abortController.signal });
       document.addEventListener('visibilitychange', () => document.hidden ? this.pause() : this.play(), {
         signal: this.abortController.signal,
@@ -103,7 +122,7 @@
     }
 
     play() {
-      if (!this.autoplay || this.userPaused || this.slides.length < 2 || document.hidden) return;
+      if (!this.autoplay || this.userPaused || this.hotspotPaused || this.slides.length < 2 || document.hidden) return;
       this.pause(false);
       this.restartProgress();
       this.timer = window.setInterval(() => this.next(), this.interval);
@@ -138,7 +157,7 @@
       if (!this.progress) return;
       this.progress.style.transition = 'none';
       this.progress.style.width = '0%';
-      if (!this.autoplay || this.userPaused) return;
+      if (!this.autoplay || this.userPaused || this.hotspotPaused) return;
       requestAnimationFrame(() => requestAnimationFrame(() => {
         this.progress.style.transition = `width ${this.interval}ms linear`;
         this.progress.style.width = '100%';

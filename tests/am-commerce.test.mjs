@@ -161,6 +161,20 @@ async function card(style = 'circular', id = 'card-test') {
   return render('snippets/product-card.liquid', { ...c, children });
 }
 async function hotspots() {
+  if (current.has('numbered')) {
+    const blocks = ['first', 'second'].map((id) => {
+      const settings = { image };
+      for (const [index, [x, y]] of [[0, 0], [100, 0], [0, 100], [100, 100]].entries()) {
+        const prefix = 'hotspot_' + (index + 1);
+        Object.assign(settings, { [prefix + '_enabled']: true, [prefix + '_product']: products.get(Number(current.get('stock') || 4)),
+          [prefix + '_x_position']: x, [prefix + '_y_position']: y,
+          [prefix + '_text']: current.has('long') ? 'Un producto con un nombre extenso para comprobar el contenido de la tarjeta. '.repeat(12) : '' });
+      }
+      return { id, type: 'slide', settings, shopify_attributes: '' };
+    });
+    return render('sections/am--numbered-slideshow.liquid', context({ section: { id: 'numbered', blocks,
+      settings: { ...defaults('sections/am--numbered-slideshow.liquid'), autoplay: current.has('autoplay'), heading: 'Sets' } } }));
+  }
   let fixtureBlocks = '';
   for (let i = 1; i <= 3; i++) fixtureBlocks += await render('snippets/product-hotspot.liquid', context({ product: products.get(i === 3 ? 1 : i),
     instance_id: 'hot-' + i, x_position: i * 25, y_position: 50, hover_image: { ...image, src: `/hover-${i}.svg` },
@@ -332,6 +346,101 @@ try {
     await evaluate(`{ const modal=document.getElementById('AMGiftNoteModal'); modal.querySelector('[name="From"]').value='Remitente';modal.querySelector('[name="To"]').value='Destinatario';modal.querySelector('[name="Message"]').value=${JSON.stringify(text)};modal.querySelector('[name="Message"]').dispatchEvent(new Event('input',{bubbles:true}));modal.querySelector('form').requestSubmit(); }`);
   };
   const note = async (text) => { await submitNote(text); await idle(); };
+  const numberedSlideshowChecks = async () => {
+    const card = 'document.querySelector("am-numbered-slideshow .hotspot-dialog")';
+    const trigger = 'am-numbered-slideshow .am--is-active .hotspot-trigger';
+    const close = 'am-numbered-slideshow .am--is-active .hotspot-dialog__close';
+    const centered = `(()=>{const d=${card},r=d.getBoundingClientRect(),b=d.closest('product-hotspots').getBoundingClientRect();return d.open && r.width>0 && r.height>0 && Math.abs(r.left+r.width/2-b.left-b.width/2)<1 && Math.abs(r.top+r.height/2-b.top-b.height/2)<1 && r.left>=b.left+9.5 && r.right<=b.right-9.5 && r.top>=b.top+9.5 && r.bottom<=b.bottom-9.5})()`;
+    const settle = async (dialog = card) => {
+      await wait(`${dialog}.open`);
+      await evaluate(`Promise.all(${dialog}.getAnimations({subtree:true}).map(animation=>animation.finished.catch(()=>{})))`);
+      await wait(centered.replaceAll(card, dialog));
+    };
+    const tap = async (selector) => {
+      await evaluate(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({block:'center',behavior:'instant'})`);
+      const point = await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)}),r=e.getBoundingClientRect(),b=e.closest('product-hotspots')?.getBoundingClientRect()||r;return {x:Math.min(b.right-2,Math.max(b.left+2,r.left+r.width/2)),y:Math.min(b.bottom-2,Math.max(b.top+2,r.top+r.height/2))}})()`);
+      await cdp('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
+      await cdp('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    };
+    await cdp('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 });
+    for (const width of [320, 390, 749]) {
+      await viewport(width); await load('numbered');
+      for (let index = 1; index <= 4; index++) {
+        await tap(`am-numbered-slideshow .am--is-active .hotspot:nth-child(${index}) .hotspot-trigger`);
+        const dialog = `document.querySelector('am-numbered-slideshow .am--is-active .hotspot:nth-child(${index}) .hotspot-dialog')`;
+        await settle(dialog);
+        await check('numbered card stays centered at ' + width + ' corner ' + index, centered.replaceAll(card, dialog));
+        await tap(close.replace('.hotspot-dialog__close', `.hotspot:nth-child(${index}) .hotspot-dialog__close`));
+        await wait(`!${dialog}.open`);
+        await check('close returns focus to the hotspot at ' + width + ' corner ' + index,
+          `document.activeElement===${dialog}.closest('.hotspot').querySelector('.hotspot-trigger') && document.activeElement.getAttribute('aria-expanded')==='false'`);
+      }
+    }
+    await viewport(390); await load('numbered'); await tap(trigger); await settle();
+    await evaluate(`${card}.querySelector('.hotspot-dialog__body').addEventListener('click',e=>e.preventDefault(),{once:true})`);
+    await tap('am-numbered-slideshow .hotspot-dialog__product-image');
+    await check('touching inside the card keeps it open', `${card}.open`);
+    await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' });
+    await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape' });
+    await check('Escape closes and restores focus', `!${card}.open && document.activeElement===document.querySelector(${JSON.stringify(trigger)})`);
+    await tap(trigger); await settle();
+    await evaluate(`{const b=document.createElement('button');b.id='numbered-outside';b.textContent='Exterior';document.querySelector('am-numbered-slideshow').after(b)}`);
+    await tap('#numbered-outside');
+    await check('touching outside closes and preserves the new focus', `!${card}.open && document.activeElement.id==='numbered-outside'`);
+    await tap(trigger); await settle();
+    await viewport(320); await wait(centered);
+    await check('an open card follows image resizing', centered);
+    await evaluate(`document.querySelector('am-numbered-slideshow').goTo(1,true)`);
+    await wait(`!${card}.open && !${card}.style.getPropertyValue('--am-hotspot-card-x')`);
+    await check('slide changes clear the open card placement', `!${card}.open && !${card}.dataset.placement`);
+    await load('numbered&autoplay');
+    await evaluate(`{const s=document.querySelector('am-numbered-slideshow');s.userPaused=true;s.pause()}`);
+    await tap(trigger); await settle();
+    await check('playback does not cover the open card', `getComputedStyle(document.querySelector('[data-am-playback]')).visibility==='hidden'`);
+    await tap(close);
+    await check('closing restores the manually paused control', `getComputedStyle(document.querySelector('[data-am-playback]')).visibility==='visible' && document.querySelector('am-numbered-slideshow').userPaused`);
+    await load('numbered&long');
+    await evaluate(`document.querySelector('am-numbered-slideshow product-hotspots').style.height='140px'`);
+    await tap(trigger); await settle();
+    await check('low images scroll long content and keep the close button reachable', `(()=>{const d=${card},b=d.querySelector('.hotspot-dialog__body'),x=d.querySelector('.hotspot-dialog__close'),r=x.getBoundingClientRect();b.scrollTop=500;return b.scrollTop>0 && r.width>=44 && r.height>=44 && x.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)) && d.scrollWidth<=d.clientWidth})()`);
+    const shot = await cdp('Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(output, 'numbered-mobile-card.png'), Buffer.from(shot.data, 'base64'));
+    await tap(close); await wait(`!${card}.open`);
+    await load('numbered'); await tap(trigger); await settle();
+    await evaluate(`{const root=document.querySelector('am-numbered-slideshow product-hotspots'),parent=root.parentElement;root.remove();parent.append(root)}`);
+    await wait(`!${card}.open && !${card}.style.getPropertyValue('--am-hotspot-card-x')`);
+    await tap(trigger); await settle();
+    await check('editor remount can reopen a centered card', centered);
+    await cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+    await load('numbered'); await tap(trigger); await settle();
+    await check('reduced motion preserves the centered card', centered);
+    await cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+    await viewport(750); await wait(`!${card}.open && !${card}.style.getPropertyValue('--am-hotspot-card-x')`);
+    for (const width of [750, 1440]) {
+      await viewport(width); await load('numbered'); await tap(trigger); await wait(`${card}.open`);
+      await check('desktop retains its placement without a close button at ' + width,
+        `${card}.dataset.placement!=='mobile' && getComputedStyle(${card}.querySelector('.hotspot-dialog__close')).display==='none'`);
+    }
+    await viewport(390);
+    for (const id of [1, 3]) {
+      await load('numbered&stock=' + id); await tap(trigger);
+      await wait(`document.querySelector('#quick-add-dialog dialog').open`);
+      await check('one touch opens Quick Buy for product ' + id, `!${card}.open && !!document.querySelector('#quick-add-modal-content [data-product-id="${id}"]')`);
+    }
+    await load('numbered&stock=1');
+    await evaluate(`window.fetch=()=>Promise.resolve(new Response('',{status:503}))`);
+    await tap(trigger); await settle();
+    await check('a failed Quick Buy opens the centered fallback', `${card}.open && !document.querySelector('#quick-add-dialog dialog').open`);
+    await load('numbered&stock=1');
+    await evaluate(`document.getElementById('quick-add-dialog').remove()`);
+    await tap(trigger); await settle();
+    await check('a missing modal opens the centered fallback', centered);
+    await load();
+    await evaluate(`document.querySelector('product-hotspot-component').showDialog()`);
+    await evaluate(`Promise.all(document.querySelector('product-hotspot-component').refs.dialog.getAnimations({subtree:true}).map(animation=>animation.finished.catch(()=>{})))`);
+    await check('standalone mobile hotspots keep their existing card behavior', `(()=>{const h=document.querySelector('product-hotspot-component'),d=h.refs.dialog;return !h.hasAttribute('data-mobile-card-centered') && getComputedStyle(d).display==='none' && !h.querySelector('.hotspot-dialog__close')})()`);
+    await cdp('Emulation.setTouchEmulationEnabled', { enabled: false });
+  };
   const drawerGiftConfirmation = `(()=>{const d=document.querySelector('cart-drawer-component'),n=d.querySelector('[data-am-cart-feedback]'),s=d.querySelector('.cart-drawer__summary');if(!n || n.hidden)return false;const r=n.getBoundingClientRect(),height=s.getBoundingClientRect().height;n.hidden=true;const without=s.getBoundingClientRect().height;n.hidden=false;return n.textContent==='Actualizamos tu carrito.' && n.getAttribute('role')==='status' && n.getAttribute('aria-live')==='polite' && n.classList.contains('visually-hidden') && !n.classList.contains('am-cart-error') && getComputedStyle(n).position==='absolute' && r.width<=1 && r.height<=1 && Math.abs(height-without)<1})()`;
   const centeredTierLabels = `(()=>{const area=document.querySelector('.am-cart-progress').getBoundingClientRect();return [...document.querySelectorAll('.am-cart-progress__check')].every(p=>{const badge=p.getBoundingClientRect(),label=p.nextElementSibling.getBoundingClientRect();return Math.abs(badge.left+badge.width/2-label.left-label.width/2)<1 && label.left>=area.left && label.right<=area.right})})()`;
   const metrics = [];
@@ -837,6 +946,8 @@ try {
     await check('page cart mode retains global gift guards without a cart section', '(async()=>{const m=await import("@theme/am-tier-gifts");return m.hasTierGifts() && m.isReservedProduct(20)})()');
     Object.assign(settings,saved); for(const slot of [1,2,3])delete settings['am_progress_'+slot+'_product'];items=previousItems;discount=0;
   };
+  if (process.env.AM_QA_NUMBERED_ONLY || ![process.env.AM_QA_DETAILS_ONLY,process.env.AM_QA_HOTSPOTS_ONLY,process.env.AM_QA_DENSITY_ONLY,process.env.AM_QA_UPSELL_ONLY,process.env.AM_QA_EMPTY_ONLY,process.env.AM_QA_GALLERY_ONLY,process.env.AM_QA_PRODUCT_UPSELL_ONLY,process.env.AM_QA_TIERS_ONLY].some(Boolean)) await numberedSlideshowChecks();
+  if (!process.env.AM_QA_NUMBERED_ONLY) {
   if (![process.env.AM_QA_DETAILS_ONLY,process.env.AM_QA_HOTSPOTS_ONLY,process.env.AM_QA_DENSITY_ONLY,process.env.AM_QA_UPSELL_ONLY,process.env.AM_QA_EMPTY_ONLY,process.env.AM_QA_GALLERY_ONLY,process.env.AM_QA_PRODUCT_UPSELL_ONLY].some(Boolean)) await tierGiftChecks();
   if (!process.env.AM_QA_TIERS_ONLY && !process.env.AM_QA_PRODUCT_UPSELL_ONLY && ![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY].some(Boolean)) await quickBuyGalleryChecks();
   if (!process.env.AM_QA_PRODUCT_UPSELL_ONLY && !process.env.AM_QA_GALLERY_ONLY && !process.env.AM_QA_TIERS_ONLY) {
@@ -1300,6 +1411,7 @@ try {
     }
   }
   if (process.env.AM_QA_PRODUCT_UPSELL_ONLY || ![process.env.AM_QA_DETAILS_ONLY, process.env.AM_QA_HOTSPOTS_ONLY, process.env.AM_QA_DENSITY_ONLY, process.env.AM_QA_UPSELL_ONLY, process.env.AM_QA_EMPTY_ONLY, process.env.AM_QA_GALLERY_ONLY, process.env.AM_QA_TIERS_ONLY].some(Boolean)) await productUpsellChecks();
+  }
   assert.deepEqual(errors, [], 'No browser exceptions'); checks++;
   fs.writeFileSync(path.join(output, 'density.json'), JSON.stringify(metrics, null, 2));
   console.log(JSON.stringify({ checks, writes: writes.length, artifacts: output }, null, 2));

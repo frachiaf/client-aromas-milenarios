@@ -24,6 +24,7 @@
   @param {string} [mobile_button_background_color] - Optional mobile grid button background.
   @param {string} [mobile_button_text_color] - Optional mobile grid button text color.
   @param {boolean} [mobile_preview_quick_buy] - Whether mobile selection reveals a separate Quick Buy CTA.
+  @param {boolean} [mobile_card_centered] - Whether the mobile fallback card is centered in the image with a close button.
   @param {number} [mobile_quick_buy_x] - Horizontal center of the mobile CTA, as a percentage.
   @param {number} [mobile_quick_buy_y] - Vertical center of the mobile CTA, as a percentage.
   @param {string} [product_title_preset] - Typography preset for the title.
@@ -65,6 +66,9 @@
     data-product-url="{{ product.url }}"
     data-product-title="{{ hotspot_product_title | escape }}"
     data-details-label="{{ 'accessibility.show_product_details' | t: product_name: hotspot_product_title | escape }}"
+    {% if mobile_card_centered %}
+      data-mobile-card-centered
+    {% endif %}
     {% if mobile_preview_quick_buy %}
       data-mobile-selection-label="{{ 'accessibility.hotspots_select_product' | t: product_name: hotspot_product_title | escape }}"
     {% endif %}
@@ -107,13 +111,24 @@
       class="hotspot-dialog color-{{ color_scheme }}"
       ref="dialog"
     >
-      <a
-        href="{{ hotspot_product_url }}"
-        class="hotspot-dialog__link"
-        aria-label="{{ hotspot_product_title | escape }}"
-        ref="productLink"
-      ></a>
+      {% if mobile_card_centered %}
+        <button
+          type="button"
+          class="button button-unstyled hotspot-dialog__close {{ product_title_preset | default: 'h5' }}"
+          aria-label="{{ 'accessibility.close_dialog' | t }}"
+          on:click="/closePreview"
+        >
+          {{ 'icon-close.svg' | inline_asset_content }}
+        </button>
+        <div class="hotspot-dialog__body">
+      {% endif %}
       <div class="hotspot-dialog__product">
+        <a
+          href="{{ hotspot_product_url }}"
+          class="hotspot-dialog__link"
+          aria-label="{{ hotspot_product_title | escape }}"
+          ref="productLink"
+        ></a>
         {% if product.featured_image != blank %}
           {% render 'image', image: product.featured_image, class: 'hotspot-dialog__product-image' %}
         {% else %}
@@ -143,6 +158,9 @@
           {% endif %}
         </div>
       </div>
+      {% if mobile_card_centered %}
+        </div>
+      {% endif %}
     </dialog>
     {% if show_mobile_button %}
       {% if mobile_hover_image != blank or mobile_hover_video != blank or mobile_preview_quick_buy %}

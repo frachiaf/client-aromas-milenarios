@@ -68,13 +68,23 @@
 
 <am-video-with-carousel
   class="am--video-with-carousel{% if section.settings.enable_color_scheme %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.background_image_on_content %} am--background-image-on-content{% endif %}{% if section.settings.section_height != 'auto' %} am--has-section-ratio{% endif %}{% if section.settings.align_slider_items %} am--align-slider-items{% endif %}{% if section.settings.disable_smooth_transition %} am--disable-slide-transition{% endif %}{% unless section.settings.show_mobile %} am--hide-mobile{% endunless %}{% unless section.settings.show_tablet %} am--hide-tablet{% endunless %}{% unless section.settings.show_desktop %} am--hide-desktop{% endunless %}{% if section.settings.snow_animation %} am--has-snow{% endif %}"
-  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if background_image != blank %} --am-background-image: url('{{ background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-carousel-button-margin-top: {{ section.settings.carousel_button_margin_top }}px; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }}; --am-media-width-desktop: {{ section.settings.media_width_desktop }}%; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%; --am-content-justify-desktop: {{ section.settings.content_justify_desktop }};{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}"
+  style="--am-background-color: {{ background_color }}; --am-text-color: {{ text_color }};{% if background_image != blank %} --am-background-image: url('{{ background_image | image_url: width: 2400 }}');{% endif %}{% if section.settings.background_image_mobile != blank %} --am-background-image-mobile: url('{{ section.settings.background_image_mobile | image_url: width: 1200 }}');{% endif %}{% if section.settings.snow_image_1 != blank %} --am-snow-1: url('{{ section.settings.snow_image_1 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_2 != blank %} --am-snow-2: url('{{ section.settings.snow_image_2 | image_url: width: 1600 }}');{% endif %}{% if section.settings.snow_image_3 != blank %} --am-snow-3: url('{{ section.settings.snow_image_3 | image_url: width: 1600 }}');{% endif %} --am-heading-color: {{ heading_color }}; --am-overlay-color: {{ overlay_color }}; --am-overlay-align-x: {{ overlay_x }}; --am-overlay-align-y: {{ overlay_y }}; --am-overlay-text-align: {{ overlay_text_align }}; --am-button-align: {{ button_align }}; --am-carousel-button-margin-top: {{ section.settings.carousel_button_margin_top }}px; --am-carousel-heading-color: {{ carousel_heading_color }}; --am-slide-background: {{ slide_background }}; --am-slide-heading-color: {{ slide_heading_color }}; --am-slide-counter-color: {{ slide_counter_color }}; --am-progress-color: {{ progress_color }}; --am-progress-background: {{ progress_background }}; --am-arrow-text-color: {{ arrow_text_color }}; --am-arrow-background: {{ arrow_background }}; --am-autoplay-text-color: {{ autoplay_text_color }}; --am-autoplay-background: {{ autoplay_background }}; --am-media-width-desktop: {{ section.settings.media_width_desktop }}%; --am-slide-width-desktop: {{ section.settings.slide_width_desktop }}%; --am-content-justify-desktop: {{ section.settings.content_justify_desktop }}; --am-content-justify-mobile: {{ section.settings.content_justify_mobile }}; --am-content-width-mobile: {{ section.settings.content_width_mobile }}%; --am-content-width-desktop: {{ section.settings.content_width_desktop }}%; --am-content-gap-mobile: {{ section.settings.content_gap_mobile }}px; --am-content-gap-desktop: {{ section.settings.content_gap_desktop }}px; --am-content-padding-mobile: {{ section.settings.content_padding_mobile }}px; --am-content-padding-desktop: {{ section.settings.content_padding_desktop }}px;{% if section.settings.section_height != 'auto' %} --am-section-ratio: {{ section.settings.section_height }};{% endif %}"
   data-am-interval="{{ section.settings.carousel_timer | times: 1000 }}"
   data-am-autoplay="true"
 >
-  {%- if section.settings.heading != blank -%}
+  {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
     <div class="am--video-with-carousel__heading-wrapper">
-      <h2 class="am--video-with-carousel__heading">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="am--video-with-carousel__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <div
+          class="am--video-with-carousel__subheading text-block {{ section.settings.subheading_preset }}{% if section.settings.subheading_size != blank %} am--has-subheading-size{% endif %}"
+          style="--am-subheading-align: {{ section.settings.subheading_alignment | default: 'center' }};{% if section.settings.subheading_size != blank %} --am-subheading-size: {{ section.settings.subheading_size }};{% endif %}{% if section.settings.enable_color_scheme == false and section.settings.subheading_color != blank %} --am-subheading-color: {{ section.settings.subheading_color }};{% endif %}"
+        >
+          {{ section.settings.subheading }}
+        </div>
+      {%- endif -%}
     </div>
   {%- endif -%}
 
@@ -242,6 +252,53 @@
     { "type": "image_picker", "id": "snow_image_2", "label": "Capa de nieve 2" },
     { "type": "image_picker", "id": "snow_image_3", "label": "Capa de nieve 3" },
     { "type": "text", "id": "heading", "label": "Título de la sección", "default": "Section title" },
+    { "type": "richtext", "id": "subheading", "label": "Subtítulo" },
+    {
+      "type": "select",
+      "id": "subheading_preset",
+      "label": "Tipografía del subtítulo",
+      "options": [
+        { "value": "rte", "label": "Predeterminada" },
+        { "value": "paragraph", "label": "Párrafo" },
+        { "value": "h1", "label": "Encabezado 1" },
+        { "value": "h2", "label": "Encabezado 2" },
+        { "value": "h3", "label": "Encabezado 3" },
+        { "value": "h4", "label": "Encabezado 4" },
+        { "value": "h5", "label": "Encabezado 5" },
+        { "value": "h6", "label": "Encabezado 6" }
+      ],
+      "default": "rte"
+    },
+    {
+      "type": "select",
+      "id": "subheading_size",
+      "label": "Tamaño del subtítulo",
+      "options": [
+        { "value": "", "label": "Predeterminado" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "2rem", "label": "32px" },
+        { "value": "2.5rem", "label": "40px" },
+        { "value": "3rem", "label": "48px" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "subheading_alignment",
+      "label": "Alineación del subtítulo",
+      "options": [
+        { "value": "left", "label": "Izquierda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Derecha" }
+      ],
+      "default": "center"
+    },
+    { "type": "color", "id": "subheading_color", "label": "Color del subtítulo", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
     { "type": "checkbox", "id": "enable_color_scheme", "label": "Usar esquema de colores del tema", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:settings.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.enable_color_scheme }}" },
     { "type": "color", "id": "heading_color", "label": "Color del encabezado", "visible_if": "{{ section.settings.enable_color_scheme == false }}" },
@@ -310,6 +367,27 @@
         { "value": "3 / 4", "label": "3:4" }
       ],
       "default": "16 / 9"
+    },
+    { "type": "header", "content": "Disposición del contenido" },
+    { "type": "range", "id": "content_width_mobile", "label": "Ancho del contenido (móvil)", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "content_width_desktop", "label": "Ancho del contenido (escritorio)", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "content_gap_mobile", "label": "Separación del contenido (móvil)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "content_gap_desktop", "label": "Separación del contenido (escritorio)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "content_padding_mobile", "label": "Padding vertical del contenido (móvil)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "content_padding_desktop", "label": "Padding vertical del contenido (escritorio)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    {
+      "type": "select",
+      "id": "content_justify_mobile",
+      "label": "Alineación del contenido (móvil)",
+      "options": [
+        { "value": "flex-start", "label": "Inicio" },
+        { "value": "center", "label": "Centro" },
+        { "value": "flex-end", "label": "Final" },
+        { "value": "space-between", "label": "Espacio entre elementos" },
+        { "value": "space-around", "label": "Espacio alrededor" },
+        { "value": "space-evenly", "label": "Espacio uniforme" }
+      ],
+      "default": "center"
     },
     { "type": "header", "content": "Disposición en escritorio" },
     { "type": "range", "id": "media_width_desktop", "label": "Ancho del medio", "min": 20, "max": 80, "step": 1, "default": 40, "unit": "%" },

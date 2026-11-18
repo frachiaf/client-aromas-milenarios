@@ -95,7 +95,25 @@
         assign final_message = final_message | escape | replace: '{benefit}', benefit | replace: '{amount}', zero_amount
       endif
     %}
-    <div class="am-cart-progress{% if is_drawer %} am-cart-progress--drawer{% endif %}">
+    {% liquid
+      assign check_pending_background = settings.am_progress_check_pending_background
+      assign check_pending_color = settings.am_progress_check_pending_color
+      assign check_complete_color = settings.am_progress_check_complete_color
+      assign check_complete_mark = settings.am_progress_check_complete_mark
+      assign check_complete_icon = ''
+      if check_complete_mark == blank and check_complete_color != blank
+        assign check_brightness = check_complete_color | color_brightness
+        if check_brightness > 153
+          assign check_complete_icon = '#111111'
+        else
+          assign check_complete_icon = '#ffffff'
+        endif
+      endif
+    %}
+    <div
+      class="am-cart-progress{% if is_drawer %} am-cart-progress--drawer{% endif %}"
+      style="{% if check_pending_background != blank %}--am-check-pending-bg: {{ check_pending_background }};{% endif %}{% if check_pending_color != blank %}--am-check-pending: {{ check_pending_color }};{% endif %}{% if check_complete_color != blank %}--am-check-complete: {{ check_complete_color }};{% endif %}{% if check_complete_icon != blank %}--am-check-complete-icon: {{ check_complete_icon }};{% endif %}{% if check_complete_mark != blank %}--am-check-complete-mark: {{ check_complete_mark }};{% endif %}"
+    >
       <div class="am-cart-progress__visual" style="--am-tier-count: {{ count }}">
       <ol class="am-cart-progress__steps">
         {% assign active_step = 0 %}
@@ -109,7 +127,7 @@
           %}
           {% if settings[enabled_key] %}
             {% assign active_step = active_step | plus: 1 %}
-            <li data-am-tier="{{ active_step }}" {% if cart.total_price >= threshold %}data-complete{% endif %}>
+            <li {% if cart.total_price >= threshold %}data-complete{% endif %}>
               <span class="am-cart-progress__check" aria-hidden="true">{% if cart.total_price >= threshold %}✓{% else %}{{ active_step }}{% endif %}</span>
               <span class="am-cart-progress__label">{{ settings[label_key] | escape }}</span>
               {% if cart.total_price >= threshold %}<span class="visually-hidden">{{ 'am_commerce.milestone_complete' | t }}</span>{% endif %}

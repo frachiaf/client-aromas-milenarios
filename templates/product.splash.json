@@ -1823,7 +1823,7 @@
       ],
       "name": "t:names.product_recommendations",
       "settings": {
-        "am_product_card_style": "circular",
+        "am_product_card_style": "original",
         "product": "{{ closest.product }}",
         "recommendation_type": "related",
         "layout_type": "grid",

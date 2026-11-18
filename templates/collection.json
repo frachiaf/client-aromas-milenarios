@@ -358,7 +358,7 @@
                   "type": "swatches",
                   "settings": {
                     "product_swatches_alignment": "center",
-                    "product_swatches_alignment_mobile": "flex-start",
+                    "product_swatches_alignment_mobile": "center",
                     "hide_padding": false,
                     "product_swatches_padding_top": 4,
                     "product_swatches_padding_bottom": 0,
@@ -382,7 +382,7 @@
         }
       },
       "settings": {
-        "am_product_card_style": "circular",
+        "am_product_card_style": "original",
         "layout_type": "grid",
         "product_card_size": "medium",
         "mobile_product_card_size": "small",

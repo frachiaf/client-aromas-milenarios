@@ -998,7 +998,7 @@
         "position": "center",
         "plain-text-btn": false,
         "underline": false,
-        "button_link": "shopify://collections/universo-masculino",
+        "button_link": "shopify://collections/perfumes-corporales-tmp",
         "video_text_color": "#ad8995",
         "btn_color": "#ad8995",
         "btn_text_color": "#ffffff",
@@ -2198,7 +2198,7 @@
                   "name": "t:names.button",
                   "settings": {
                     "label": "Ver más",
-                    "link": "shopify://collections/perfume-corporal",
+                    "link": "shopify://collections/universo-masculino",
                     "open_in_new_tab": false,
                     "style_class": "button",
                     "width": "fit-content",

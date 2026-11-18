@@ -972,7 +972,7 @@
       "settings": {
         "snow_animation": false,
         "heading": "Más que Aromas",
-        "subheading": "",
+        "subheading": "<h4>Lo invisible también se siente.</h4>",
         "subheading_preset": "rte",
         "subheading_size": "",
         "subheading_alignment": "center",

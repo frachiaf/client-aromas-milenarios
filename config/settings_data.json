@@ -60,6 +60,8 @@
     "currency_code_enabled_product_pages": false,
     "currency_code_enabled_product_cards": false,
     "currency_code_enabled_cart_items": false,
+    "am_card_images_darken": true,
+    "am_pdp_images_darken": true,
     "quick_add_color_scheme": "scheme-1",
     "am_media_arrow_rounded_background": true,
     "product_corner_radius": 0,

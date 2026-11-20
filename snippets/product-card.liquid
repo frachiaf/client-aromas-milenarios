@@ -8,6 +8,7 @@
   @param {object} [block] - The block object
   @param {number} [product_card_gap] - The gap between the product card children (overrides block settings)
   @param {string} [card_style] - Section card style: original or circular.
+  @param {object} [section] - Section rendering the card, used to recognize the collection grid.
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
@@ -47,6 +48,25 @@
     assign featured_image = variant_to_link.featured_image
     if featured_image == blank
       assign featured_image = product.featured_media.preview_image
+    endif
+
+    if request.page_type == 'collection'
+      capture am_second_image_id
+        render 'am--card-second-image', product: product, section: section
+      endcapture
+      assign am_second_image_id = am_second_image_id | strip
+
+      if am_second_image_id != blank
+        assign am_other_media = product.media | reject: 'src', product.featured_media
+        assign am_media_list = product.featured_media | concat: am_other_media
+        for media in am_media_list
+          assign am_media_id = media.id | append: ''
+          if am_media_id == am_second_image_id and media.preview_image != blank
+            assign featured_image = media.preview_image
+            break
+          endif
+        endfor
+      endif
     endif
 
     if featured_image != blank

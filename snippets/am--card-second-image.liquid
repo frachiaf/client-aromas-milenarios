@@ -1,0 +1,45 @@
+{%- doc -%}
+  Returns the media id of the second product image when the collection grid should show it first.
+  Outputs nothing when the current order should stay.
+
+  The theme reads the collection checkbox and does not create its definition.
+  Nested blocks cannot receive a custom content_for attribute, so the collection grid is
+  recognized here by its product_grid_width setting on a collection page.
+
+  @param {product} product - Product rendered by the card.
+  @param {object} [section] - Section that renders the card.
+  @example
+  {% render 'am--card-second-image', product: product, section: section %}
+{%- enddoc -%}
+{%- liquid
+  assign am_grid_width = ''
+  if section != blank
+    assign am_grid_width = section.settings.product_grid_width
+  endif
+
+  if request.page_type == 'collection' and am_grid_width != blank and collection.metafields.custom.segunda_imagen_featured.value == true and product != blank and product.media.size > 1
+    assign am_has_second_image_tag = false
+    for tag in product.tags
+      if tag == 'segunda imagen featured'
+        assign am_has_second_image_tag = true
+        break
+      endif
+    endfor
+
+    if am_has_second_image_tag
+      assign am_other_media = product.media | reject: 'src', product.featured_media
+      assign am_media_list = product.featured_media | concat: am_other_media
+      assign am_seen_images = 0
+
+      for media in am_media_list
+        if media.media_type == 'image'
+          assign am_seen_images = am_seen_images | plus: 1
+          if am_seen_images == 2
+            echo media.id
+            break
+          endif
+        endif
+      endfor
+    endif
+  endif
+-%}

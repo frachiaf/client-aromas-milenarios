@@ -99,6 +99,34 @@
 
       assign other_media = product.media | reject: 'src', product.featured_media
       assign media_list_to_show = product.featured_media | concat: other_media
+      assign am_preserved_media_id = ''
+      assign am_second_image_id = ''
+      if request.page_type == 'collection'
+        capture am_second_image_id
+          render 'am--card-second-image', product: product, section: section
+        endcapture
+        assign am_second_image_id = am_second_image_id | strip
+      endif
+
+      if am_second_image_id != blank and media_list_to_show.first != blank
+        assign am_lead_media = blank
+        assign am_preserved_media_id = media_list_to_show.first.id | append: ''
+
+        for media in media_list_to_show
+          assign am_media_id = media.id | append: ''
+          if am_media_id == am_second_image_id
+            assign am_lead_media = media
+            break
+          endif
+        endfor
+
+        if am_lead_media != blank and am_lead_media.id != media_list_to_show.first.id
+          assign am_trailing_media = media_list_to_show | reject: 'id', am_lead_media.id
+          assign media_list_to_show = am_lead_media | concat: am_trailing_media
+        else
+          assign am_preserved_media_id = ''
+        endif
+      endif
 
       if product.media.size > 2 and generic_media_size > 0
         assign show_arrows = true
@@ -124,7 +152,10 @@
 
             if forloop.first == false
               # hide all variant images that aren't the first one
-              assign hidden = true
+              assign am_media_id = media.id | append: ''
+              unless am_preserved_media_id != blank and am_media_id == am_preserved_media_id
+                assign hidden = true
+              endunless
             endif
           endif
 

@@ -6,6 +6,23 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ## Unreleased
 
+### Añadido
+
+- Objetivo (2026-11-20): mostrar primero la segunda foto en la grilla de colección cuando el checkbox de la colección está activo y el producto tiene el tag «segunda imagen featured».
+- Archivos: `blocks/_product-card.liquid`, `snippets/am--card-second-image.liquid`, `snippets/card-gallery.liquid`, `snippets/product-card.liquid`, `docs/theme-architecture.md` y este changelog.
+- Impacto: solo la grilla de la página de colección. El metafield `custom.segunda_imagen_featured` tiene que existir en el admin como booleano de colección con acceso a la tienda. Apagado, ausente o sin el tag, la card conserva la foto destacada. Encendido, la segunda foto ocupa el primer slide y la destacada queda en el siguiente, incluso si es imagen de variante. Videos y modelos no cuentan como esa foto. El hover, el carrusel y la transición a la ficha usan ese orden. Búsqueda, home, recomendaciones y quick buy no cambian. No se editaron templates ni `settings_data.json`.
+
+### Validación
+
+- El validador Liquid de Shopify aprobó el bloque, la galería, la card y el snippet nuevo.
+- `shopify theme check --path .` inspeccionó 344 archivos sin errores y con las 31 advertencias ya existentes.
+- Un render local del snippet devolvió la segunda foto solo con página de colección, ancho de grilla, checkbox activo, tag exacto y al menos dos fotos. Sin el tag, con el checkbox apagado, fuera de la colección, sin el ajuste de grilla, con una sola foto o con otra capitalización, no devolvió id. Un video entre las dos fotos no se eligió.
+- En el preview local `http://127.0.0.1:9292`, Velas ya tiene el checkbox activo. Vela Celta y Vela Oriente, con el tag, abren con su segunda foto y dejan la destacada en el slide siguiente. Vela Candelabro, sin el tag, sigue con su primera foto. En Experiencia Milenaria y Todos, Vela Celta vuelve a la foto destacada.
+
+### Reversión
+
+- Quitar la lectura del metafield y el snippet restaura el orden de la foto destacada. No hay migración de datos.
+
 ### Modificado
 
 - Objetivo (2026-11-15): achicar el confeti y anclarlo al hito que se acaba de completar.

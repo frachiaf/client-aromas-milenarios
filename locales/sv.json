@@ -12,6 +12,9 @@
     "menu_image_help": "Choose an image and enter the full name of a main menu item. Check the name if no image appears. When blocks match the same name, only the first valid block is used."
   },
   "am_commerce": {
+    "virtual_store_empty": "There are no collections to show in this store.",
+    "virtual_store_help": "Choose the collections for each wall in this section list.",
+    "virtual_store_tabs": "Collections",
     "tier_gift_free": "FREE",
     "tier_gift": "Gift",
     "tier_gift_only": "This product is added automatically as a gift when a cart milestone is reached.",

@@ -12,6 +12,9 @@
     "menu_image_help": "Elegí una imagen y escribí el nombre completo de un ítem del menú principal. Si no aparece la imagen, revisá el nombre. Si varios bloques coinciden, se usa solo el primero válido."
   },
   "am_commerce": {
+    "virtual_store_empty": "No hay colecciones para mostrar en esta tienda.",
+    "virtual_store_help": "Elegí las colecciones de cada pared en el listado de esta sección.",
+    "virtual_store_tabs": "Colecciones",
     "tier_gift_free": "GRATIS",
     "tier_gift": "Regalo",
     "tier_gift_only": "Este producto se agrega automáticamente como regalo al alcanzar un beneficio del carrito.",

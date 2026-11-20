@@ -8,6 +8,113 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Añadido
 
+- Objetivo (2026-11-20): mostrar una colección como tienda virtual, con una pared por colección del listado y un carrusel en perspectiva.
+- Archivos: `sections/am-virtual-store.liquid`, `templates/collection.tienda-virtual.json`, `locales/*.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: la plantilla alternativa `tienda-virtual` no modifica la grilla ni `collection.json`. El merchant la asigna a las colecciones que tengan el metafield `custom.listado_de_colecciones` con acceso a la tienda online. Cada colección con productos es una pared, hasta 12 por defecto y 24 como máximo, en el orden de esa colección. El arrastre y la rueda mueven el riel; las pestañas cambian de pared con una transición de 550 ms. El click abre la ficha. Sin el listado, la tienda muestra un texto y el editor una ayuda. Header, footer y carrito no cambian. Con movimiento reducido no hay giro, inercia ni transición.
+
+### Validación
+
+- El validador Liquid de Shopify aprobó `sections/am-virtual-store.liquid` y `templates/collection.tienda-virtual.json`.
+- `shopify theme check --path .` inspeccionó 346 archivos sin errores y con las 31 advertencias ya existentes.
+- En Velas, `collection.metafields.custom` solo expone `foto_coleccion_mobile` y `segunda_imagen_featured`. `listado_de_colecciones` no llega al theme, así que `/collections/velas?view=tienda-virtual` muestra el texto de tienda vacía hasta que la definición tenga acceso a la tienda.
+- Con tres colecciones publicadas conectadas de forma temporal al setting, el preview local mostró la pared de Velas sin JavaScript y, con JavaScript, en escritorio y en 390 px: arrastre con inercia que se detiene en un producto, rueda, pestaña con transición y hash, recarga con `#rituales-del-alma`, flecha derecha, click a la ficha y movimiento reducido sin giro ni transición. Las pestañas miden 44 px. `/collections/velas` y `/collections/cremas` siguen en la grilla. Después de esa prueba la plantilla volvió a la fuente dinámica.
+
+### Reversión
+
+- Quitar la sección y la plantilla `collection.tienda-virtual` vuelve a dejar solo la grilla. No hay migración de datos. Las colecciones que usen esa plantilla deben volver a la plantilla por defecto.
+
+### Modificado
+
+- Objetivo (2026-11-20): hacer que el carrusel de la tienda virtual ocupe el ancho, con separación configurable, Quick Buy, darken de tarjetas y pestañas fijas.
+- Archivos: `sections/am-virtual-store.liquid`, `templates/collection.tienda-virtual.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: el paso llega a los bordes. Separación ajusta la distancia y, con Separación completa, las fotos no se solapan. El darken de las tarjetas se aplica a estas fotos cuando ese ajuste está activo. Quick Buy queda encendido: el click abre el modal y, si falla, la ficha. El hover agranda la foto. Las pestañas centran el texto, las no elegidas llevan outline y la píldora sigue el borde inferior hasta el final de la sección. La tipografía de las pestañas usa los preajustes del theme.
+
+### Validación
+
+- El validador Liquid aprobó la sección y la plantilla. `shopify theme check --path .` inspeccionó 346 archivos sin errores y con las 31 advertencias ya existentes.
+- En el preview local, con tres colecciones conectadas de forma temporal, el carrusel llega a los bordes en escritorio y en 390 px. Las fotos usan darken, el hover las agranda y el click abre Quick Buy. Las pestañas centran el texto, las no elegidas tienen outline y, al scrollear hasta el final, dejan de estar fijas para que se vea el footer. Después de la prueba la plantilla volvió a la fuente dinámica.
+
+### Reversión
+
+- Volver el paso a `ancho × 0.76`, quitar Quick Buy y dejar las pestañas en el flujo restaura la tienda anterior. No hay migración de datos.
+
+### Modificado
+
+- Objetivo (2026-11-20): distinguir el producto central de la tienda virtual, acercar la fila y fijar la barra de pestañas completa.
+- Archivos: `sections/am-virtual-store.liquid`, `templates/collection.tienda-virtual.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: el centro queda en escala 1.42, con título y precio, y el encaje al soltar dura 450 ms. Espacio vertical, 24 px por defecto, achica el aire arriba y abajo de la fila. La barra fija ocupa todo el ancho, con el fondo del esquema y 20 px de aire sobre y bajo los botones. Con movimiento reducido el centro sigue más grande y el cambio de posición es instantáneo. El paso usa el ancho de layout de la foto, así la escala no altera la separación.
+
+### Validación
+
+- El validador Liquid aprobó la sección y la plantilla. `shopify theme check --path .` inspeccionó 346 archivos sin errores y con las 31 advertencias ya existentes.
+- En el preview local de Rituales del Alma, en escritorio y en 390 px, el centro mide 1.42, el vecino cerca de 1.1 y el siguiente cerca de 0.78. El título y el precio crecen con la foto y no se cortan. Al arrastrar y soltar, escala y posición llegan juntas en 450 ms. Espacio vertical queda en 24 px y la sala mide la fila. La barra tiene fondo y 20 px de aire. En una ventana más baja queda fija al borde y, al scrollear hasta el footer, vuelve al flujo. Con movimiento reducido no hay giro ni transición y el centro sigue más grande. Velas sigue vacía porque ese metafield no llega al theme.
+
+### Reversión
+
+- Volver la escala a un 7% y la sala a `100svh` restaura el vacío y el producto central poco distinguible. No hay migración de datos.
+
+### Modificado
+
+- Objetivo (2026-11-20): alinear el carrusel de la tienda virtual, agregar flechas laterales y hacer opcional la navegación con scroll.
+- Archivos: `sections/am-virtual-store.liquid`, `templates/collection.tienda-virtual.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: los productos quedan en la misma línea horizontal y el centro sigue en escala 1.42. Las flechas usan el botón principal del esquema y cada paso, incluido el arrastre al soltar, dura 450 ms. Navegar con el scroll viene encendido; apagado, la rueda no mueve el carrusel. Con movimiento reducido el cambio es instantáneo.
+
+### Validación
+
+- El validador Liquid aprobó la sección y la plantilla. `shopify theme check --path .` inspeccionó 346 archivos sin errores y con las 31 advertencias ya existentes.
+- En el preview local de Rituales del Alma, en escritorio y en 390 px, los centros de las fotos quedan en la misma línea. La flecha avanza con una transición de 450 ms y la rueda mueve un solo producto. Con el setting apagado, la rueda no mueve el carrusel ni bloquea el scroll. El precio no se corta y las flechas usan el botón principal del esquema.
+
+### Reversión
+
+- Volver el giro y la profundidad, y quitar las flechas, restaura la fila en V. No hay migración de datos.
+
+### Modificado
+
+- Objetivo (2026-11-20): mostrar el botón de Quick Buy en la tienda virtual, ubicar las flechas y corregir el color de las pestañas en móvil.
+- Archivos: `sections/am-virtual-store.liquid`, `templates/collection.tienda-virtual.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: solo el botón de elegir abre el modal; el resto del producto se arrastra y un click corto abre la ficha. Posición de las flechas ofrece arriba, centro y abajo. En táctil la pestaña no conserva el color de hover.
+
+### Validación
+
+- El validador Liquid aprobó la sección y la plantilla. `shopify theme check --path .` inspeccionó 346 archivos sin errores y con las 31 advertencias ya existentes.
+- En el preview local de Rituales del Alma, en escritorio y en 390 px, el botón de elegir queda abajo a la derecha de la foto central. Arrastrar la foto mueve el carrusel y arrastrar el botón no. Las flechas quedan al centro, arriba alineadas con las fotos y abajo antes de las pestañas. En táctil, la pestaña elegida usa su color normal y no conserva el foco.
+
+### Reversión
+
+- Quitar el botón y volver el click del producto al modal restaura el Quick Buy anterior. No hay migración de datos.
+
+### Modificado
+
+- Objetivo (2026-11-20): dejar las flechas y las pestañas de la tienda virtual debajo del menú, arrastrar la foto y separar la tipografía del título y del precio.
+- Archivos: `sections/am-virtual-store.liquid`, `templates/collection.tienda-virtual.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: la sección aísla sus capas y la barra de pestañas queda por debajo del header, fija o no. La foto, el título y el precio arrastran el carrusel; el botón de Quick Buy no, y conserva el tamaño de las tarjetas aunque el centro esté agrandado. Posición de las pestañas queda abajo por defecto y, arriba, deja de fijarse al borde inferior. El título y el precio tienen preajuste propio. El centro sigue agrandando ese texto junto con la foto.
+
+### Validación
+
+- El validador Liquid aprobó la sección y la plantilla. `shopify theme check --path .` inspeccionó 346 archivos sin errores y con las 31 advertencias ya existentes.
+- En el preview local de Rituales del Alma, en escritorio y en 390 px, la foto arrastra el carrusel y el botón de Quick Buy no. El botón del centro y el de un vecino miden 36 px, el tamaño de las tarjetas. El título queda en 14 px, mayúsculas y acento; el precio en 16 px y el cuerpo; las pestañas siguen en su preajuste. Con las pestañas arriba, la barra queda antes de la fila y no se fija. En 390 px, con la barra fija, el menú hamburguesa cubre las flechas y las pestañas.
+
+### Reversión
+
+- Quitar el aislamiento, la posición de las pestañas y los preajustes del título y del precio restaura el menú tapado y la tipografía fija. No hay migración de datos.
+
+### Modificado
+
+- Objetivo (2026-11-20): mostrar el botón de Quick Buy solo en el producto centrado y usar el aspecto de la pestaña elegida al pasar el mouse sobre una no elegida.
+- Archivos: `sections/am-virtual-store.liquid`, `docs/theme-architecture.md` y este changelog.
+- Impacto: el anterior y el siguiente ocultan el botón, también con hover o foco. El del centro sigue abajo a la derecha y en 36 px. En escritorio, la pestaña no elegida toma el color y el fondo de la seleccionada y pierde el outline. La elegida conserva su hover. En táctil ese color no queda fijo.
+
+### Validación
+
+- El validador Liquid aprobó `sections/am-virtual-store.liquid`. `shopify theme check --path .` inspeccionó 346 archivos sin errores y con las 31 advertencias ya existentes.
+- En el preview local de Rituales del Alma, en escritorio y en 390 px, la pared activa muestra un solo botón de Quick Buy, el del producto centrado. Arrastrar la foto mueve el carrusel. La pestaña no elegida, al pasar el mouse, toma el color y el fondo de la elegida y pierde el outline.
+
+### Reversión
+
+- Volver a mostrar el botón con hover y el hover anterior de las pestañas restaura los botones de los vecinos. No hay migración de datos.
+
+### Añadido
+
 - Objetivo (2026-11-20): mostrar primero la segunda foto en la grilla de colección cuando el checkbox de la colección está activo y el producto tiene el tag «segunda imagen featured».
 - Archivos: `blocks/_product-card.liquid`, `snippets/am--card-second-image.liquid`, `snippets/card-gallery.liquid`, `snippets/product-card.liquid`, `docs/theme-architecture.md` y este changelog.
 - Impacto: solo la grilla de la página de colección. El metafield `custom.segunda_imagen_featured` tiene que existir en el admin como booleano de colección con acceso a la tienda. Apagado, ausente o sin el tag, la card conserva la foto destacada. Encendido, la segunda foto ocupa el primer slide y la destacada queda en el siguiente, incluso si es imagen de variante. Videos y modelos no cuentan como esa foto. El hover, el carrusel y la transición a la ficha usan ese orden. Búsqueda, home, recomendaciones y quick buy no cambian. No se editaron templates ni `settings_data.json`.

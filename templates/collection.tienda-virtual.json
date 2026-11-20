@@ -1,0 +1,44 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "am_virtual_store": {
+      "type": "am-virtual-store",
+      "settings": {
+        "collection_list": "{{ collection.metafields.custom.listado_de_colecciones.value }}",
+        "products_per_wall": 12,
+        "product_gap": 24,
+        "vertical_space": 24,
+        "scroll_navigation": true,
+        "arrow_position": "center",
+        "product_gap_complete": false,
+        "quick_buy": true,
+        "tab_position": "bottom",
+        "type_preset": "paragraph",
+        "title_type_preset": "custom",
+        "title_font": "var(--font-accent--family)",
+        "title_font_size": "0.875rem",
+        "title_line_height": "normal",
+        "title_letter_spacing": "loose",
+        "title_case": "uppercase",
+        "price_type_preset": "custom",
+        "price_font": "var(--font-body--family)",
+        "price_font_size": "1rem",
+        "price_line_height": "normal",
+        "price_letter_spacing": "normal",
+        "price_case": "none",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "am_virtual_store"
+  ]
+}

@@ -1,0 +1,1466 @@
+{%- liquid
+  assign per_wall = section.settings.products_per_wall | default: 12
+  if per_wall < 6
+    assign per_wall = 6
+  endif
+  if per_wall > 24
+    assign per_wall = 24
+  endif
+
+  assign wall_count = 0
+  assign active_index = 0
+  assign found_current = false
+  assign quick_product = blank
+  assign arrow_position = section.settings.arrow_position | default: 'center'
+  unless arrow_position == 'top' or arrow_position == 'bottom'
+    assign arrow_position = 'center'
+  endunless
+  assign tab_position = section.settings.tab_position | default: 'bottom'
+  unless tab_position == 'top'
+    assign tab_position = 'bottom'
+  endunless
+  assign title_preset = section.settings.title_type_preset | default: 'custom'
+  assign price_preset = section.settings.price_type_preset | default: 'custom'
+  assign title_class = title_preset
+  assign price_class = price_preset
+  if title_preset == 'h1' or title_preset == 'h2' or title_preset == 'h3' or title_preset == 'h4' or title_preset == 'h5' or title_preset == 'h6'
+    assign title_class = title_preset | append: ' ' | append: title_preset
+  endif
+  if price_preset == 'h1' or price_preset == 'h2' or price_preset == 'h3' or price_preset == 'h4' or price_preset == 'h5' or price_preset == 'h6'
+    assign price_class = price_preset | append: ' ' | append: price_preset
+  endif
+
+  if section.settings.collection_list != blank
+    for wall in section.settings.collection_list
+      assign shown = wall.products.size
+      if shown > per_wall
+        assign shown = per_wall
+      endif
+      if shown > 0
+        if quick_product == blank
+          assign quick_product = wall.products.first
+        endif
+        if found_current == false and wall.handle == collection.handle
+          assign active_index = wall_count
+          assign found_current = true
+        endif
+        assign wall_count = wall_count | plus: 1
+      endif
+    endfor
+  endif
+-%}
+
+<am-virtual-store
+  class="am-virtual-store am-virtual-store--arrows-{{ arrow_position }} am-virtual-store--tabs-{{ tab_position }} color-{{ section.settings.color_scheme }}{% if settings.am_card_images_darken %} am-virtual-store--image-darken{% endif %}{% if section.settings.product_gap_complete %} am-virtual-store--separate{% endif %}"
+  style="--am-gap: {{ section.settings.product_gap | default: 24 }}px; --am-vertical-space: {{ section.settings.vertical_space | default: 24 }}px;"
+  data-tab-position="{{ tab_position }}"
+  data-gap="{{ section.settings.product_gap | default: 24 }}"
+  data-gap-complete="{% if section.settings.product_gap_complete %}true{% else %}false{% endif %}"
+  data-scroll-navigation="{% if section.settings.scroll_navigation %}true{% else %}false{% endif %}"
+  data-quick-buy="{% if section.settings.quick_buy %}true{% else %}false{% endif %}"
+>
+  {%- if collection.title != blank -%}
+    <h1 class="visually-hidden">{{ collection.title }}</h1>
+  {%- endif -%}
+
+  {%- if wall_count == 0 -%}
+    <p class="am-virtual-store__empty">
+      {%- if request.design_mode -%}
+        {{ 'am_commerce.virtual_store_help' | t }}
+      {%- else -%}
+        {{ 'am_commerce.virtual_store_empty' | t }}
+      {%- endif -%}
+    </p>
+  {%- else -%}
+    <div class="am-virtual-store__stage">
+      <div class="am-virtual-store__room" data-room>
+        {%- assign visible_index = 0 -%}
+        {%- for wall in section.settings.collection_list -%}
+          {%- liquid
+            assign shown = wall.products.size
+            if shown > per_wall
+              assign shown = per_wall
+            endif
+          -%}
+          {%- if shown > 0 -%}
+            {%- assign center_index = shown | minus: 1 | divided_by: 2 -%}
+            {%- assign wall_active = false -%}
+            {%- if visible_index == active_index -%}
+              {%- assign wall_active = true -%}
+            {%- endif -%}
+            <div
+              class="am-virtual-store__wall{% if wall_active %} is-active{% endif %}"
+              id="AmVs-{{ section.id }}-{{ wall.handle }}"
+              role="tabpanel"
+              data-wall
+              data-handle="{{ wall.handle | escape }}"
+              data-position="{{ center_index }}"
+              aria-labelledby="AmVsTab-{{ section.id }}-{{ wall.handle }}"
+              {% unless wall_active %}
+                inert
+                aria-hidden="true"
+              {% endunless %}
+            >
+              <div
+                class="am-virtual-store__rail"
+                data-rail
+                style="--am-position: {{ center_index }}; --am-count: {{ shown }};"
+              >
+                {%- for product in wall.products limit: per_wall -%}
+                  {%- liquid
+                    assign image_loading = 'lazy'
+                    assign image_priority = 'auto'
+                    assign image_distance = forloop.index0 | minus: center_index | abs
+                    if wall_active and image_distance <= 1
+                      assign image_loading = 'eager'
+                    endif
+                    if wall_active and forloop.index0 == center_index and section.index == 1
+                      assign image_priority = 'high'
+                    endif
+                  -%}
+                  <div
+                    class="am-virtual-store__product{% if forloop.index0 == center_index %} is-center{% endif %}"
+                    data-product
+                    data-index="{{ forloop.index0 }}"
+                    style="--am-i: {{ forloop.index0 }};"
+                  >
+                    <a class="am-virtual-store__link" href="{{ product.url }}" draggable="false">
+                      <span class="am-virtual-store__frame">
+                        <span class="am-virtual-store__media">
+                          {%- if product.featured_image != blank -%}
+                            {{
+                              product.featured_image
+                              | image_url: width: 800
+                              | image_tag:
+                                widths: '200, 400, 600, 800',
+                                sizes: '(min-width: 750px) 220px, 150px',
+                                loading: image_loading,
+                                fetchpriority: image_priority,
+                                alt: product.title,
+                                class: 'am-virtual-store__image',
+                                draggable: false
+                            }}
+                          {%- endif -%}
+                        </span>
+                        <span class="am-virtual-store__caption">
+                          <span
+                            class="am-virtual-store__title {{ title_class }}{% if title_preset == 'custom' %} custom-typography{% if section.settings.title_font_size != blank %} custom-font-size{% endif %}{% endif %}"
+                            {% if title_preset == 'custom' %}
+                              style="--font-family: {{ section.settings.title_font }}; --font-weight: {{ section.settings.title_font | replace: 'family', 'weight' }}; {% if section.settings.title_font_size != blank %}--font-size: {{ section.settings.title_font_size }};{% endif %} --text-transform: {{ section.settings.title_case }}; --text-wrap: pretty; --line-height: var(--line-height--body-{{ section.settings.title_line_height }}); --letter-spacing: var(--letter-spacing--body-{{ section.settings.title_letter_spacing }});"
+                            {% endif %}
+                          >{{ product.title }}</span>
+                          <span
+                            class="am-virtual-store__price {{ price_class }}{% if price_preset == 'custom' %} custom-typography{% if section.settings.price_font_size != blank %} custom-font-size{% endif %}{% endif %}"
+                            {% if price_preset == 'custom' %}
+                              style="--font-family: {{ section.settings.price_font }}; --font-weight: {{ section.settings.price_font | replace: 'family', 'weight' }}; {% if section.settings.price_font_size != blank %}--font-size: {{ section.settings.price_font_size }};{% endif %} --text-transform: {{ section.settings.price_case }}; --text-wrap: pretty; --line-height: var(--line-height--body-{{ section.settings.price_line_height }}); --letter-spacing: var(--letter-spacing--body-{{ section.settings.price_letter_spacing }});"
+                            {% endif %}
+                          >
+                            {%- if product.compare_at_price > product.price -%}
+                              <s class="am-virtual-store__compare">{{ product.compare_at_price | money }}</s>
+                            {%- endif -%}
+                            <span>{{ product.price | money }}</span>
+                          </span>
+                        </span>
+                      </span>
+                    </a>
+                    {%- if section.settings.quick_buy -%}
+                      <div class="quick-add color-{{ settings.quick_add_color_scheme }}">
+                        <button
+                          class="button quick-add__button quick-add__button--choose add-to-cart-button"
+                          type="button"
+                          data-quick-buy
+                        >
+                          <span class="add-to-cart-text">
+                            <span class="svg-wrapper add-to-cart-icon" aria-hidden="true">
+                              {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
+                            </span>
+                            <span class="add-to-cart-text__content is-visually-hidden-mobile">
+                              <span>
+                                <span>{{ 'actions.choose' | t }}</span>
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+            {%- assign visible_index = visible_index | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        <button
+          class="am-virtual-store__nav am-virtual-store__nav--prev"
+          type="button"
+          data-nav="previous"
+          aria-label="{{ 'accessibility.slideshow_previous' | t }}"
+        >
+          <span class="svg-wrapper icon-caret">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+        </button>
+        <button
+          class="am-virtual-store__nav am-virtual-store__nav--next"
+          type="button"
+          data-nav="next"
+          aria-label="{{ 'accessibility.slideshow_next' | t }}"
+        >
+          <span class="svg-wrapper icon-caret">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+        </button>
+      </div>
+      <div class="am-virtual-store__tab-slot" data-tab-slot>
+        <div
+          class="am-virtual-store__tabs"
+          role="tablist"
+          aria-label="{{ 'am_commerce.virtual_store_tabs' | t }}"
+          data-tabs
+        >
+          {%- assign visible_index = 0 -%}
+          {%- for wall in section.settings.collection_list -%}
+            {%- liquid
+              assign shown = wall.products.size
+              if shown > per_wall
+                assign shown = per_wall
+              endif
+            -%}
+            {%- if shown > 0 -%}
+              {%- assign tab_active = false -%}
+              {%- if visible_index == active_index -%}
+                {%- assign tab_active = true -%}
+              {%- endif -%}
+              <a
+                class="am-virtual-store__tab {{ section.settings.type_preset }}{% if section.settings.type_preset == 'custom' %} custom-typography{% if section.settings.font_size != blank %} custom-font-size{% endif %}{% endif %}"
+                style="{% render 'typography-style', settings: section.settings %}"
+                id="AmVsTab-{{ section.id }}-{{ wall.handle }}"
+                href="#{{ wall.handle | escape }}"
+                role="tab"
+                data-tab
+                data-handle="{{ wall.handle | escape }}"
+                aria-controls="AmVs-{{ section.id }}-{{ wall.handle }}"
+                aria-selected="{% if tab_active %}true{% else %}false{% endif %}"
+                tabindex="{% if tab_active %}0{% else %}-1{% endif %}"
+              >
+                {{ wall.title }}
+              </a>
+              {%- assign visible_index = visible_index | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+  {%- if section.settings.quick_buy and quick_product != blank -%}
+    <div class="am-virtual-store__quick-add" hidden inert>
+      {% render 'quick-add', product: quick_product, section_id: section.id, instance_id: section.id %}
+    </div>
+  {%- endif -%}
+</am-virtual-store>
+
+{% stylesheet %}
+  .am-virtual-store {
+    --am-card-w: min(220px, 26svh);
+    --am-gap: 24px;
+    --am-vertical-space: 24px;
+    --am-media-h: calc(var(--am-card-w) * 4 / 3);
+    --am-row-height: calc((var(--am-media-h) + 4.5rem) * 1.42);
+    --am-align: calc(var(--am-vertical-space) + var(--am-media-h) * 1.42 / 2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    isolation: isolate;
+  }
+
+  .am-virtual-store__rail {
+    --am-step: max(48px, calc(100vw / max(2, var(--am-count, 7) - 1) + var(--am-gap, 24px) - 24px));
+  }
+
+  .am-virtual-store--separate .am-virtual-store__rail {
+    --am-step: max(calc(100vw / max(2, var(--am-count, 7) - 1)), calc(var(--am-card-w) + var(--am-gap, 24px)));
+  }
+
+  .am-virtual-store__empty {
+    margin: auto;
+    max-width: 36rem;
+    padding: 32px 20px;
+    text-align: center;
+  }
+
+  .am-virtual-store__stage {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .am-virtual-store__room {
+    position: relative;
+    flex: 1;
+    min-height: calc(var(--am-vertical-space) * 2 + var(--am-row-height));
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .am-virtual-store.is-dragging .am-virtual-store__room {
+    cursor: grabbing;
+  }
+
+  .am-virtual-store.is-dragging {
+    user-select: none;
+  }
+
+  .am-virtual-store__room::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 28%;
+    background: linear-gradient(to top, rgb(var(--color-foreground-rgb) / var(--opacity-10-25)), transparent);
+    pointer-events: none;
+  }
+
+  .am-virtual-store__wall {
+    position: absolute;
+    inset: 0;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .am-virtual-store__wall.is-active {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  .am-virtual-store__wall.is-animating {
+    visibility: visible;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .am-virtual-store__wall.is-incoming {
+    z-index: 3;
+  }
+
+  .am-virtual-store__rail {
+    position: absolute;
+    inset: 0;
+  }
+
+  .am-virtual-store__product {
+    --quick-add-display: flex;
+    --quick-add-mobile-display: flex;
+    --quick-add-mobile-opacity: 0;
+    position: absolute;
+    top: var(--am-align);
+    left: 50%;
+    display: flex;
+    width: var(--am-card-w);
+    transform: translate(-50%, -50%) translateX(calc((var(--am-i) - var(--am-position, 0)) * var(--am-step)));
+    transform-origin: center;
+  }
+
+  .am-virtual-store__link {
+    display: block;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .am-virtual-store__product.is-center {
+    transform: translate(-50%, -50%) translateX(calc((var(--am-i) - var(--am-position, 0)) * var(--am-step))) scale(1.42);
+  }
+
+  .am-virtual-store__frame {
+    position: relative;
+    display: block;
+    width: 100%;
+    transition: transform 280ms ease;
+  }
+
+  .am-virtual-store__product:is(:hover, :focus-within) .am-virtual-store__frame {
+    transform: scale(1.06);
+  }
+
+  .am-virtual-store__link:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 6px;
+  }
+
+  .am-virtual-store .quick-add {
+    pointer-events: none;
+  }
+
+  .am-virtual-store__product .quick-add__button {
+    top: auto;
+    left: auto;
+    right: 12px;
+    bottom: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(calc(1 / var(--am-scale, 1)));
+    transform-origin: bottom right;
+  }
+
+  .am-virtual-store__product.is-center .quick-add__button {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .am-virtual-store__media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+  }
+
+  .am-virtual-store__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .am-virtual-store--image-darken .am-virtual-store__media {
+    background-color: var(--color-background);
+    isolation: isolate;
+  }
+
+  .am-virtual-store--image-darken .am-virtual-store__media > img {
+    mix-blend-mode: darken;
+  }
+
+  .am-virtual-store__caption {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    left: 0;
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+
+  .am-virtual-store__product.is-center .am-virtual-store__caption {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .am-virtual-store__link,
+  .am-virtual-store__image {
+    -webkit-user-drag: none;
+  }
+
+  .am-virtual-store__title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-align: center;
+  }
+
+  .am-virtual-store__price {
+    display: flex;
+    gap: 0.4em;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .am-virtual-store__compare {
+    color: var(--color-foreground-muted);
+  }
+
+  .am-virtual-store__nav {
+    --icon-stroke-width: 1.5px;
+    position: absolute;
+    z-index: 5;
+    top: var(--am-align);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    color: var(--color-primary-button-text);
+    cursor: pointer;
+    background: var(--color-primary-button-background);
+    border: 0;
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+
+  .am-virtual-store__nav--prev {
+    left: 16px;
+  }
+
+  .am-virtual-store__nav--next {
+    right: 16px;
+  }
+
+  .am-virtual-store--arrows-top .am-virtual-store__nav {
+    top: var(--am-vertical-space);
+    transform: none;
+  }
+
+  .am-virtual-store--arrows-bottom .am-virtual-store__room {
+    min-height: calc(var(--am-vertical-space) * 2 + var(--am-row-height) + 52px);
+  }
+
+  .am-virtual-store--arrows-bottom .am-virtual-store__nav {
+    top: calc(var(--am-vertical-space) + var(--am-row-height) + 8px);
+    transform: none;
+  }
+
+  .am-virtual-store__nav .svg-wrapper,
+  .am-virtual-store__nav svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .am-virtual-store__nav--prev .svg-wrapper {
+    transform: rotate(90deg);
+  }
+
+  .am-virtual-store__nav--next .svg-wrapper {
+    transform: rotate(-90deg);
+  }
+
+  .am-virtual-store__nav:hover {
+    color: var(--color-primary-button-hover-text);
+    background: var(--color-primary-button-hover-background);
+  }
+
+  .am-virtual-store__nav:disabled {
+    cursor: default;
+    opacity: 0.35;
+  }
+
+  .am-virtual-store__nav:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+
+  .am-virtual-store__tab-slot {
+    position: sticky;
+    bottom: 0;
+    z-index: var(--layer-raised);
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 16px max(20px, env(safe-area-inset-bottom));
+    background: var(--color-background);
+  }
+
+  .am-virtual-store--tabs-top .am-virtual-store__tab-slot {
+    position: relative;
+    bottom: auto;
+    order: -1;
+  }
+
+  .am-virtual-store__tab-slot.is-fixed {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: var(--layer-raised);
+  }
+
+  .am-virtual-store__tabs {
+    display: flex;
+    gap: 4px;
+    width: max-content;
+    max-width: min(calc(100vw - 32px), 760px);
+    margin: 0 auto;
+    padding: 4px;
+    overflow-x: auto;
+    background: rgb(var(--color-foreground-rgb) / var(--opacity-5-15));
+    border-radius: 999px;
+    scrollbar-width: none;
+  }
+
+  .am-virtual-store__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .am-virtual-store a.am-virtual-store__tab {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 16px;
+    color: var(--color-foreground);
+    white-space: nowrap;
+    text-align: center;
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+  }
+
+  .am-virtual-store .am-virtual-store__tab:not([aria-selected='true']) {
+    outline: 1px solid currentColor;
+  }
+
+  .am-virtual-store .am-virtual-store__tab[aria-selected='true'] {
+    color: var(--color-primary-button-text);
+    background: var(--color-primary-button-background);
+    outline: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .am-virtual-store__tab:not([aria-selected='true']):hover {
+      color: var(--color-primary-button-text);
+      background: var(--color-primary-button-background);
+      outline: none;
+    }
+
+    .am-virtual-store__tab[aria-selected='true']:hover {
+      color: var(--color-primary-button-hover-text);
+      background: var(--color-primary-button-hover-background);
+    }
+  }
+
+  .am-virtual-store__tab:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .am-virtual-store {
+      --am-card-w: min(150px, 30svh);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .am-virtual-store__caption,
+    .am-virtual-store__frame {
+      transition: none;
+    }
+
+    .am-virtual-store__product:is(:hover, :focus-within) .am-virtual-store__frame {
+      transform: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('am-virtual-store')) {
+    class AmVirtualStore extends HTMLElement {
+      connectedCallback() {
+        this.abort = new AbortController();
+        this.motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        this.walls = [...this.querySelectorAll('[data-wall]')];
+        this.tabs = [...this.querySelectorAll('[data-tab]')];
+        this.room = this.querySelector('[data-room]');
+        this.stage = this.querySelector('.am-virtual-store__stage');
+        this.tabList = this.querySelector('[data-tabs]');
+        this.tabSlot = this.querySelector('[data-tab-slot]');
+        this.navButtons = [...this.querySelectorAll('[data-nav]')];
+        this.frame = 0;
+        this.wheelTimer = 0;
+        this.wheelLock = false;
+        this.navTarget = 0;
+        this.switchTimer = 0;
+        this.switchToken = null;
+        this.switching = false;
+        this.dragging = false;
+        this.moved = false;
+        this.suppressClick = false;
+        if (!this.walls.length || !this.room || !this.tabList) return;
+
+        const initial = this.walls.findIndex((wall) => wall.classList.contains('is-active'));
+        this.activeIndex = initial >= 0 ? initial : 0;
+        const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+        const hashed = this.walls.findIndex((wall) => wall.dataset.handle === hash);
+        if (hashed >= 0) this.activeIndex = hashed;
+        this.syncWalls();
+        this.position = this.clamp(Number(this.activeWall.dataset.position || 0));
+        this.applyTransforms();
+        this.updateTabs(false);
+        this.bind();
+        this.updateTabPin();
+      }
+
+      disconnectedCallback() {
+        this.abort?.abort();
+        if (this.frame) cancelAnimationFrame(this.frame);
+        clearTimeout(this.wheelTimer);
+        clearTimeout(this.switchTimer);
+        this.switchToken = null;
+      }
+
+      get activeWall() {
+        return this.walls[this.activeIndex];
+      }
+
+      get maxIndex() {
+        const count = this.activeWall?.querySelectorAll('[data-product]').length || 1;
+        return Math.max(0, count - 1);
+      }
+
+      bind() {
+        const signal = this.abort.signal;
+        this.room.addEventListener('pointerdown', (event) => this.onPointerDown(event), { signal });
+        this.room.addEventListener('dragstart', (event) => event.preventDefault(), { signal });
+        this.room.addEventListener('pointermove', (event) => this.onPointerMove(event), { signal });
+        this.room.addEventListener('pointerup', (event) => this.onPointerUp(event), { signal });
+        this.room.addEventListener('pointercancel', (event) => this.onPointerUp(event), { signal });
+        this.room.addEventListener('click', (event) => this.onClick(event), { capture: true, signal });
+        this.stage?.addEventListener('wheel', (event) => this.onWheel(event), { passive: false, signal });
+        this.navButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            this.stepBy(button.dataset.nav === 'next' ? 1 : -1);
+          }, { signal });
+        });
+        this.room.addEventListener('keydown', (event) => this.onWallKeydown(event), { signal });
+        this.room.addEventListener('focusin', (event) => this.onFocusIn(event), { signal });
+        this.tabList.addEventListener('keydown', (event) => this.onTabKeydown(event), { signal });
+        this.tabs.forEach((tab, index) => {
+          tab.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.switchTo(index);
+          }, { signal });
+          tab.addEventListener('pointerup', (event) => {
+            if (event.pointerType === 'touch') tab.blur();
+          }, { signal });
+        });
+        this.motion.addEventListener?.('change', () => this.applyTransforms(), { signal });
+        window.addEventListener('resize', () => {
+          this.applyTransforms();
+          this.updateTabPin();
+        }, { signal });
+        window.addEventListener('scroll', () => this.updateTabPin(), { passive: true, signal });
+      }
+
+      step() {
+        const card = this.activeWall?.querySelector('[data-product]');
+        const cardWidth = card?.offsetWidth || 160;
+        const gap = Number(this.dataset.gap);
+        const spacing = Number.isFinite(gap) ? gap : 24;
+        const complete = this.dataset.gapComplete === 'true';
+        const roomWidth = this.room?.clientWidth || cardWidth;
+        const half = Math.max(1, Math.floor(this.maxIndex / 2));
+        const fill = roomWidth / 2 / half;
+        if (complete) return Math.max(fill, cardWidth + spacing);
+        return Math.max(48, fill + spacing - 24);
+      }
+
+      clamp(value) {
+        if (!Number.isFinite(value)) return 0;
+        return Math.max(0, Math.min(this.maxIndex, value));
+      }
+
+      remember() {
+        if (this.activeWall) this.activeWall.dataset.position = String(this.position);
+      }
+
+      cancelRailMotion() {
+        if (this.frame) cancelAnimationFrame(this.frame);
+        this.frame = 0;
+      }
+
+      syncWalls() {
+        this.walls.forEach((wall, index) => {
+          const active = index === this.activeIndex;
+          wall.classList.toggle('is-active', active);
+          wall.classList.remove('is-animating', 'is-incoming');
+          if (active) {
+            wall.removeAttribute('inert');
+            wall.removeAttribute('aria-hidden');
+          } else {
+            wall.setAttribute('inert', '');
+            wall.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+
+      applyTransforms() {
+        const wall = this.activeWall;
+        if (!wall) return;
+        const products = [...wall.querySelectorAll('[data-product]')];
+        const step = this.step();
+        const reduced = this.motion.matches;
+        let closest = 0;
+        let best = Infinity;
+        products.forEach((product, index) => {
+          const distance = Math.abs(index - this.position);
+          if (distance < best) {
+            best = distance;
+            closest = index;
+          }
+        });
+        products.forEach((product, index) => {
+          const delta = index - this.position;
+          const x = delta * step;
+          const scale = 1.42 - Math.min(Math.abs(delta) * 0.32, 0.68);
+          product.style.setProperty('--am-scale', String(scale));
+          product.style.transform = `translate(-50%, -50%) translate3d(${x}px, 0, 0) scale(${scale})`;
+          product.style.zIndex = String(40 - Math.round(Math.abs(delta) * 8));
+          product.style.opacity = reduced ? '1' : String(Math.max(0.55, 1 - Math.abs(delta) * 0.1));
+          product.classList.toggle('is-center', index === closest);
+        });
+        this.updateNav();
+      }
+
+      updateNav() {
+        const index = Math.round(this.position);
+        this.navButtons?.forEach((button) => {
+          const direction = button.dataset.nav === 'next' ? 1 : -1;
+          button.disabled = index + direction < 0 || index + direction > this.maxIndex;
+        });
+      }
+
+      stepBy(direction) {
+        if (this.switching || this.dragging) return;
+        const target = Math.round(this.position) + direction;
+        if (target < 0 || target > this.maxIndex) return;
+        this.navTarget = target;
+        this.settleTo(target);
+      }
+
+      settleTo(index, focus = false) {
+        const target = this.clamp(Math.round(index));
+        this.cancelRailMotion();
+        if (this.motion.matches || Math.abs(this.position - target) < 0.001) {
+          this.position = target;
+          this.remember();
+          this.applyTransforms();
+          if (focus) this.focusCenter();
+          return;
+        }
+        const start = this.position;
+        const duration = 450;
+        const started = performance.now();
+        const tick = (now) => {
+          const progress = Math.min(1, (now - started) / duration);
+          const eased = 1 - (1 - progress) ** 3;
+          this.position = start + (target - start) * eased;
+          this.remember();
+          this.applyTransforms();
+          if (progress < 1) this.frame = requestAnimationFrame(tick);
+          else if (focus) this.focusCenter();
+        };
+        this.frame = requestAnimationFrame(tick);
+      }
+
+      focusCenter() {
+        const products = this.activeWall?.querySelectorAll('[data-product]');
+        products?.[Math.round(this.position)]?.focus({ preventScroll: true });
+      }
+
+      startInertia() {
+        let velocity = -this.pixelVelocity / this.step();
+        let last = performance.now();
+        const tick = (now) => {
+          const dt = Math.min(32, now - last);
+          last = now;
+          const next = this.position + velocity * dt;
+          const clamped = this.clamp(next);
+          this.position = clamped;
+          velocity *= 0.94 ** (dt / 16);
+          const stopped = clamped !== next || Math.abs(velocity) < 0.0008;
+          this.remember();
+          this.applyTransforms();
+          if (stopped) this.settleTo(Math.round(this.position));
+          else this.frame = requestAnimationFrame(tick);
+        };
+        this.frame = requestAnimationFrame(tick);
+      }
+
+      onPointerDown(event) {
+        if (this.switching || event.button > 0) return;
+        if (event.target.closest('.quick-add__button, [data-nav]')) return;
+        this.suppressClick = false;
+        this.cancelRailMotion();
+        this.wheelLock = false;
+        clearTimeout(this.wheelTimer);
+        this.pointerId = event.pointerId;
+        this.startX = event.clientX;
+        this.lastX = event.clientX;
+        this.lastTime = event.timeStamp;
+        this.startPosition = this.position;
+        this.pixelVelocity = 0;
+        this.moved = false;
+        this.dragging = true;
+      }
+
+      onPointerMove(event) {
+        if (!this.dragging || event.pointerId !== this.pointerId) return;
+        const dx = event.clientX - this.startX;
+        if (!this.moved && Math.abs(dx) <= 8) return;
+        if (!this.moved) {
+          this.moved = true;
+          this.classList.add('is-dragging');
+          this.room.setPointerCapture(event.pointerId);
+        }
+        const dt = event.timeStamp - this.lastTime;
+        if (dt > 0) this.pixelVelocity = (event.clientX - this.lastX) / dt;
+        this.lastX = event.clientX;
+        this.lastTime = event.timeStamp;
+        this.position = this.clamp(this.startPosition - dx / this.step());
+        this.remember();
+        this.applyTransforms();
+      }
+
+      onPointerUp(event) {
+        if (!this.dragging || event.pointerId !== this.pointerId) return;
+        const moved = this.moved;
+        this.dragging = false;
+        this.classList.remove('is-dragging');
+        if (!moved) return;
+        this.suppressClick = true;
+        if (this.motion.matches || Math.abs(this.pixelVelocity) < 0.05) this.settleTo(Math.round(this.position));
+        else this.startInertia();
+      }
+
+      onClick(event) {
+        if (this.suppressClick) {
+          event.preventDefault();
+          event.stopPropagation();
+          this.suppressClick = false;
+          return;
+        }
+        const button = event.target.closest?.('.quick-add__button');
+        if (!button || this.dataset.quickBuy !== 'true') return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        const href = button.closest('[data-product]')?.querySelector('a')?.href;
+        if (!href) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const quickAdd = this.querySelector('quick-add-component');
+        if (!quickAdd || typeof quickAdd.open !== 'function') {
+          window.location.assign(href);
+          return;
+        }
+        quickAdd.open(href).then((result) => {
+          if (result === 'unavailable' || result === 'failed') window.location.assign(href);
+        });
+      }
+
+      updateTabPin() {
+        const slot = this.tabSlot;
+        if (!slot) return;
+        if (this.dataset.tabPosition !== 'bottom') {
+          slot.classList.remove('is-fixed');
+          this.style.paddingBottom = '';
+          return;
+        }
+        const height = slot.offsetHeight;
+        const rect = this.getBoundingClientRect();
+        const pin = rect.top < window.innerHeight && rect.bottom > window.innerHeight + 1;
+        slot.classList.toggle('is-fixed', pin);
+        this.style.paddingBottom = pin && height > 0 ? `${height}px` : '';
+      }
+
+      onWheel(event) {
+        if (this.dataset.scrollNavigation !== 'true' || this.switching) return;
+        if (event.target.closest('[data-tab-slot]')) return;
+        let delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+        if (event.deltaMode === 1) delta *= 16;
+        if (event.deltaMode === 2) delta *= this.room.clientWidth || 1;
+        if (!delta) return;
+        const direction = delta > 0 ? 1 : -1;
+        const base = this.wheelLock ? this.navTarget : Math.round(this.position);
+        if (base + direction < 0 || base + direction > this.maxIndex) return;
+        event.preventDefault();
+        clearTimeout(this.wheelTimer);
+        this.wheelTimer = window.setTimeout(() => {
+          this.wheelLock = false;
+        }, 450);
+        if (this.wheelLock) return;
+        this.wheelLock = true;
+        this.navTarget = base + direction;
+        this.settleTo(this.navTarget);
+      }
+
+      onFocusIn(event) {
+        const product = event.target.closest?.('[data-product]');
+        if (!product || this.dragging || this.switching) return;
+        const index = Number(product.dataset.index);
+        if (index !== Math.round(this.position)) this.settleTo(index);
+      }
+
+      onWallKeydown(event) {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        if (!this.room.contains(event.target)) return;
+        event.preventDefault();
+        const step = event.key === 'ArrowRight' ? 1 : -1;
+        this.settleTo(Math.round(this.position) + step, true);
+      }
+
+      onTabKeydown(event) {
+        const current = this.tabs.indexOf(document.activeElement);
+        if (current < 0) return;
+        let next = null;
+        if (event.key === 'ArrowRight') next = (current + 1) % this.tabs.length;
+        else if (event.key === 'ArrowLeft') next = (current - 1 + this.tabs.length) % this.tabs.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = this.tabs.length - 1;
+        else return;
+        event.preventDefault();
+        this.tabs[next].focus();
+        this.switchTo(next);
+      }
+
+      updateTabs(scroll) {
+        const handle = this.activeWall?.dataset.handle;
+        this.tabs.forEach((tab) => {
+          const selected = tab.dataset.handle === handle;
+          tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+          tab.tabIndex = selected ? 0 : -1;
+          if (selected && scroll) {
+            const left = tab.offsetLeft - this.tabList.offsetLeft;
+            this.tabList.scrollTo({
+              left: left - this.tabList.clientWidth / 2 + tab.offsetWidth / 2,
+              behavior: this.motion.matches ? 'auto' : 'smooth',
+            });
+          }
+        });
+      }
+
+      replaceHash(handle) {
+        const url = new URL(window.location.href);
+        url.hash = handle;
+        window.history.replaceState(null, '', url);
+      }
+
+      switchTo(index, animate = true) {
+        if (this.switching || index === this.activeIndex || index < 0 || index >= this.walls.length) return;
+        const previous = this.walls[this.activeIndex];
+        const next = this.walls[index];
+        const forward = index > this.activeIndex;
+        this.cancelRailMotion();
+        this.remember();
+        this.activeIndex = index;
+        this.position = this.clamp(Number(next.dataset.position || 0));
+        next.removeAttribute('inert');
+        next.removeAttribute('aria-hidden');
+        this.applyTransforms();
+        this.updateTabs(true);
+        this.replaceHash(next.dataset.handle);
+
+        if (this.motion.matches || !animate) {
+          previous.classList.remove('is-active');
+          previous.setAttribute('inert', '');
+          previous.setAttribute('aria-hidden', 'true');
+          next.classList.add('is-active');
+          return;
+        }
+
+        this.switching = true;
+        const token = {};
+        this.switchToken = token;
+        previous.classList.add('is-animating');
+        next.classList.add('is-animating', 'is-incoming');
+        const outX = forward ? '-14%' : '14%';
+        const inX = forward ? '14%' : '-14%';
+        previous.animate(
+          [
+            { opacity: 1, transform: 'none' },
+            { opacity: 0, transform: `translateX(${outX})` },
+          ],
+          { duration: 550, easing: 'ease', fill: 'forwards' }
+        );
+        const incoming = next.animate(
+          [
+            { opacity: 0, transform: `translateX(${inX})` },
+            { opacity: 1, transform: 'none' },
+          ],
+          { duration: 550, easing: 'ease', fill: 'forwards' }
+        );
+        const finish = () => {
+          if (this.switchToken !== token || !this.isConnected) return;
+          this.switchToken = null;
+          this.switching = false;
+          previous.classList.remove('is-active', 'is-animating');
+          previous.setAttribute('inert', '');
+          previous.setAttribute('aria-hidden', 'true');
+          next.classList.add('is-active');
+          next.classList.remove('is-animating', 'is-incoming');
+          previous.getAnimations().forEach((animation) => animation.cancel());
+          next.getAnimations().forEach((animation) => animation.cancel());
+        };
+        incoming.addEventListener('finish', finish, { once: true });
+        this.switchTimer = window.setTimeout(finish, 700);
+      }
+    }
+
+    customElements.define('am-virtual-store', AmVirtualStore);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:names.am_virtual_store",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "collection_list",
+      "id": "collection_list",
+      "label": "t:settings.collection_list",
+      "limit": 12
+    },
+    {
+      "type": "range",
+      "id": "products_per_wall",
+      "label": "t:am_commerce.products_per_wall",
+      "min": 6,
+      "max": 24,
+      "step": 1,
+      "default": 12,
+      "info": "t:am_commerce.products_per_wall_info"
+    },
+    {
+      "type": "range",
+      "id": "product_gap",
+      "label": "t:am_commerce.product_gap",
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "default": 24,
+      "info": "t:am_commerce.product_gap_info"
+    },
+    {
+      "type": "range",
+      "id": "vertical_space",
+      "label": "t:am_commerce.vertical_space",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 24,
+      "info": "t:am_commerce.vertical_space_info"
+    },
+    {
+      "type": "checkbox",
+      "id": "scroll_navigation",
+      "label": "t:am_commerce.scroll_navigation",
+      "info": "t:am_commerce.scroll_navigation_info",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "arrow_position",
+      "label": "t:am_commerce.arrow_position",
+      "options": [
+        { "value": "top", "label": "t:am_commerce.arrow_position_top" },
+        { "value": "center", "label": "t:am_commerce.arrow_position_center" },
+        { "value": "bottom", "label": "t:am_commerce.arrow_position_bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "product_gap_complete",
+      "label": "t:am_commerce.product_gap_complete",
+      "info": "t:am_commerce.product_gap_complete_info",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "quick_buy",
+      "label": "t:am_commerce.virtual_store_quick_buy",
+      "info": "t:am_commerce.virtual_store_quick_buy_info",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:am_commerce.tabs"
+    },
+    {
+      "type": "select",
+      "id": "tab_position",
+      "label": "t:am_commerce.tab_position",
+      "options": [
+        { "value": "bottom", "label": "t:am_commerce.tab_position_bottom" },
+        { "value": "top", "label": "t:am_commerce.tab_position_top" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        { "value": "rte", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" },
+        { "value": "custom", "label": "t:options.custom" }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "font",
+      "label": "t:settings.font",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-accent--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ section.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "0.625rem", "label": "10px" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "2rem", "label": "32px" }
+      ],
+      "default": "1rem",
+      "visible_if": "{{ section.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ section.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ section.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "case",
+      "label": "t:settings.case",
+      "options": [
+        { "value": "none", "label": "t:options.default" },
+        { "value": "uppercase", "label": "t:options.uppercase" }
+      ],
+      "default": "none",
+      "visible_if": "{{ section.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "t:am_commerce.card_title"
+    },
+    {
+      "type": "select",
+      "id": "title_type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        { "value": "rte", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" },
+        { "value": "custom", "label": "t:options.custom" }
+      ],
+      "default": "custom",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "title_font",
+      "label": "t:settings.font",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-accent--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-accent--family)",
+      "visible_if": "{{ section.settings.title_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "title_font_size",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "0.625rem", "label": "10px" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "2rem", "label": "32px" }
+      ],
+      "default": "0.875rem",
+      "visible_if": "{{ section.settings.title_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "title_line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ section.settings.title_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "title_letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "loose",
+      "visible_if": "{{ section.settings.title_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "title_case",
+      "label": "t:settings.case",
+      "options": [
+        { "value": "none", "label": "t:options.default" },
+        { "value": "uppercase", "label": "t:options.uppercase" }
+      ],
+      "default": "uppercase",
+      "visible_if": "{{ section.settings.title_type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "t:am_commerce.card_price"
+    },
+    {
+      "type": "select",
+      "id": "price_type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        { "value": "rte", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" },
+        { "value": "custom", "label": "t:options.custom" }
+      ],
+      "default": "custom",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "price_font",
+      "label": "t:settings.font",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-accent--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ section.settings.price_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "price_font_size",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "0.625rem", "label": "10px" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "2rem", "label": "32px" }
+      ],
+      "default": "1rem",
+      "visible_if": "{{ section.settings.price_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "price_line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ section.settings.price_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "price_letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ section.settings.price_type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "price_case",
+      "label": "t:settings.case",
+      "options": [
+        { "value": "none", "label": "t:options.default" },
+        { "value": "uppercase", "label": "t:options.uppercase" }
+      ],
+      "default": "none",
+      "visible_if": "{{ section.settings.price_type_preset == 'custom' }}"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.am_virtual_store",
+      "category": "t:categories.collection"
+    }
+  ]
+}
+{% endschema %}

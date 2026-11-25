@@ -1037,6 +1037,7 @@
         "static-header": {
           "type": "_product-list-content",
           "name": "t:names.header",
+          "disabled": true,
           "static": true,
           "settings": {
             "content_direction": "row",
@@ -1071,6 +1072,7 @@
             "product_list_text_EREQCK": {
               "type": "_product-list-text",
               "name": "t:names.collection_title",
+              "disabled": true,
               "settings": {
                 "text": "<h2>{{ closest.collection.title }}</h2>",
                 "width": "fit-content",

@@ -149,6 +149,49 @@ function context(extra = {}) {
   return { settings, cart: cart(), shop: { currency: 'USD', customer_accounts_enabled: false }, request: { design_mode: current.has('editor') },
     template: { name: current.get('view') === 'page' ? 'cart' : 'index' }, routes: { cart_url: '/cart', all_products_collection_url: '/collections/all' }, ...extra };
 }
+async function assertCorreoNotice() {
+  assert.equal(settings.am_correo_branch_notice_enabled, true);
+  add(1);
+  const html = await render('snippets/cart-summary.liquid', context({ section_id: 'fixture' }));
+  assert.match(html, /class="am-correo-branch-notice/);
+  assert.match(html, /Fijate cuál te queda cerca/);
+  assert.match(html, /Buscar sucursales/);
+  assert.match(html, /Escribí la localidad sin tildes/);
+  assert.match(html, /href="https:\/\/www\.correoargentino\.com\.ar\/formularios\/sucursales"/);
+  assert.match(html, /target="_blank"/);
+  assert.match(html, /rel="noopener noreferrer"/);
+  assert.match(html, /accessibility\.new_window|Se abre en una ventana nueva/);
+  const checkoutAt = html.indexOf('id="checkout"');
+  assert.ok(checkoutAt > html.indexOf('am-correo-branch-notice'), 'Notice stays above checkout');
+  settings.am_correo_branch_notice_url = 'javascript:alert(1)';
+  const unsafe = await render('snippets/am--correo-branch-notice.liquid', context());
+  assert.match(unsafe, /href="https:\/\/www\.correoargentino\.com\.ar\/formularios\/sucursales"/);
+  settings.am_correo_branch_notice_url = 'https://example.com/sucursales';
+  const custom = await render('snippets/am--correo-branch-notice.liquid', context());
+  assert.match(custom, /href="https:\/\/example\.com\/sucursales"/);
+  settings.am_correo_branch_notice_url = '';
+  const blankUrl = await render('snippets/am--correo-branch-notice.liquid', context());
+  assert.match(blankUrl, /correoargentino\.com\.ar\/formularios\/sucursales/);
+  settings.am_correo_branch_notice_text = '';
+  settings.am_correo_branch_notice_link_label = '';
+  const blankCopy = await render('snippets/am--correo-branch-notice.liquid', context());
+  assert.equal(blankCopy.trim(), '');
+  settings.am_correo_branch_notice_text = '¿Vas a elegir envío a sucursal de Correo Argentino? Fijate cuál te queda cerca';
+  settings.am_correo_branch_notice_link_label = 'Buscar sucursales';
+  settings.am_correo_branch_notice_url = 'https://www.correoargentino.com.ar/formularios/sucursales';
+  settings.am_correo_branch_notice_enabled = false;
+  const hidden = await render('snippets/cart-summary.liquid', context({ section_id: 'fixture' }));
+  assert.doesNotMatch(hidden, /am-correo-branch-notice/);
+  assert.match(hidden, /id="checkout"/);
+  settings.am_correo_branch_notice_enabled = true;
+  items.length = 0;
+  serial = 0;
+  const empty = await render('snippets/cart-summary.liquid', context({ section_id: 'fixture' }));
+  assert.doesNotMatch(empty, /am-correo-branch-notice/);
+  assert.match(empty, /id="checkout"/);
+}
+await assertCorreoNotice();
+if (process.env.AM_QA_CORREO_ONLY) process.exit(0);
 async function section() {
   const section = { id: 'fixture', settings: {} };
   if (current.get('view') !== 'page') return `<div id="shopify-section-fixture" class="shopify-section">${await render('snippets/header-actions.liquid', context({ section }))}</div>`;
@@ -212,7 +255,7 @@ async function productPage(id, variantId = id) {
   const gallery = current.has('gallery') && current.get('media_count') !== '0' ? `<div class="product-information__media">${await productGallery(id, variantId)}</div>` : '';
   return `<div data-product-grid-content>${gallery}<div class="product-details"><div class="group-block"><div class="group-block-content"><div class="view-product-title"><a href="/products/test-${p.id}">${p.title}</a></div><div class="buy-buttons-block"><product-form-component data-section-id="fixture" data-product-id="${p.id}" on:submit="/handleSubmit"><div ref="liveRegion" role="status"></div><form id="QuickBuyFixture-${id}"><input name="id" ref="variantId" value="${variantId}"><input name="quantity" value="1"><span ref="addToCartTextError" class="hidden"></span><add-to-cart-component ref="addToCartButtonContainer" data-add-to-cart-animation="false"><button type="submit" class="button" ref="addToCartButton">Agregar variante</button></add-to-cart-component></form></product-form-component></div></div></div></div></div>`;
 }
-const styles = ['snippets/accordion-custom-component.liquid', 'snippets/header-actions.liquid', 'snippets/cart-items-component.liquid', 'snippets/cart-products.liquid', 'snippets/cart-summary.liquid', 'sections/main-cart.liquid',
+const styles = ['snippets/accordion-custom-component.liquid', 'snippets/header-actions.liquid', 'snippets/cart-items-component.liquid', 'snippets/cart-products.liquid', 'snippets/cart-summary.liquid', 'snippets/am--correo-branch-notice.liquid', 'sections/main-cart.liquid',
   'snippets/product-card.liquid', 'snippets/card-gallery.liquid', 'snippets/quick-add-styles.liquid', 'snippets/add-to-cart-button.liquid', 'snippets/slideshow-styles.liquid',
   'snippets/slideshow-slide.liquid', 'snippets/slideshow-arrows.liquid', 'snippets/slideshow-arrow.liquid', 'snippets/slideshow-controls.liquid', 'snippets/product-media.liquid', 'snippets/video.liquid', 'snippets/product-media-gallery-content-styles.liquid', 'snippets/quick-add-modal-styles.liquid', 'blocks/am--media-carousel-card.liquid', 'sections/am--media-product-carousel.liquid', 'sections/product-hotspots.liquid'].map(css).join('\n') + ':root{--height-buy-buttons:48px;--icon-size-xs:16px;--icon-size-sm:20px;--icon-size-md:24px;--padding-2xs:6px;--margin-sm:12px;--margin-2xs:8px;--animation-speed:.25s;--animation-easing:ease;--animation-speed-fast:.15s;--layer-heightened:2;--quick-add-modal-width:min(54rem,96vw);--quick-add-modal-height:min(38.5rem,96vh);--quick-add-modal-gallery-width:24rem}';
 const imports = JSON.parse(read('snippets/scripts.liquid').match(/<script type="importmap">([\s\S]*?)<\/script>/)[1].replace(/\{\{\s*'([^']+)'\s*\|\s*asset_url\s*\}\}/g, '/assets/$1'));

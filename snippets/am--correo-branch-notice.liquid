@@ -1,0 +1,64 @@
+{% doc %}
+  Renders the Correo Argentino branch finder notice above checkout.
+  It appears on the cart page and in the cart drawer when the cart has
+  items and the cart setting is enabled. Copy, link label, URL and the
+  accent hint come from theme settings. A blank URL falls back to the
+  official finder. The link opens in a new tab.
+
+  @example
+  {% render 'am--correo-branch-notice' %}
+{% enddoc %}
+
+{% liquid
+  assign show_correo_notice = false
+  unless cart.empty?
+    if settings.am_correo_branch_notice_enabled
+      assign correo_text = settings.am_correo_branch_notice_text | strip
+      assign correo_label = settings.am_correo_branch_notice_link_label | strip
+      assign correo_hint = settings.am_correo_branch_notice_hint | strip
+      if correo_text != blank or correo_label != blank
+        assign show_correo_notice = true
+      endif
+    endif
+  endunless
+
+  if show_correo_notice and correo_label != blank
+    assign correo_url = settings.am_correo_branch_notice_url | strip
+    assign correo_prefix = correo_url | slice: 0, 8 | downcase
+    assign correo_prefix_http = correo_url | slice: 0, 7 | downcase
+    assign correo_url_valid = false
+    if correo_prefix == 'https://' or correo_prefix_http == 'http://'
+      assign correo_url_valid = true
+    endif
+    unless correo_url_valid
+      assign correo_url = 'https://www.correoargentino.com.ar/formularios/sucursales'
+    endunless
+  endif
+%}
+
+{% if show_correo_notice %}
+  <p class="am-correo-branch-notice cart-totals__tax-note cart-primary-typography">
+    <small>
+      {%- if correo_text != blank -%}
+        {{- correo_text | escape -}}
+      {%- endif -%}
+      {%- if correo_label != blank -%}
+        {% if correo_text != blank %} {% endif -%}
+        <a href="{{ correo_url | escape }}" target="_blank" rel="noopener noreferrer">
+          {{- correo_label | escape -}}
+          <span class="visually-hidden"> {{ 'accessibility.new_window' | t }}</span>
+        </a>
+      {%- endif -%}
+      {%- if correo_hint != blank -%}
+        <br>
+        {{- correo_hint | escape -}}
+      {%- endif -%}
+    </small>
+  </p>
+{% endif %}
+
+{% stylesheet %}
+  .am-correo-branch-notice {
+    margin: 0;
+  }
+{% endstylesheet %}

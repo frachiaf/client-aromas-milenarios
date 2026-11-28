@@ -8,6 +8,14 @@ El formato se inspira en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1
 
 ### Añadido
 
+- Objetivo (2026-11-28): mostrar, antes de pagar, un enlace al buscador oficial de sucursales de Correo Argentino para quien vaya a elegir envío a sucursal.
+- Archivos: `snippets/am--correo-branch-notice.liquid`, `snippets/cart-summary.liquid`, `config/settings_schema.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
+- Impacto: el aviso sale en la página de carrito y en el drawer, dentro del resumen y antes del botón de pagar, solo si hay productos y el checkbox «Mostrar aviso de buscador de sucursales Correo» está activo. Viene encendido. El texto, el enlace, la URL y la aclaración de tildes se editan en Carrito. El enlace abre el buscador en una pestaña nueva. El carrito vacío, el botón de pagar y las actualizaciones AJAX no cambian. No se editó `settings_data.json`.
+- Validación: `AM_QA_CORREO_ONLY=1 node tests/am-commerce.test.mjs` renderizó el resumen con Liquid real. Con productos, el aviso queda antes de pagar, con el texto, el enlace oficial, `target="_blank"` y `rel="noopener noreferrer"`. Una URL que no es http(s) vuelve al buscador oficial. Sin texto ni etiqueta, con el checkbox apagado o con el carrito vacío, el aviso no se imprime y el botón de pagar sigue. Una vista local con los colores del esquema 1 muestra el aviso en 390 px y en 480 px, encima de Pagar. `shopify theme check` revisó el theme sin errores y con las 31 advertencias ya existentes.
+- Reversión: apagar el checkbox oculta el aviso. Quitar el snippet y los settings restaura el resumen anterior. No hay migración de datos.
+
+### Añadido
+
 - Objetivo (2026-11-20): mostrar una colección como tienda virtual, con una pared por colección del listado y un carrusel en perspectiva.
 - Archivos: `sections/am-virtual-store.liquid`, `templates/collection.tienda-virtual.json`, `locales/*.json`, `locales/*.schema.json`, `docs/theme-architecture.md` y este changelog.
 - Impacto: la plantilla alternativa `tienda-virtual` no modifica la grilla ni `collection.json`. El merchant la asigna a las colecciones que tengan el metafield `custom.listado_de_colecciones` con acceso a la tienda online. Cada colección con productos es una pared, hasta 12 por defecto y 24 como máximo, en el orden de esa colección. El arrastre y la rueda mueven el riel; las pestañas cambian de pared con una transición de 550 ms. El click abre la ficha. Sin el listado, la tienda muestra un texto y el editor una ayuda. Header, footer y carrito no cambian. Con movimiento reducido no hay giro, inercia ni transición.

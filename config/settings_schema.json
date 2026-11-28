@@ -1776,6 +1776,47 @@
       },
       {
         "type": "header",
+        "content": "t:am_commerce.correo_branch_notice"
+      },
+      {
+        "type": "checkbox",
+        "id": "am_correo_branch_notice_enabled",
+        "label": "t:am_commerce.correo_branch_notice_enabled",
+        "info": "t:am_commerce.correo_branch_notice_info",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "am_correo_branch_notice_text",
+        "label": "t:am_commerce.correo_branch_notice_text",
+        "default": "¿Vas a elegir envío a sucursal de Correo Argentino? Fijate cuál te queda cerca",
+        "visible_if": "{{ settings.am_correo_branch_notice_enabled }}"
+      },
+      {
+        "type": "text",
+        "id": "am_correo_branch_notice_link_label",
+        "label": "t:am_commerce.correo_branch_notice_link_label",
+        "default": "Buscar sucursales",
+        "visible_if": "{{ settings.am_correo_branch_notice_enabled }}"
+      },
+      {
+        "type": "text",
+        "id": "am_correo_branch_notice_url",
+        "label": "t:am_commerce.correo_branch_notice_url",
+        "info": "t:am_commerce.correo_branch_notice_url_info",
+        "default": "https://www.correoargentino.com.ar/formularios/sucursales",
+        "visible_if": "{{ settings.am_correo_branch_notice_enabled }}"
+      },
+      {
+        "type": "text",
+        "id": "am_correo_branch_notice_hint",
+        "label": "t:am_commerce.correo_branch_notice_hint",
+        "info": "t:am_commerce.correo_branch_notice_hint_info",
+        "default": "Escribí la localidad sin tildes.",
+        "visible_if": "{{ settings.am_correo_branch_notice_enabled }}"
+      },
+      {
+        "type": "header",
         "content": "t:am_commerce.drawer_settings"
       },
       {
